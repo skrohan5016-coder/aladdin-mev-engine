@@ -116,6 +116,23 @@ class MptTests(unittest.TestCase):
                 proof_nodes=(branch_node, leaf),
             )
 
+    def test_short_child_node_must_be_embedded_not_hashed(self) -> None:
+        key = bytes.fromhex("ab")
+        nibbles = bytes_to_nibbles(key)
+        leaf = rlp_encode(
+            (hex_prefix_encode((nibbles[1],), is_leaf=True), b"x")
+        )
+        self.assertLess(len(leaf), 32)
+        branch = [b""] * 17
+        branch[nibbles[0]] = keccak256(leaf)
+        branch_node = rlp_encode(tuple(branch))
+        with self.assertRaisesRegex(ValueError, "must be embedded"):
+            verify_mpt_proof(
+                root_hash=keccak256(branch_node),
+                key=key,
+                proof_nodes=(branch_node, leaf),
+            )
+
     def test_short_byte_string_is_not_an_embedded_reference(self) -> None:
         key = bytes.fromhex("ab")
         nibbles = bytes_to_nibbles(key)
