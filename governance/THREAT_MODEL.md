@@ -1,0 +1,39 @@
+# F0 Threat Model
+
+## Protected assets
+
+- strategy policy integrity;
+- profit and cost arithmetic;
+- risk-limit state;
+- evidence identity and reproducibility;
+- repository and CI integrity;
+- future signer and treasury separation.
+
+## Adversaries and failure modes
+
+1. Malformed, oversized, deeply nested, duplicate-key, non-UTF-8, or floating-point JSON.
+2. Stale or internally inconsistent chain state.
+3. A simulator disagreement hidden behind a successful aggregate result.
+4. Cost omission, unit mismatch, rounding loss, or bid escalation consuming all surplus.
+5. Automatic promotion from shadow to canary/live without human approval.
+6. Recovery after an incident without closed-incident evidence.
+7. Unknown or prohibited strategies entering through permissive parsing.
+8. CI supply-chain drift through mutable action tags or excessive token permissions.
+9. Credential material committed to a public repository or exposed to CI.
+10. Time-of-check/time-of-use file replacement through links or mutation during read.
+
+## F0 controls
+
+- bounded descriptor-based stable reads with no-follow behavior;
+- strict canonical JSON with duplicate and float rejection;
+- closed domain enums and additional-property rejection in schemas;
+- exact integer arithmetic and explicit reserve fields;
+- two or more independent simulator identities for approved evidence;
+- immediate fail-closed risk states;
+- human plus evidence gates for every promotion and recovery;
+- read-only CI permissions, immutable action SHAs, and no workflow secrets;
+- zero network, signing, deployment, or execution dependencies.
+
+## Residual risks
+
+F0 cannot validate real chain semantics because no chain adapter exists. It also does not authenticate market data, normalize assets, simulate EVM/SVM execution, model reorgs, estimate inclusion, or protect a live signer. Those are mandatory future milestones before canary operation.
