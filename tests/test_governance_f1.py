@@ -22,11 +22,11 @@ class F2GovernanceTests(unittest.TestCase):
         self.assertEqual(architecture["milestone"], "F2")
         self.assertEqual(
             architecture["stacked_parent_head"],
-            "a16253f6643d9a69e2f92dc79ae1c653e193e964",
+            "431298e013f941f9e8385abee3bc2789a14254d6",
         )
         self.assertEqual(
             architecture["stacked_parent_tree"],
-            "348eb916ad320ccaad0127dd97c630bab1f3d641",
+            "855a53af31cca7fdae064377309c756b048c0654",
         )
         self.assertEqual(
             architecture["stacked_parent_architecture_id"],
@@ -34,7 +34,7 @@ class F2GovernanceTests(unittest.TestCase):
         )
         self.assertEqual(
             architecture["stacked_parent_status"],
-            "draft-unmerged-ci-green",
+            "ready-unmerged-ci-green",
         )
         self.assertEqual(architecture["source_contract_ids"], sorted(SOURCE_CONTRACTS))
         self.assertEqual(

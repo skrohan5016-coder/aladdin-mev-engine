@@ -61,4 +61,4 @@ F2 validates canonical deployment addresses and requires a deployment-evidence d
 
 ## Stacked parent
 
-F2 is based on exact F1 source head `a16253f6643d9a69e2f92dc79ae1c653e193e964`, tree `348eb916ad320ccaad0127dd97c630bab1f3d641`, architecture `AMEV-F1-ARCH-v1-e0cc085585eb`. F1 remains a Draft PR and must be accepted and landed before F2 can be restacked for final landing.
+F2 is based on exact F1 source head `431298e013f941f9e8385abee3bc2789a14254d6`, tree `855a53af31cca7fdae064377309c756b048c0654`, architecture `AMEV-F1-ARCH-v1-e0cc085585eb`. F1 is review-ready with exact-head and merge-integration CI green, but remains unmerged. F2 must not land before F1 is accepted and landed.

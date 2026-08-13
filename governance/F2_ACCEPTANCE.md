@@ -3,10 +3,10 @@
 ## Identity
 
 - Milestone: F2
-- Architecture: `AMEV-F2-ARCH-v1-e3c089f21451`
-- Architecture manifest SHA-256: `e3c089f214518fa7171d23ce21059b466313123dbdb4fce619bbc1dc627109ad`
-- Stacked parent head: `a16253f6643d9a69e2f92dc79ae1c653e193e964`
-- Stacked parent tree: `348eb916ad320ccaad0127dd97c630bab1f3d641`
+- Architecture: `AMEV-F2-ARCH-v1-6705b47003aa`
+- Architecture manifest SHA-256: `6705b47003aa1177d752b41f58aaa2af557383790f740bb8067fe134ab8bdfde`
+- Stacked parent head: `431298e013f941f9e8385abee3bc2789a14254d6`
+- Stacked parent tree: `855a53af31cca7fdae064377309c756b048c0654`
 - Stacked parent architecture: `AMEV-F1-ARCH-v1-e0cc085585eb`
 - Liquidation mechanism set SHA-256: `d86a8c761f17820b4b71aa5d7abba9e5eabf1aabd47a183292734705ed1b708c`
 
