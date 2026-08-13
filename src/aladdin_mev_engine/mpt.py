@@ -199,6 +199,7 @@ def _validate_node_shape(encoded: bytes, *, depth: int = 0) -> tuple[RlpItem, ..
     node = rlp_decode(encoded)
     return _validate_decoded_node_shape(node, depth=depth)
 
+
 def verify_mpt_proof(
     *,
     root_hash: bytes,
@@ -268,6 +269,10 @@ def verify_mpt_proof(
             encoded, decoded = by_hash[ref]
         except KeyError as error:
             raise ValueError("proof is missing a referenced node") from error
+        if used_hashes and len(encoded) < 32:
+            raise ValueError(
+                "hashed child trie node shorter than 32 bytes must be embedded"
+            )
         used_hashes.append(ref)
         return encoded, require_rlp_list("trie node", decoded)
 
