@@ -1,0 +1,298 @@
+{
+  "$defs": {
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base",
+        "arbitrum",
+        "bnb-smart-chain",
+        "solana"
+      ]
+    },
+    "costs": {
+      "additionalProperties": false,
+      "properties": {
+        "execution_gas_cost": {
+          "$ref": "#/$defs/uint"
+        },
+        "failure_risk_reserve": {
+          "$ref": "#/$defs/uint"
+        },
+        "flash_loan_fee": {
+          "$ref": "#/$defs/uint"
+        },
+        "gross_profit": {
+          "$ref": "#/$defs/uint"
+        },
+        "inclusion_bid": {
+          "$ref": "#/$defs/uint"
+        },
+        "infrastructure_cost": {
+          "$ref": "#/$defs/uint"
+        },
+        "inventory_hedge_cost": {
+          "$ref": "#/$defs/uint"
+        },
+        "l1_data_fee": {
+          "$ref": "#/$defs/uint"
+        },
+        "slippage_reserve": {
+          "$ref": "#/$defs/uint"
+        },
+        "stale_state_reserve": {
+          "$ref": "#/$defs/uint"
+        }
+      },
+      "required": [
+        "gross_profit",
+        "execution_gas_cost",
+        "l1_data_fee",
+        "flash_loan_fee",
+        "inclusion_bid",
+        "slippage_reserve",
+        "stale_state_reserve",
+        "failure_risk_reserve",
+        "infrastructure_cost",
+        "inventory_hedge_cost"
+      ],
+      "type": "object"
+    },
+    "decision": {
+      "additionalProperties": false,
+      "properties": {
+        "approved": {
+          "type": "boolean"
+        },
+        "conservative_net_profit": {
+          "$ref": "#/$defs/signedInt"
+        },
+        "policy_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "reasons": {
+          "items": {
+            "enum": [
+              "non-positive-gross-profit",
+              "simulation-disagreement",
+              "chain-unhealthy",
+              "state-too-old",
+              "risk-budget-unavailable",
+              "bid-exceeds-policy",
+              "below-absolute-minimum",
+              "below-required-return"
+            ]
+          },
+          "maxItems": 8,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "schema": {
+          "const": "aladdin-mev-execution-decision/v1"
+        },
+        "surplus_before_bid": {
+          "$ref": "#/$defs/signedInt"
+        }
+      },
+      "required": [
+        "schema",
+        "approved",
+        "policy_id",
+        "conservative_net_profit",
+        "surplus_before_bid",
+        "reasons"
+      ],
+      "type": "object"
+    },
+    "profitPolicy": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum_bid_fraction_bps": {
+          "$ref": "#/$defs/uint"
+        },
+        "maximum_state_age_ms": {
+          "$ref": "#/$defs/uint"
+        },
+        "minimum_absolute_profit": {
+          "$ref": "#/$defs/uint"
+        },
+        "minimum_return_bps": {
+          "$ref": "#/$defs/uint"
+        },
+        "policy_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "policy_id",
+        "minimum_absolute_profit",
+        "minimum_return_bps",
+        "maximum_bid_fraction_bps",
+        "maximum_state_age_ms"
+      ],
+      "type": "object"
+    },
+    "sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "signedInt": {
+      "maxLength": 97,
+      "pattern": "^(0|[1-9][0-9]*|-[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "simulation": {
+      "additionalProperties": false,
+      "properties": {
+        "engine_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "error_code": {
+          "maxLength": 128,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "gas_units": {
+          "$ref": "#/$defs/uint"
+        },
+        "output_amount": {
+          "$ref": "#/$defs/uint"
+        },
+        "post_state_digest": {
+          "$ref": "#/$defs/sha256"
+        },
+        "success": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "engine_id",
+        "success",
+        "gas_units",
+        "output_amount",
+        "post_state_digest",
+        "error_code"
+      ],
+      "type": "object"
+    },
+    "stateReference": {
+      "additionalProperties": false,
+      "properties": {
+        "chain": {
+          "$ref": "#/$defs/chain"
+        },
+        "observed_at_unix_ms": {
+          "$ref": "#/$defs/uint"
+        },
+        "sequence_hash": {
+          "maxLength": 130,
+          "minLength": 1,
+          "type": "string"
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/uint"
+        },
+        "state_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      },
+      "required": [
+        "chain",
+        "sequence_number",
+        "sequence_hash",
+        "observed_at_unix_ms",
+        "state_digest"
+      ],
+      "type": "object"
+    },
+    "strategy": {
+      "enum": [
+        "atomic-dex-arbitrage",
+        "consensual-backrun",
+        "liquidation",
+        "inventory-assisted-arbitrage",
+        "cross-chain-inventory-rebalancing"
+      ]
+    },
+    "uint": {
+      "maxLength": 96,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "$id": "https://schemas.aladdin.invalid/mev/simulation-evidence-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "capital_at_risk": {
+      "$ref": "#/$defs/uint"
+    },
+    "chain_health": {
+      "enum": [
+        "healthy",
+        "degraded",
+        "unknown"
+      ]
+    },
+    "costs": {
+      "$ref": "#/$defs/costs"
+    },
+    "created_at_unix_ms": {
+      "$ref": "#/$defs/uint"
+    },
+    "decision": {
+      "$ref": "#/$defs/decision"
+    },
+    "opportunity_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "profit_policy": {
+      "$ref": "#/$defs/profitPolicy"
+    },
+    "risk_budget_available": {
+      "type": "boolean"
+    },
+    "schema": {
+      "const": "aladdin-mev-simulation-evidence/v1"
+    },
+    "simulations": {
+      "items": {
+        "$ref": "#/$defs/simulation"
+      },
+      "maxItems": 8,
+      "minItems": 2,
+      "type": "array"
+    },
+    "state_reference": {
+      "$ref": "#/$defs/stateReference"
+    },
+    "strategy": {
+      "$ref": "#/$defs/strategy"
+    }
+  },
+  "required": [
+    "schema",
+    "opportunity_id",
+    "strategy",
+    "state_reference",
+    "capital_at_risk",
+    "costs",
+    "simulations",
+    "profit_policy",
+    "chain_health",
+    "risk_budget_available",
+    "decision",
+    "created_at_unix_ms"
+  ],
+  "title": "Aladdin MEV Simulation Evidence v1",
+  "type": "object"
+}
