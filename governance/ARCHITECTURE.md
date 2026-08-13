@@ -1,87 +1,85 @@
-# F1 Governed Observation and Replay Architecture
+# F2 Governed Authenticated-State Architecture
 
 ## Mission
 
-F1 extends the accepted F0 policy, profit, risk, canonicalization, and CI authorities with a deterministic offline authority for recorded multi-chain observations. It does not acquire data from a network and cannot sign, submit, or execute a transaction.
+F2 extends accepted F0 policy/profit/risk authority and accepted F1 observation/replay authority with deterministic offline verification of EVM account and storage state. All inputs are recorded observations. F2 does not connect to a chain, sign a message, submit a bundle, deploy a contract, or execute a trade.
 
 ## Trust boundaries
 
 ```text
-Untrusted recorded upstream JSON
+Recorded full block-head observation
+        │
+        ├── exact source + finality + sequence + block identity
+        ▼
+Recorded block-state observation
+        │
+        ├── exact block number + block hash + non-zero state root
+        ▼
+Authenticated block-state anchor
         │
         ▼
-Governed source contract ── exact chain + event/finality/visibility triple + limits
+Recorded EIP-1186-shaped proof observation
+        │
+        ├── strict canonical JSON + bounded node arrays
+        ├── legacy Ethereum Keccak-256
+        ├── canonical bounded RLP
+        └── canonical MPT inclusion/non-inclusion traversal
+        ▼
+Recomputed account/storage evidence
         │
         ▼
-Canonical observation envelope ── detached payload + sequence + time + digests
+Unique sorted multi-account state snapshot
         │
         ▼
-Per-segment record hash chain ── ordinal + previous digest + envelope digest
+F0 simulation + profit + risk gates
         │
         ▼
-Cross-segment checkpoint chain ── previous segment + starting/ending source state
-        │
-        ▼
-Sealed immutable file ── no-follow + exclusive publish + read-only + single-link
-        │
-        ▼
-Deterministic replay and EVM head transitions
-        │
-        ▼
-F0 profit/risk/simulation gates
-        │
-        ▼
-No executor in F1
+No executor in F2
 ```
 
 ## Components
 
-1. **Inherited F0 authority** — strict canonical JSON, exact-integer profit accounting, dual-simulation evidence, strategy policy, risk governor, identity-bound reservations, and repository policy.
-2. **Source-contract registry** — nine digest-locked recorded-input contracts for Ethereum, Base, Arbitrum, and BNB Smart Chain.
-3. **Exact event-shape authority** — each source permits explicit `(kind, finality, visibility)` triples; independent allowlists cannot combine into unintended permissions.
-4. **Observation envelopes** — source identity, chain, source kind, unsigned-64-bit sequence/time, payload bytes, payload digest, and source-contract digest are immutable and canonical.
-5. **Control evidence** — source gaps and heartbeats are closed metadata records; unavailable upstream content is never synthesized.
-6. **Record chain** — every segment is an ordered SHA-256 chain of closed ledger records.
-7. **Segment chain** — each manifest binds the previous segment digest plus complete starting and ending source checkpoints, preserving continuity across files.
-8. **Stable storage** — Linux no-follow path traversal, exclusive temporary creation, data/directory `fsync`, no-overwrite publication, read-only mode, single-link checks, stable pathname identity, and optional external payload-digest verification.
-9. **Deterministic replay** — mutation, reordering, truncation, excessive record lines, wrong parent, missing prefix, source restart, time regression, framing drift, and authority drift fail closed.
-10. **EVM head tracker** — every tracker is bound to one exact source, head kind, finality, and full-visibility stream. Bootstrap, extension, reorg, duplicate, and orphan transitions bind the triggering observation digest and source sequence. Unknown-parent topology is not retained, and rejected inputs are transactional.
-11. **Source/architecture locks** — in-process registries, machine-readable governance, and exact SHA-256 identities must agree.
-12. **Exact-head CI** — the immutable pull-request source head and GitHub synthetic merge revision are validated independently with read-only permissions.
-
-## Observation scope
-
-F1 governs recorded observations for:
-
-- Ethereum JSON-RPC and Flashbots MEV-Share;
-- Base JSON-RPC and Flashblocks;
-- Arbitrum HTTP JSON-RPC, sequencer feed, and Timeboost metadata;
-- BNB Smart Chain JSON-RPC and PBS metadata.
-
-Solana is intentionally absent. A later non-EVM milestone must define its own slot, account-lock, transaction, and Jito-specific contracts.
+1. **Inherited F0 authority** — exact-integer profit accounting, simulation agreement, strategy policy, risk governor, canonical JSON, and repository/CI controls.
+2. **Inherited F1 authority** — governed source contracts, immutable observation envelopes, source sequencing, tamper-evident ledgers, deterministic replay, stable storage, and reorg-aware heads.
+3. **Legacy Keccak-256 authority** — a dependency-free implementation of the Ethereum hash function, explicitly distinct from NIST SHA3-256 and locked by known vectors.
+4. **Canonical RLP authority** — strict minimal encoding/decoding with byte, depth, item, integer-width, and framing ceilings.
+5. **Canonical MPT authority** — exact root-to-terminal verification for branch, extension, and leaf nodes; both inclusion and non-inclusion are authenticated.
+6. **Block-state anchor** — a full confirmed/finalized block head and a later full state-root observation must share one exact chain/source/finality stream and the same block identity.
+7. **Account proof authority** — the account path is Keccak-256 of the exact 20-byte address, and the authenticated leaf must decode to exactly nonce, balance, storage root, and code hash.
+8. **Storage proof authority** — each storage path is Keccak-256 of the normalized exact 32-byte slot; zero values require authenticated non-inclusion.
+9. **Evidence recomputation** — callers cannot inject derived approval fields. Evidence stores the exact anchor and proof observation, then re-runs verification during construction.
+10. **Snapshot authority** — account evidence is unique, sorted by address, bound to one exact anchor, and digest-addressed.
+11. **Capability gating** — block-state observations are governed for all four EVM chains; authenticated account/storage proofs are enabled only for Ethereum and Base in F2.
+12. **Exact-head CI** — source-head and synthetic-merge revisions independently run the inherited and F2 conformance suites under read-only permissions.
 
 ## Authority limits
 
-The terms `transport`, `JSON-RPC`, `WebSocket`, `SSE`, `sequencer feed`, and `auction` describe the provenance contract of recorded bytes. They do not enable a client. F1 has:
-
 ```text
-network_access       = none
-signing_authority    = none
-execution_authority  = none
+network_access        = none
+signing_authority     = none
+execution_authority   = none
 observation_authority = recorded-input-only
+state_proof_authority = offline-recorded-input-only
 ```
 
-A future collector must be isolated behind these schemas and must not redefine finality, visibility, ordering, or source completeness.
+F2 proves only that supplied proof material authenticates the supplied state root under the governed algorithms. It does not independently acquire a canonical state root from a network. That provenance remains bound to the recorded source contract and observation ledger.
 
-## External capability research anchors
+## Chain scope
 
-- Ethereum JSON-RPC: https://ethereum.org/en/developers/apis/json-rpc/
-- Flashbots MEV-Share: https://docs.flashbots.net/flashbots-mev-share/searchers/getting-started
-- Base Flashblocks: https://docs.base.org/base-chain/api-reference/flashblocks-api/flashblocks-api-overview
-- Arbitrum chain information: https://docs.arbitrum.io/for-devs/dev-tools-and-resources/chain-info
-- Arbitrum feed relay: https://docs.arbitrum.io/run-arbitrum-node/run-feed-relay
-- Arbitrum Timeboost: https://docs.arbitrum.io/how-arbitrum-works/timeboost/gentle-introduction
-- BNB Smart Chain JSON-RPC: https://docs.bnbchain.org/bnb-smart-chain/developers/json_rpc/json-rpc-endpoint/
-- BNB builder integration: https://docs.bnbchain.org/bnb-smart-chain/validator/mev/builder-integration/
+| Chain | Block-state anchor | Account/storage proof |
+|---|---:|---:|
+| Ethereum | Enabled | Enabled |
+| Base | Enabled | Enabled |
+| Arbitrum | Enabled | Disabled |
+| BNB Smart Chain | Enabled | Disabled |
+| Solana | Not an EVM scope | Not an EVM scope |
 
-Every live adapter must re-verify current official documentation in its own milestone.
+## External specification anchors
+
+- EIP-1186 account and storage proof response contract.
+- Ethereum Merkle Patricia Trie path and node semantics.
+- Ethereum Recursive Length Prefix encoding.
+- Go-ethereum proof generation and verification behavior.
+- Base official `eth_getProof` and historical-proof node documentation.
+
+These references constrain the offline verifier. They do not grant network authority.

@@ -1,7 +1,7 @@
 [project]
 name = "aladdin-mev-engine"
-version = "0.2.0"
-description = "Governed safety, observation, and replay foundation for the Aladdin MEV Engine"
+version = "0.3.0"
+description = "Governed offline EVM observation, authenticated state-proof, and replay foundation for the Aladdin MEV Engine"
 requires-python = ">=3.13"
 dependencies = []
 
@@ -9,6 +9,9 @@ dependencies = []
 architecture_manifest = "governance/architecture.json"
 architecture_lock = "governance/architecture.lock.json"
 source_contracts = "governance/source-contracts.json"
+f2_schema_lock = "governance/f2-schemas.lock.json"
+observation_authority = "recorded-input-only"
+state_proof_authority = "offline-recorded-input-only"
 execution_authority = "none"
 network_access = "none"
 signing_authority = "none"

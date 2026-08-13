@@ -1,7 +1,13 @@
 {
-  "accepted_parent_architecture_id": "AMEV-F0-ARCH-v1-5c494565cd12",
-  "accepted_parent_head": "7190ef22f6a99c5044f434f8175c4909ef92763f",
-  "accepted_parent_tree": "8d7eb3c22226a6abdee172f4ce21cc993faa3d66",
+  "accepted_parent_architecture_id": "AMEV-F1-ARCH-v1-e0cc085585eb",
+  "accepted_parent_head": "f1ce79430bf6d4d4857e4c6ee83fca766b68082c",
+  "accepted_parent_tree": "855a53af31cca7fdae064377309c756b048c0654",
+  "block_state_scope": [
+    "ethereum",
+    "base",
+    "arbitrum",
+    "bnb-smart-chain"
+  ],
   "chains": [
     "ethereum",
     "base",
@@ -34,13 +40,22 @@
     "deterministic-segment-replay",
     "exact-stream-reorg-aware-head-tracker",
     "observation-bound-head-transitions",
-    "source-contract-lock"
+    "source-contract-lock",
+    "ethereum-legacy-keccak256-authority",
+    "canonical-bounded-rlp-authority",
+    "canonical-merkle-patricia-proof-authority",
+    "exact-block-state-root-anchor",
+    "eip1186-account-and-storage-proof-verification",
+    "proof-evidence-recomputation-from-bound-inputs",
+    "deterministic-multi-account-state-snapshot",
+    "chain-specific-state-proof-capability-gating",
+    "f2-schema-lock"
   ],
   "execution_authority": "none",
   "invariants": [
-    "no-live-execution-in-f1",
-    "no-network-client-in-f1",
-    "no-signing-or-key-handling-in-f1",
+    "no-live-execution-in-f2",
+    "no-network-client-in-f2",
+    "no-signing-or-key-handling-in-f2",
     "no-floating-point-money",
     "no-automatic-mode-promotion",
     "unknown-input-fails-closed",
@@ -75,9 +90,25 @@
     "head-transitions-bind-the-triggering-observation-digest-and-source-sequence",
     "conflicting-duplicate-block-metadata-fails-closed",
     "head-tracker-rejections-do-not-consume-source-sequence-or-mutate-topology",
-    "solana-observation-remains-unimplemented-and-fails-closed"
+    "solana-observation-remains-unimplemented-and-fails-closed",
+    "legacy-keccak256-is-distinct-from-nist-sha3-and-bound-by-known-vectors",
+    "rlp-input-and-output-are-canonical-bounded-and-minimally-encoded",
+    "trie-proofs-use-the-exact-hashed-node-traversal-and-reject-extraneous-nodes",
+    "malformed-embedded-trie-children-fail-even-when-not-on-the-requested-path",
+    "embedded-trie-references-are-rlp-lists-smaller-than-32-bytes-not-short-byte-strings",
+    "block-state-roots-bind-an-exact-recorded-head-source-finality-sequence-and-time",
+    "state-proofs-bind-the-exact-block-number-block-hash-and-state-root-anchor",
+    "account-paths-use-keccak256-of-the-20-byte-address",
+    "storage-paths-use-keccak256-of-the-normalized-32-byte-slot",
+    "account-and-storage-inclusion-and-non-inclusion-are-both-authenticated",
+    "zero-storage-values-must-be-proven-by-non-inclusion",
+    "absent-accounts-carry-empty-code-and-storage-roots-and-zero-nonce-balance",
+    "state-proof-evidence-is-always-recomputed-from-its-exact-anchor-and-proof-observation",
+    "state-snapshots-require-unique-sorted-account-evidence-bound-to-one-exact-anchor",
+    "authenticated-state-proofs-are-enabled-only-for-officially-governed-ethereum-and-base-sources",
+    "arbitrum-and-bnb-state-proof-support-remains-disabled-until-official-capability-is-governed"
   ],
-  "milestone": "F1",
+  "milestone": "F2",
   "network_access": "none",
   "observation_authority": "recorded-input-only",
   "observation_scope": [
@@ -97,7 +128,11 @@
     "aladdin-mev-observation-envelope/v1",
     "aladdin-mev-observation-ledger-record/v1",
     "aladdin-mev-observation-segment-manifest/v1",
-    "aladdin-mev-head-transition/v1"
+    "aladdin-mev-head-transition/v1",
+    "aladdin-mev-evm-block-state-payload/v1",
+    "aladdin-mev-evm-state-proof-payload/v1",
+    "aladdin-mev-evm-state-proof-evidence/v1",
+    "aladdin-mev-evm-state-snapshot/v1"
   ],
   "signing_authority": "none",
   "source_contract_ids": [
@@ -111,8 +146,13 @@
     "ethereum-json-rpc",
     "ethereum-mev-share"
   ],
-  "source_contract_set_sha256": "feaa1bd499bd417927687b36ff26b836589220d60bce72d3fba5885468803a5a",
-  "status": "shadow-observation-foundation",
+  "source_contract_set_sha256": "1a57f5e0992cbdf109bc92bcc2f94e171cfcea53739938a76b43acce57e00dcd",
+  "state_proof_authority": "offline-recorded-input-only",
+  "state_proof_scope": [
+    "ethereum",
+    "base"
+  ],
+  "status": "shadow-authenticated-state-foundation",
   "strategy_allowlist": [
     "atomic-dex-arbitrage",
     "consensual-backrun",
@@ -128,5 +168,6 @@
     "mempool-spam",
     "malicious-token",
     "stolen-key-use"
-  ]
+  ],
+  "f2_schema_lock_sha256": "afe7a30ac6dc2d92a004cbe951186731e3175ffe4f6143d860c1c804e9152e35"
 }

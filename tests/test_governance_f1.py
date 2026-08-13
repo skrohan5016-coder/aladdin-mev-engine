@@ -10,33 +10,44 @@ from aladdin_mev_engine.source_contracts import SOURCE_CONTRACTS, source_contrac
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class F1GovernanceTests(unittest.TestCase):
+class F2GovernanceTests(unittest.TestCase):
     def test_architecture_binds_parent_source_registry_and_disabled_authorities(self) -> None:
         architecture = json.loads(
             (ROOT / "governance" / "architecture.json").read_text(encoding="utf-8")
         )
-        self.assertEqual(architecture["milestone"], "F1")
+        self.assertEqual(architecture["milestone"], "F2")
         self.assertEqual(
             architecture["accepted_parent_head"],
-            "7190ef22f6a99c5044f434f8175c4909ef92763f",
+            "f1ce79430bf6d4d4857e4c6ee83fca766b68082c",
         )
         self.assertEqual(
             architecture["accepted_parent_tree"],
-            "8d7eb3c22226a6abdee172f4ce21cc993faa3d66",
+            "855a53af31cca7fdae064377309c756b048c0654",
         )
         self.assertEqual(
             architecture["accepted_parent_architecture_id"],
-            "AMEV-F0-ARCH-v1-5c494565cd12",
+            "AMEV-F1-ARCH-v1-e0cc085585eb",
         )
-        self.assertEqual(
-            architecture["source_contract_ids"],
-            sorted(SOURCE_CONTRACTS),
-        )
+        self.assertEqual(architecture["source_contract_ids"], sorted(SOURCE_CONTRACTS))
         self.assertEqual(
             architecture["source_contract_set_sha256"],
             source_contract_set_digest(),
         )
         self.assertEqual(architecture["observation_authority"], "recorded-input-only")
+        self.assertEqual(
+            architecture["state_proof_authority"],
+            "offline-recorded-input-only",
+        )
+        self.assertEqual(architecture["state_proof_scope"], ["ethereum", "base"])
+        schema_lock = json.loads(
+            (ROOT / "governance" / "f2-schemas.lock.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        self.assertEqual(
+            architecture["f2_schema_lock_sha256"],
+            canonical_sha256(schema_lock),
+        )
         for key in ("network_access", "signing_authority", "execution_authority"):
             self.assertEqual(architecture[key], "none")
         self.assertEqual(architecture["runtime_dependencies"], [])
@@ -50,7 +61,7 @@ class F1GovernanceTests(unittest.TestCase):
         )
         digest = canonical_sha256(architecture)
         self.assertEqual(lock["manifest_sha256"], digest)
-        self.assertEqual(lock["architecture_id"], f"AMEV-F1-ARCH-v1-{digest[:12]}")
+        self.assertEqual(lock["architecture_id"], f"AMEV-F2-ARCH-v1-{digest[:12]}")
         self.assertEqual(lock["manifest_path"], "governance/architecture.json")
         self.assertEqual(lock["schema"], "aladdin-mev-architecture-lock/v1")
 

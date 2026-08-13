@@ -1,0 +1,35 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/evm-block-state-payload-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "block_hash": {
+      "maxLength": 66,
+      "minLength": 66,
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-evm-block-state-payload/v1"
+    },
+    "state_root": {
+      "maxLength": 66,
+      "minLength": 66,
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "block_number",
+    "block_hash",
+    "state_root"
+  ],
+  "title": "Aladdin MEV EVM Block State Payload v1",
+  "type": "object"
+}

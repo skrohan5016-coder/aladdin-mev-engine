@@ -1,44 +1,47 @@
-# F0 Threat Model
+# F2 Threat Model
 
 ## Protected assets
 
-- strategy policy integrity;
-- profit and cost arithmetic;
-- risk-limit state;
-- evidence identity and reproducibility;
-- repository and CI integrity;
-- future signer and treasury separation.
+- inherited strategy, profit, risk, evidence, ledger, and CI integrity;
+- exact block/state-root provenance;
+- account and storage proof correctness;
+- proof/non-proof capability separation by chain;
+- deterministic evidence and snapshot identity;
+- future signer, executor, and treasury separation.
 
 ## Adversaries and failure modes
 
-1. Malformed, oversized, deeply nested, duplicate-key, non-UTF-8, or floating-point JSON.
-2. Stale or internally inconsistent chain state.
-3. A simulator disagreement or matching failed simulations hidden behind a successful aggregate result.
-4. Cost omission, unit mismatch, rounding loss, or bid escalation consuming all surplus.
-5. Automatic promotion from shadow to canary/live without human approval.
-6. Recovery after an incident without closed-incident evidence, including a stop-and-restart bypass.
-7. Unknown or prohibited strategies entering through permissive parsing.
-8. CI supply-chain drift through mutable action tags or excessive token permissions.
-9. Credential material committed to a public repository or exposed to CI.
-10. Time-of-check/time-of-use file replacement through links or mutation during read.
-11. Partial, duplicate, or cross-candidate release of reserved execution-cost budget.
-12. Direct governor construction in `CANARY`/`LIVE`, spoofed transition objects, or mutable risk-limit authority.
-13. Caller-selected JSON limits above governed ceilings or oversized programmatic canonical evidence.
-14. CI action substitution, job-level write permissions, or workflow network/publication commands.
+1. Malformed, oversized, deeply nested, duplicate-key, non-UTF-8, floating-point, or noncanonical JSON.
+2. A state root attached to the wrong block, source, chain, finality, sequence, or observation time.
+3. NIST SHA3-256 substituted for Ethereum legacy Keccak-256.
+4. Nonminimal or malformed RLP, integer leading zeroes, declared-size abuse, excess nesting, or excess item counts.
+5. A missing, reordered, duplicate, extraneous, cyclic, oversized, or hash-mismatched trie proof node.
+6. A malformed embedded trie child hidden outside the queried path.
+7. Account fields that do not match the authenticated account leaf.
+8. Storage keys hashed with the wrong width or storage values that do not match their authenticated leaf.
+9. A zero storage value falsely represented as an included trie scalar.
+10. An absent account carrying non-empty nonce, balance, storage root, or code hash claims.
+11. Caller-injected derived evidence that bypasses cryptographic recomputation.
+12. Mixed-anchor or duplicate-account snapshot assembly.
+13. Accidental proof enablement for a chain whose official proof semantics are not governed.
+14. CI supply-chain drift, unapproved shell/Python network commands, write permissions, secrets, or credential material.
+15. Future code silently introducing a network client, signer, broadcaster, deployment path, or execution authority.
 
-## F0 controls
+## Controls
 
-- bounded descriptor-based stable reads with no-follow behavior;
-- strict canonical JSON with duplicate and float rejection plus non-raiseable governed ceilings for input and canonical output;
-- closed domain enums and additional-property rejection in schemas;
-- exact integer arithmetic and explicit reserve fields;
-- two or more successful independent simulator identities for approved evidence;
-- governors that can only start stopped, exact-type transition authority, immutable risk limits, and immediate fail-closed risk states;
-- human plus evidence gates for every promotion and recovery, with incident closure required across stop-and-restart paths;
-- identity-bound risk reservations that release only on exact reservation settlement;
-- read-only CI permissions, an exact immutable action allowlist, no workflow secrets or publication commands, and separate source-head/merge-ref validation;
-- zero network, signing, deployment, or execution dependencies.
+- strict canonical JSON and stable recorded-input handling inherited from F0/F1;
+- exact source-contract event-shape gating;
+- known-vector legacy Keccak-256 implementation;
+- strict bounded canonical RLP;
+- exact hashed-node MPT traversal with recursive embedded-node shape validation;
+- inclusion and non-inclusion terminal evidence;
+- immutable exact observations retained inside block-state anchors and proof evidence;
+- constructor-time cryptographic recomputation;
+- unique sorted snapshot accounts bound to one exact anchor;
+- explicit Ethereum/Base proof allowlist and fail-closed Arbitrum/BNB/Solana exclusions;
+- zero third-party runtime dependencies;
+- read-only, exact-command, exact-action, exact-head CI policy.
 
 ## Residual risks
 
-F0 cannot validate real chain semantics because no chain adapter exists. It also does not authenticate market data, normalize assets, simulate EVM/SVM execution, model reorgs, estimate inclusion, or protect a live signer. Those are mandatory future milestones before canary operation.
+F2 does not independently contact a chain, establish network consensus, evaluate provider honesty, or decide whether a recorded state root is economically current. It does not simulate EVM execution, normalize token prices, estimate gas or inclusion, construct bundles, manage nonces, protect a live signer, or execute a trade. Those require later governed milestones and separate acceptance evidence.
