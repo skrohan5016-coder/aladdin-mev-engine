@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aladdin.invalid/mev/opportunity-v1.schema.json",
+  "title": "Aladdin MEV Opportunity v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "opportunity_id", "chain", "strategy", "state_reference", "capital_at_risk"],
+  "properties": {
+    "schema": {"const": "aladdin-mev-opportunity/v1"},
+    "opportunity_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "chain": {"enum": ["ethereum", "base", "arbitrum", "bnb-smart-chain", "solana"]},
+    "strategy": {"enum": ["atomic-dex-arbitrage", "consensual-backrun", "liquidation", "inventory-assisted-arbitrage", "cross-chain-inventory-rebalancing"]},
+    "state_reference": {"$ref": "#/$defs/stateReference"},
+    "capital_at_risk": {"$ref": "#/$defs/uint"}
+  },
+  "$defs": {
+    "uint": {"type": "string", "pattern": "^(0|[1-9][0-9]*)$", "maxLength": 96},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "stateReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["chain", "sequence_number", "sequence_hash", "observed_at_unix_ms", "state_digest"],
+      "properties": {
+        "chain": {"enum": ["ethereum", "base", "arbitrum", "bnb-smart-chain", "solana"]},
+        "sequence_number": {"$ref": "#/$defs/uint"},
+        "sequence_hash": {"type": "string", "minLength": 1, "maxLength": 130},
+        "observed_at_unix_ms": {"$ref": "#/$defs/uint"},
+        "state_digest": {"$ref": "#/$defs/sha256"}
+      }
+    }
+  }
+}

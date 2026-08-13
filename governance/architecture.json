@@ -1,0 +1,73 @@
+{
+  "accepted_starting_main": "0ef0ef3ddae327cf00f1ca356079da7b26466e3d",
+  "accepted_starting_tree": "cc03ca6ae37d72625775e69cac777acd836e5699",
+  "chains": [
+    "ethereum",
+    "base",
+    "arbitrum",
+    "bnb-smart-chain",
+    "solana"
+  ],
+  "components": [
+    "strict-canonical-json",
+    "stable-bounded-file-reader",
+    "exact-integer-profit-firewall",
+    "human-gated-risk-governor",
+    "risk-budget-ledger",
+    "identity-bound-risk-reservations",
+    "strategy-policy",
+    "dual-simulation-evidence",
+    "repository-policy-gate",
+    "evidence-decision-recomputation",
+    "governed-json-ceiling-enforcement",
+    "pinned-ci-action-allowlist"
+  ],
+  "execution_authority": "none",
+  "invariants": [
+    "no-live-execution-in-f0",
+    "no-network-client-in-f0",
+    "no-signing-or-key-handling-in-f0",
+    "no-floating-point-money",
+    "no-automatic-mode-promotion",
+    "unknown-input-fails-closed",
+    "approved-evidence-requires-successful-independent-simulation-agreement",
+    "no-trade-when-any-profit-or-risk-gate-fails",
+    "evidence-decision-is-recomputed-from-bound-inputs",
+    "incident-recovery-cannot-bypass-closure-via-stop",
+    "risk-reservations-release-by-exact-identity-only",
+    "risk-governor-always-starts-stopped",
+    "transition-authority-requires-exact-governed-types",
+    "configured-json-limits-cannot-exceed-governed-ceilings",
+    "canonical-evidence-cannot-exceed-governed-byte-ceiling",
+    "ci-allows-only-approved-immutable-actions",
+    "ci-validates-source-head-and-merge-revision-separately"
+  ],
+  "milestone": "F0",
+  "network_access": "none",
+  "repository": "skrohan5016-coder/aladdin-mev-engine",
+  "runtime_dependencies": [],
+  "schema": "aladdin-mev-architecture/v1",
+  "schemas": [
+    "aladdin-mev-opportunity/v1",
+    "aladdin-mev-execution-decision/v1",
+    "aladdin-mev-simulation-evidence/v1"
+  ],
+  "signing_authority": "none",
+  "status": "shadow-only",
+  "strategy_allowlist": [
+    "atomic-dex-arbitrage",
+    "consensual-backrun",
+    "liquidation",
+    "inventory-assisted-arbitrage",
+    "cross-chain-inventory-rebalancing"
+  ],
+  "strategy_prohibited": [
+    "sandwich",
+    "harmful-frontrun",
+    "oracle-manipulation",
+    "protocol-exploit",
+    "mempool-spam",
+    "malicious-token",
+    "stolen-key-use"
+  ]
+}

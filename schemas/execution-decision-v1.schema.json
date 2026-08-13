@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aladdin.invalid/mev/execution-decision-v1.schema.json",
+  "title": "Aladdin MEV Execution Decision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema", "approved", "policy_id", "conservative_net_profit", "surplus_before_bid", "reasons"],
+  "properties": {
+    "schema": {"const": "aladdin-mev-execution-decision/v1"},
+    "approved": {"type": "boolean"},
+    "policy_id": {"type": "string", "minLength": 1, "maxLength": 128},
+    "conservative_net_profit": {"type": "string", "pattern": "^(0|[1-9][0-9]*|-[1-9][0-9]*)$", "maxLength": 97},
+    "surplus_before_bid": {"type": "string", "pattern": "^(0|[1-9][0-9]*|-[1-9][0-9]*)$", "maxLength": 97},
+    "reasons": {
+      "type": "array",
+      "maxItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "non-positive-gross-profit",
+          "simulation-disagreement",
+          "chain-unhealthy",
+          "state-too-old",
+          "risk-budget-unavailable",
+          "bid-exceeds-policy",
+          "below-absolute-minimum",
+          "below-required-return"
+        ]
+      }
+    }
+  }
+}
