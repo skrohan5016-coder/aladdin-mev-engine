@@ -1,0 +1,127 @@
+{
+  "$defs": {
+    "sourceCheckpoint": {
+      "additionalProperties": false,
+      "properties": {
+        "observed_at_unix_ms": {
+          "maxLength": 20,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "source_sequence": {
+          "maxLength": 20,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "source_sequence",
+        "observed_at_unix_ms"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "https://schemas.aladdin-mev.dev/observation-segment-manifest-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "ending_source_checkpoints": {
+      "additionalProperties": {
+        "$ref": "#/$defs/sourceCheckpoint"
+      },
+      "maxProperties": 9,
+      "minProperties": 1,
+      "propertyNames": {
+        "enum": [
+          "ethereum-json-rpc",
+          "ethereum-mev-share",
+          "base-json-rpc",
+          "base-flashblocks",
+          "arbitrum-json-rpc",
+          "arbitrum-sequencer-feed",
+          "arbitrum-timeboost-auction",
+          "bnb-json-rpc",
+          "bnb-pbs-metadata"
+        ]
+      },
+      "type": "object"
+    },
+    "first_record_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "last_record_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "previous_segment_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "record_count": {
+      "maxLength": 5,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "records_root_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-observation-segment-manifest/v1"
+    },
+    "segment_id": {
+      "pattern": "^[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?$",
+      "type": "string"
+    },
+    "segment_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_contract_set_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "starting_source_checkpoints": {
+      "additionalProperties": {
+        "$ref": "#/$defs/sourceCheckpoint"
+      },
+      "maxProperties": 9,
+      "propertyNames": {
+        "enum": [
+          "ethereum-json-rpc",
+          "ethereum-mev-share",
+          "base-json-rpc",
+          "base-flashblocks",
+          "arbitrum-json-rpc",
+          "arbitrum-sequencer-feed",
+          "arbitrum-timeboost-auction",
+          "bnb-json-rpc",
+          "bnb-pbs-metadata"
+        ]
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "schema",
+    "segment_id",
+    "created_at_unix_ms",
+    "previous_segment_sha256",
+    "record_count",
+    "first_record_sha256",
+    "last_record_sha256",
+    "records_root_sha256",
+    "source_contract_set_sha256",
+    "starting_source_checkpoints",
+    "ending_source_checkpoints",
+    "segment_sha256"
+  ],
+  "title": "Aladdin MEV Observation Segment Manifest v1",
+  "type": "object"
+}

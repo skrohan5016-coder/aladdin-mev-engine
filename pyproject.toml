@@ -1,12 +1,14 @@
 [project]
 name = "aladdin-mev-engine"
-version = "0.1.0"
-description = "Governed safety and evidence foundation for the Aladdin MEV Engine"
+version = "0.2.0"
+description = "Governed safety, observation, and replay foundation for the Aladdin MEV Engine"
 requires-python = ">=3.13"
 dependencies = []
 
 [tool.aladdin]
 architecture_manifest = "governance/architecture.json"
 architecture_lock = "governance/architecture.lock.json"
+source_contracts = "governance/source-contracts.json"
 execution_authority = "none"
 network_access = "none"
+signing_authority = "none"

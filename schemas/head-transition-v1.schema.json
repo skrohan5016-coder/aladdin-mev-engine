@@ -1,0 +1,150 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/head-transition-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "added": {
+      "items": {
+        "not": {
+          "const": "0x0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "pattern": "^0x[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 100000,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base",
+        "arbitrum",
+        "bnb-smart-chain"
+      ]
+    },
+    "common_ancestor": {
+      "oneOf": [
+        {
+          "pattern": "^0x[0-9a-f]{64}$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "finality": {
+      "enum": [
+        "preconfirmed",
+        "confirmed",
+        "finalized"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "bootstrap",
+        "extend",
+        "reorg",
+        "duplicate",
+        "orphan"
+      ]
+    },
+    "new_head": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "not": {
+                "const": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              }
+            },
+            {
+              "pattern": "^0x[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "observation_kind": {
+      "enum": [
+        "block-head",
+        "preconfirmed-block"
+      ]
+    },
+    "observation_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "old_head": {
+      "oneOf": [
+        {
+          "allOf": [
+            {
+              "not": {
+                "const": "0x0000000000000000000000000000000000000000000000000000000000000000"
+              }
+            },
+            {
+              "pattern": "^0x[0-9a-f]{64}$",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "removed": {
+      "items": {
+        "not": {
+          "const": "0x0000000000000000000000000000000000000000000000000000000000000000"
+        },
+        "pattern": "^0x[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 100000,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "schema": {
+      "const": "aladdin-mev-head-transition/v1"
+    },
+    "source_id": {
+      "enum": [
+        "arbitrum-json-rpc",
+        "base-flashblocks",
+        "base-json-rpc",
+        "bnb-json-rpc",
+        "ethereum-json-rpc"
+      ]
+    },
+    "source_sequence": {
+      "maxLength": 20,
+      "pattern": "^(?:0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "chain",
+    "source_id",
+    "source_sequence",
+    "observation_kind",
+    "finality",
+    "observation_sha256",
+    "kind",
+    "old_head",
+    "new_head",
+    "common_ancestor",
+    "removed",
+    "added"
+  ],
+  "title": "Aladdin MEV Head Transition v1",
+  "type": "object"
+}
