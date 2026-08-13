@@ -42,8 +42,23 @@ def check_workflow(errors: list[str]) -> None:
         fail(errors, "workflow secret references are forbidden in F0")
     if "permissions:\n  contents: read" not in text:
         fail(errors, "workflow permissions must be contents: read")
-    if "persist-credentials: false" not in text:
-        fail(errors, "checkout must disable persisted credentials")
+    if text.count("persist-credentials: false") != 2:
+        fail(errors, "both governed checkout paths must disable persisted credentials")
+    required_workflow_contracts = {
+        "validate-head:": "missing exact-head validation job",
+        "name: F0 exact-head conformance": "missing exact-head job identity",
+        "ref: ${{ github.event.pull_request.head.sha || github.sha }}": "exact-head checkout is not bound to the source SHA",
+        'test "$(git rev-parse HEAD)" = "${{ github.event.pull_request.head.sha || github.sha }}"': "exact-head identity assertion is missing",
+        "validate-merge:": "missing merge-integration validation job",
+        "name: F0 merge integration": "missing merge-integration job identity",
+        "if: github.event_name == 'pull_request'": "merge-integration job must be pull-request-only",
+        'test "$(git rev-parse HEAD)" = "${{ github.sha }}"': "merge-integration identity assertion is missing",
+    }
+    for contract, message in required_workflow_contracts.items():
+        if contract not in text:
+            fail(errors, message)
+    if text.count("uses: actions/checkout@") != 2:
+        fail(errors, "workflow must contain exactly two governed checkout steps")
     for line_number, line in enumerate(text.splitlines(), start=1):
         match = ANY_USES.match(line)
         if match and ACTION_REF.match(line) is None:

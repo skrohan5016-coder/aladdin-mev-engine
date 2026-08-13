@@ -18,6 +18,7 @@
 - Workflow token permission is read-only.
 - Workflow actions are pinned to immutable 40-character commit SHAs.
 - Checkout credentials are not persisted.
+- Pull requests validate the immutable source head and GitHub synthetic merge revision as separate jobs.
 - Workflow does not reference repository secrets or `pull_request_target`.
 - All JSON schemas parse, reject unknown top-level fields, and carry stable identifiers.
 - Public documentation states shadow-only and non-guaranteed-profit boundaries.
