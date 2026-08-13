@@ -4,8 +4,13 @@ from dataclasses import dataclass
 import re
 from typing import Any
 
-from .canonical import DEFAULT_MAX_JSON_BYTES, canonical_json_bytes, canonical_sha256, strict_json_loads
-from .domain import require_bounded_text, require_sha256
+from .canonical import (
+    DEFAULT_MAX_JSON_BYTES,
+    canonical_json_bytes,
+    canonical_sha256,
+    strict_json_loads,
+)
+from .domain import require_sha256
 from .observation import ObservationEnvelope, parse_decimal, require_u64
 from .source_contracts import get_source_contract, source_contract_set_digest
 
@@ -15,16 +20,18 @@ MAX_SEGMENT_BYTES = 16 * 1_048_576
 _SEGMENT_ID = re.compile(r"^[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?$")
 
 
-def _require_segment_id(value: str) -> None:
+def _require_segment_id(value: object) -> str:
     if type(value) is not str or _SEGMENT_ID.fullmatch(value) is None:
         raise ValueError("segment_id must be a canonical lowercase identifier")
+    return value
 
 
 def _require_exact_keys(name: str, value: dict[str, Any], expected: set[str]) -> None:
     actual = set(value)
     if actual != expected:
         raise ValueError(
-            f"{name} keys mismatch; missing={sorted(expected - actual)}, unknown={sorted(actual - expected)}"
+            f"{name} keys mismatch; missing={sorted(expected - actual)}, "
+            f"unknown={sorted(actual - expected)}"
         )
 
 
@@ -83,12 +90,15 @@ def _require_checkpoints(
     return value
 
 
-def _checkpoint_map(checkpoints: tuple[SourceCheckpoint, ...]) -> dict[str, SourceCheckpoint]:
+def _checkpoint_map(
+    checkpoints: tuple[SourceCheckpoint, ...],
+) -> dict[str, SourceCheckpoint]:
     return {checkpoint.source_id: checkpoint for checkpoint in checkpoints}
 
 
 def _checkpoints_from_maps(
-    sequences: dict[str, int], observed_times: dict[str, int]
+    sequences: dict[str, int],
+    observed_times: dict[str, int],
 ) -> tuple[SourceCheckpoint, ...]:
     if set(sequences) != set(observed_times):
         raise RuntimeError("checkpoint authority maps disagree")
@@ -157,10 +167,10 @@ class LedgerRecord:
         )
         if value["schema"] != cls.SCHEMA:
             raise ValueError("unknown ledger record schema")
-        envelope = ObservationEnvelope.from_json_value(value["envelope"])
         require_sha256("previous_record_sha256", value["previous_record_sha256"])
         require_sha256("envelope_sha256", value["envelope_sha256"])
         require_sha256("record_sha256", value["record_sha256"])
+        envelope = ObservationEnvelope.from_json_value(value["envelope"])
         record = cls(
             segment_id=value["segment_id"],
             ordinal=parse_decimal(
@@ -231,20 +241,24 @@ class SegmentManifest:
             if final.observed_at_unix_ms < checkpoint.observed_at_unix_ms:
                 raise ValueError("ending source observation time moved backwards")
         if self.created_at_unix_ms < max(
-            checkpoint.observed_at_unix_ms for checkpoint in self.ending_source_checkpoints
+            checkpoint.observed_at_unix_ms
+            for checkpoint in self.ending_source_checkpoints
         ):
             raise ValueError("segment creation time precedes its ending source checkpoint")
 
     @staticmethod
     def _checkpoints_json(
-        checkpoints: tuple[SourceCheckpoint, ...]
+        checkpoints: tuple[SourceCheckpoint, ...],
     ) -> dict[str, dict[str, str]]:
         return {
-            checkpoint.source_id: checkpoint.to_json_value() for checkpoint in checkpoints
+            checkpoint.source_id: checkpoint.to_json_value()
+            for checkpoint in checkpoints
         }
 
     @staticmethod
-    def _parse_checkpoints(name: str, value: object) -> tuple[SourceCheckpoint, ...]:
+    def _parse_checkpoints(
+        name: str, value: object
+    ) -> tuple[SourceCheckpoint, ...]:
         if type(value) is not dict:
             raise ValueError(f"{name} must be an exact JSON object")
         return tuple(
@@ -365,26 +379,28 @@ class ObservationLedgerBuilder:
         require_u64("created_at_unix_ms", created_at_unix_ms)
         if previous_manifest is not None and type(previous_manifest) is not SegmentManifest:
             raise TypeError("previous_manifest must be an exact SegmentManifest or null")
-        if previous_manifest is not None:
+        if previous_manifest is None:
+            starting: tuple[SourceCheckpoint, ...] = ()
+            previous_segment_sha256 = ZERO_SHA256
+        else:
             if previous_manifest.source_contract_set_sha256 != source_contract_set_digest():
                 raise ValueError("previous segment uses a different source-contract authority")
             if created_at_unix_ms < previous_manifest.created_at_unix_ms:
                 raise ValueError("segment creation time moved backwards")
             starting = previous_manifest.ending_source_checkpoints
             previous_segment_sha256 = previous_manifest.segment_sha256
-        else:
-            starting = ()
-            previous_segment_sha256 = ZERO_SHA256
         self._segment_id = segment_id
         self._created_at_unix_ms = created_at_unix_ms
         self._previous_segment_sha256 = previous_segment_sha256
         self._starting_checkpoints = starting
         self._records: list[LedgerRecord] = []
         self._last_sequence = {
-            checkpoint.source_id: checkpoint.source_sequence for checkpoint in starting
+            checkpoint.source_id: checkpoint.source_sequence
+            for checkpoint in starting
         }
         self._last_observed_at = {
-            checkpoint.source_id: checkpoint.observed_at_unix_ms for checkpoint in starting
+            checkpoint.source_id: checkpoint.observed_at_unix_ms
+            for checkpoint in starting
         }
         self._event_ids: set[tuple[str, str]] = set()
         self._sealed = False
@@ -404,7 +420,8 @@ class ObservationLedgerBuilder:
         expected_sequence = 0 if previous_sequence is None else previous_sequence + 1
         if envelope.source_sequence != expected_sequence:
             raise ValueError(
-                f"non-contiguous source sequence for {envelope.source_id}: expected {expected_sequence}"
+                f"non-contiguous source sequence for {envelope.source_id}: "
+                f"expected {expected_sequence}"
             )
         previous_time = self._last_observed_at.get(envelope.source_id)
         if previous_time is not None and envelope.observed_at_unix_ms < previous_time:
@@ -412,7 +429,9 @@ class ObservationLedgerBuilder:
         identity = (envelope.source_id, envelope.source_event_id)
         if identity in self._event_ids:
             raise ValueError("duplicate source event identity within segment")
-        previous_digest = ZERO_SHA256 if not self._records else self._records[-1].record_sha256
+        previous_digest = (
+            ZERO_SHA256 if not self._records else self._records[-1].record_sha256
+        )
         record = LedgerRecord(
             segment_id=self._segment_id,
             ordinal=len(self._records),
@@ -430,7 +449,9 @@ class ObservationLedgerBuilder:
             raise RuntimeError("ledger builder is already sealed")
         if not self._records:
             raise ValueError("cannot seal an empty observation segment")
-        ending = _checkpoints_from_maps(self._last_sequence, self._last_observed_at)
+        ending = _checkpoints_from_maps(
+            self._last_sequence, self._last_observed_at
+        )
         if self._created_at_unix_ms < max(
             checkpoint.observed_at_unix_ms for checkpoint in ending
         ):
@@ -454,22 +475,28 @@ class ObservationLedgerBuilder:
         return segment
 
 
-def validate_segment(records: tuple[LedgerRecord, ...], manifest: SegmentManifest) -> None:
+def validate_segment(
+    records: tuple[LedgerRecord, ...], manifest: SegmentManifest
+) -> None:
     if len(records) != manifest.record_count:
         raise ValueError("segment record count mismatch")
-    if len(records) > MAX_SEGMENT_RECORDS:
+    if not records or len(records) > MAX_SEGMENT_RECORDS:
         raise ValueError("segment record ceiling exceeded")
     expected_previous = ZERO_SHA256
     starting = _checkpoint_map(manifest.starting_source_checkpoints)
     last_sequence = {
-        source_id: checkpoint.source_sequence for source_id, checkpoint in starting.items()
+        source_id: checkpoint.source_sequence
+        for source_id, checkpoint in starting.items()
     }
     last_observed = {
-        source_id: checkpoint.observed_at_unix_ms for source_id, checkpoint in starting.items()
+        source_id: checkpoint.observed_at_unix_ms
+        for source_id, checkpoint in starting.items()
     }
     event_ids: set[tuple[str, str]] = set()
     digests: list[str] = []
     for ordinal, record in enumerate(records):
+        if type(record) is not LedgerRecord:
+            raise TypeError("segment contains an ungoverned ledger record")
         if record.segment_id != manifest.segment_id:
             raise ValueError("record segment identity mismatch")
         if record.ordinal != ordinal:
@@ -521,14 +548,25 @@ def validate_segment_chain(segments: tuple[ObservationSegment, ...]) -> None:
         if segment.manifest.segment_id in seen_ids:
             raise ValueError("segment chain contains a duplicate segment_id")
         seen_ids.add(segment.manifest.segment_id)
-        expected_previous = ZERO_SHA256 if previous is None else previous.manifest.segment_sha256
-        expected_starting = () if previous is None else previous.manifest.ending_source_checkpoints
+        expected_previous = (
+            ZERO_SHA256
+            if previous is None
+            else previous.manifest.segment_sha256
+        )
+        expected_starting = (
+            ()
+            if previous is None
+            else previous.manifest.ending_source_checkpoints
+        )
         if segment.manifest.previous_segment_sha256 != expected_previous:
             raise ValueError("segment chain previous-segment digest mismatch")
         if segment.manifest.starting_source_checkpoints != expected_starting:
             raise ValueError("segment chain starting checkpoint mismatch")
         if previous is not None:
-            if segment.manifest.created_at_unix_ms < previous.manifest.created_at_unix_ms:
+            if (
+                segment.manifest.created_at_unix_ms
+                < previous.manifest.created_at_unix_ms
+            ):
                 raise ValueError("segment chain creation time moved backwards")
             if (
                 segment.manifest.source_contract_set_sha256
@@ -541,7 +579,10 @@ def validate_segment_chain(segments: tuple[ObservationSegment, ...]) -> None:
 def serialize_segment(segment: ObservationSegment) -> bytes:
     if type(segment) is not ObservationSegment:
         raise TypeError("segment must be an exact ObservationSegment")
-    lines = [canonical_json_bytes(record.to_json_value()) for record in segment.records]
+    lines = [
+        canonical_json_bytes(record.to_json_value())
+        for record in segment.records
+    ]
     lines.append(canonical_json_bytes(segment.manifest.to_json_value()))
     payload = b"\n".join(lines) + b"\n"
     if len(payload) > MAX_SEGMENT_BYTES:
@@ -564,12 +605,23 @@ def parse_segment(payload: bytes) -> ObservationSegment:
         raise ValueError("segment must end with a newline")
     raw_lines = payload[:-1].split(b"\n")
     if len(raw_lines) < 2 or any(not line for line in raw_lines):
-        raise ValueError("segment requires records followed by exactly one manifest")
+        raise ValueError(
+            "segment requires records followed by exactly one manifest"
+        )
     if len(raw_lines) > MAX_SEGMENT_RECORDS + 1:
         raise ValueError("segment contains more than the governed record ceiling")
     if any(len(line) > DEFAULT_MAX_JSON_BYTES for line in raw_lines):
         raise ValueError("segment line exceeds the governed JSON byte ceiling")
-    values = [strict_json_loads(line) for line in raw_lines]
+
+    values: list[Any] = []
+    for line in raw_lines:
+        value = strict_json_loads(line)
+        if canonical_json_bytes(value) != line:
+            raise ValueError("segment line is not canonical JSON")
+        values.append(value)
+
     manifest = SegmentManifest.from_json_value(values[-1])
-    records = tuple(LedgerRecord.from_json_value(value) for value in values[:-1])
+    records = tuple(
+        LedgerRecord.from_json_value(value) for value in values[:-1]
+    )
     return ObservationSegment(records=records, manifest=manifest)
