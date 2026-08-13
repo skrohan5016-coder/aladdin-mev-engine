@@ -14,9 +14,11 @@ class CanonicalJsonError(ValueError):
     """Raised when input cannot participate in canonical evidence."""
 
 
-def _require_non_negative_limit(name: str, value: int) -> None:
+def _require_governed_limit(name: str, value: int, *, maximum: int) -> None:
     if isinstance(value, bool) or not isinstance(value, int) or value < 0:
         raise CanonicalJsonError(f"{name} must be a non-negative integer")
+    if value > maximum:
+        raise CanonicalJsonError(f"{name} exceeds the governed maximum of {maximum}")
 
 
 def _reject_float(value: str) -> NoReturn:
@@ -88,9 +90,9 @@ def strict_json_loads(
     max_depth: int = DEFAULT_MAX_DEPTH,
     max_items: int = DEFAULT_MAX_ITEMS,
 ) -> Any:
-    _require_non_negative_limit("max_bytes", max_bytes)
-    _require_non_negative_limit("max_depth", max_depth)
-    _require_non_negative_limit("max_items", max_items)
+    _require_governed_limit("max_bytes", max_bytes, maximum=DEFAULT_MAX_JSON_BYTES)
+    _require_governed_limit("max_depth", max_depth, maximum=DEFAULT_MAX_DEPTH)
+    _require_governed_limit("max_items", max_items, maximum=DEFAULT_MAX_ITEMS)
     if isinstance(payload, bytes):
         if len(payload) > max_bytes:
             raise CanonicalJsonError("JSON byte limit exceeded")
@@ -145,7 +147,7 @@ def canonical_json_bytes(value: Any) -> bytes:
         max_items=DEFAULT_MAX_ITEMS,
     )
     try:
-        return json.dumps(
+        encoded = json.dumps(
             value,
             ensure_ascii=False,
             allow_nan=False,
@@ -154,6 +156,9 @@ def canonical_json_bytes(value: Any) -> bytes:
         ).encode("utf-8")
     except (RecursionError, TypeError, ValueError, UnicodeEncodeError) as error:
         raise CanonicalJsonError("value cannot be encoded as canonical JSON") from error
+    if len(encoded) > DEFAULT_MAX_JSON_BYTES:
+        raise CanonicalJsonError("canonical JSON byte limit exceeded")
+    return encoded
 
 
 def canonical_sha256(value: Any) -> str:

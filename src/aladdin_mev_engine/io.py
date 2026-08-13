@@ -15,6 +15,10 @@ class StableReadError(RuntimeError):
 def read_stable_json(path: str | Path, *, max_bytes: int = DEFAULT_MAX_JSON_BYTES) -> Any:
     if isinstance(max_bytes, bool) or not isinstance(max_bytes, int) or max_bytes < 0:
         raise StableReadError("max_bytes must be a non-negative integer")
+    if max_bytes > DEFAULT_MAX_JSON_BYTES:
+        raise StableReadError(
+            f"max_bytes exceeds the governed maximum of {DEFAULT_MAX_JSON_BYTES}"
+        )
     target = Path(path)
     try:
         before = target.lstat()

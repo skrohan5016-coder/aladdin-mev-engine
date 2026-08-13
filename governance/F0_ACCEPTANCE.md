@@ -16,10 +16,12 @@
 - No runtime dependency is declared.
 - No network, signing, broadcast, or deployment implementation exists.
 - Workflow token permission is read-only.
-- Workflow actions are pinned to immutable 40-character commit SHAs.
+- Workflow actions are restricted to the governed allowlist and pinned to exact immutable 40-character commit SHAs.
 - Checkout credentials are not persisted.
 - Pull requests validate the immutable source head and GitHub synthetic merge revision as separate jobs.
 - Workflow does not reference repository secrets or `pull_request_target`.
+- Configurable JSON limits cannot exceed governed byte, depth, or item ceilings; canonical output obeys the byte ceiling.
+- Every risk governor starts stopped and transition authority rejects ungoverned event/context types.
 - All JSON schemas parse, reject unknown top-level fields, and carry stable identifiers.
 - Public documentation states shadow-only and non-guaranteed-profit boundaries.
 

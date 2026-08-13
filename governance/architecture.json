@@ -18,7 +18,9 @@
     "strategy-policy",
     "dual-simulation-evidence",
     "repository-policy-gate",
-    "evidence-decision-recomputation"
+    "evidence-decision-recomputation",
+    "governed-json-ceiling-enforcement",
+    "pinned-ci-action-allowlist"
   ],
   "execution_authority": "none",
   "invariants": [
@@ -32,7 +34,13 @@
     "no-trade-when-any-profit-or-risk-gate-fails",
     "evidence-decision-is-recomputed-from-bound-inputs",
     "incident-recovery-cannot-bypass-closure-via-stop",
-    "risk-reservations-release-by-exact-identity-only"
+    "risk-reservations-release-by-exact-identity-only",
+    "risk-governor-always-starts-stopped",
+    "transition-authority-requires-exact-governed-types",
+    "configured-json-limits-cannot-exceed-governed-ceilings",
+    "canonical-evidence-cannot-exceed-governed-byte-ceiling",
+    "ci-allows-only-approved-immutable-actions",
+    "ci-validates-source-head-and-merge-revision-separately"
   ],
   "milestone": "F0",
   "network_access": "none",

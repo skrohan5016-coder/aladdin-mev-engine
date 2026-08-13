@@ -17,5 +17,6 @@ A pull request must state its base commit, head commit, changed-file scope, secu
 - Monetary values use non-negative integers in one explicitly named settlement asset.
 - JSON evidence never uses floating-point numbers.
 - Strategy promotion is always human-gated.
-- Unknown chains, strategies, fields, states, and reason codes fail closed.
+- Unknown chains, strategies, fields, states, reason codes, transition objects, and raised parser ceilings fail closed.
+- Risk governors always start stopped; no constructor or restore shortcut may create an active mode.
 - CI actions are pinned to full commit SHAs and run with read-only repository permissions.

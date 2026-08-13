@@ -19,4 +19,4 @@ An AI ranking component may analyze evidence but must never possess keys, sign t
 
 ## CI
 
-CI validates code and evidence contracts. CI must never become a production bot host, a signer, a deployment authority, or a holder of mainnet credentials.
+CI validates code and evidence contracts. Only the governed immutable checkout and Python-setup actions are allowed; token permissions remain read-only, and workflow commands may not publish or initiate arbitrary network traffic. CI must never become a production bot host, a signer, a deployment authority, or a holder of mainnet credentials.

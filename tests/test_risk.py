@@ -14,6 +14,19 @@ from aladdin_mev_engine.risk import (
 
 
 class RiskGovernorTests(unittest.TestCase):
+    @staticmethod
+    def bootstrap(governor: RiskGovernor) -> None:
+        governor.apply(
+            GovernorEvent.BOOTSTRAP_TO_SHADOW,
+            TransitionContext(human_approved=True, acceptance_evidence_valid=True),
+        )
+
+    def test_governor_can_only_start_stopped(self) -> None:
+        governor = RiskGovernor()
+        self.assertEqual(governor.mode, OperatingMode.STOPPED)
+        with self.assertRaises(TypeError):
+            RiskGovernor(OperatingMode.LIVE)
+
     def test_transition_context_rejects_truthy_non_booleans(self) -> None:
         with self.assertRaises(ValueError):
             TransitionContext(human_approved=1)
@@ -35,12 +48,29 @@ class RiskGovernorTests(unittest.TestCase):
             )
 
     def test_critical_event_halts_immediately(self) -> None:
-        governor = RiskGovernor(OperatingMode.LIVE)
+        governor = RiskGovernor()
+        self.bootstrap(governor)
         governor.apply(GovernorEvent.INVARIANT_BREACH, TransitionContext())
         self.assertEqual(governor.mode, OperatingMode.HALTED)
 
+    def test_untyped_event_or_spoofed_context_is_rejected(self) -> None:
+        governor = RiskGovernor()
+
+        class SpoofedContext:
+            human_approved = True
+            acceptance_evidence_valid = True
+            incident_closed = True
+
+        with self.assertRaisesRegex(TransitionRejected, "GovernorEvent"):
+            governor.apply("bootstrap-to-shadow", TransitionContext())
+        with self.assertRaisesRegex(TransitionRejected, "exact TransitionContext"):
+            governor.apply(GovernorEvent.BOOTSTRAP_TO_SHADOW, SpoofedContext())
+        self.assertEqual(governor.mode, OperatingMode.STOPPED)
+
     def test_recovery_requires_closed_incident(self) -> None:
-        governor = RiskGovernor(OperatingMode.HALTED)
+        governor = RiskGovernor()
+        self.bootstrap(governor)
+        governor.apply(GovernorEvent.INVARIANT_BREACH, TransitionContext())
         context = TransitionContext(human_approved=True, acceptance_evidence_valid=True)
         with self.assertRaises(TransitionRejected):
             governor.apply(GovernorEvent.RECOVER_TO_SHADOW, context)
@@ -55,7 +85,9 @@ class RiskGovernorTests(unittest.TestCase):
         self.assertEqual(recovered, OperatingMode.SHADOW)
 
     def test_stop_cannot_bypass_incident_closure(self) -> None:
-        governor = RiskGovernor(OperatingMode.HALTED)
+        governor = RiskGovernor()
+        self.bootstrap(governor)
+        governor.apply(GovernorEvent.INVARIANT_BREACH, TransitionContext())
         with self.assertRaisesRegex(TransitionRejected, "closed incident"):
             governor.apply(
                 GovernorEvent.STOP,
@@ -113,9 +145,22 @@ class RiskLedgerTests(unittest.TestCase):
         decision = self.ledger.authorize(execution_cost=101, notional=1)
         self.assertIn("daily-loss-limit", decision.reasons)
 
-    def test_realized_profit_is_read_only(self) -> None:
+    def test_realized_profit_and_limits_are_read_only(self) -> None:
         with self.assertRaises(AttributeError):
             self.ledger.realized_net_profit = -900
+        with self.assertRaises(AttributeError):
+            self.ledger.limits = self.ledger.limits
+
+    def test_limits_require_exact_governed_type(self) -> None:
+        class SpoofedLimits:
+            maximum_daily_loss = 10**30
+            maximum_single_execution_cost = 10**30
+            maximum_pending_execution_cost = 10**30
+            maximum_concurrent_candidates = 10**30
+            maximum_notional = 10**30
+
+        with self.assertRaisesRegex(ValueError, "exact RiskLimits"):
+            RiskLedger(SpoofedLimits())
 
 
 if __name__ == "__main__":

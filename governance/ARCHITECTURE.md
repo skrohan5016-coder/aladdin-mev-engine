@@ -31,13 +31,13 @@ No executor in F0
 ## Components
 
 1. **Domain authority** — closed enums for chains, strategies, health, and operating modes.
-2. **Canonical JSON authority** — strict UTF-8, duplicate-key rejection, no floats, bounded depth/items/bytes, deterministic key ordering, SHA-256 identity.
+2. **Canonical JSON authority** — strict UTF-8, duplicate-key rejection, no floats, governed depth/item/byte ceilings that callers cannot raise, deterministic key ordering, SHA-256 identity.
 3. **Profit firewall** — all values are exact integers in one declared settlement asset; every modeled cost and reserve is deducted before approval.
-4. **Risk governor** — promotion requires human approval plus acceptance evidence; critical events halt immediately; neither recovery nor stop-and-restart may bypass closed incident evidence.
+4. **Risk governor** — every instance starts in `STOPPED`; promotion requires exact governed event/context types, human approval, and acceptance evidence; critical events halt immediately; neither recovery nor stop-and-restart may bypass closed incident evidence.
 5. **Strategy policy** — allowlisted strategies are shadow-only in F0; harmful and unknown strategies fail closed.
 6. **Evidence authority** — every decision is recomputed from the bound costs, policy, state age, chain health, risk budget, and successful independent simulations; callers cannot inject an approval.
 7. **Reservation authority** — pending execution-cost budgets are bound to unique reservation identities and can only be released by settling that exact identity.
-8. **Repository policy gate** — rejects workflow secrets, unpinned actions, write permissions, signing/network dependencies, suspicious credential material, invalid schemas, and architecture-lock drift.
+8. **Repository policy gate** — rejects workflow secrets, non-allowlisted or unpinned actions, write permissions, network/publication commands, signing/network dependencies, suspicious credential material, invalid schemas, and architecture-lock drift. Pull requests test their immutable source head and GitHub merge revision independently.
 
 ## Future implementation boundary
 

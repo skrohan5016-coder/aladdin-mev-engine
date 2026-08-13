@@ -36,14 +36,20 @@ class TransitionContext:
 
 
 class RiskGovernor:
-    def __init__(self, mode: OperatingMode = OperatingMode.STOPPED) -> None:
-        self._mode = mode
+    __slots__ = ("_mode",)
+
+    def __init__(self) -> None:
+        self._mode = OperatingMode.STOPPED
 
     @property
     def mode(self) -> OperatingMode:
         return self._mode
 
     def apply(self, event: GovernorEvent, context: TransitionContext) -> OperatingMode:
+        if type(event) is not GovernorEvent:
+            raise TransitionRejected("event must be a governed GovernorEvent")
+        if type(context) is not TransitionContext:
+            raise TransitionRejected("context must be an exact TransitionContext")
         critical = {
             GovernorEvent.INVARIANT_BREACH,
             GovernorEvent.SIGNER_ANOMALY,
@@ -129,10 +135,18 @@ class RiskAuthorization:
 
 
 class RiskLedger:
+    __slots__ = ("_limits", "_realized_net_profit", "_reservations")
+
     def __init__(self, limits: RiskLimits) -> None:
-        self.limits = limits
+        if type(limits) is not RiskLimits:
+            raise ValueError("limits must be an exact RiskLimits value")
+        self._limits = limits
         self._realized_net_profit = 0
         self._reservations: dict[str, int] = {}
+
+    @property
+    def limits(self) -> RiskLimits:
+        return self._limits
 
     @property
     def realized_net_profit(self) -> int:

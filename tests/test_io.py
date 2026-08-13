@@ -4,6 +4,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
+from aladdin_mev_engine.canonical import DEFAULT_MAX_JSON_BYTES
 from aladdin_mev_engine.io import StableReadError, read_stable_json
 
 
@@ -37,6 +38,10 @@ class StableReadTests(unittest.TestCase):
     def test_invalid_byte_limit_is_rejected_before_read(self) -> None:
         with self.assertRaisesRegex(StableReadError, "max_bytes"):
             read_stable_json("missing.json", max_bytes=True)
+
+    def test_byte_limit_cannot_exceed_governed_ceiling(self) -> None:
+        with self.assertRaisesRegex(StableReadError, "governed maximum"):
+            read_stable_json("missing.json", max_bytes=DEFAULT_MAX_JSON_BYTES + 1)
 
 
 if __name__ == "__main__":

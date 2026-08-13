@@ -8,9 +8,20 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 
-ACTION_REF = re.compile(r"^\s*-?\s*uses:\s*[^@\s]+@([0-9a-fA-F]{40})\s*(?:#.*)?$")
-ANY_USES = re.compile(r"^\s*-?\s*uses:\s*[^@\s]+@([^\s#]+)")
+PINNED_ACTIONS = {
+    "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+    "actions/setup-python": "5fda3b95a4ea91299a34e894583c3862153e4b97",
+}
+ACTION_REF = re.compile(
+    r"^\s*-?\s*uses:\s*([^@\s]+)@([0-9a-fA-F]{40})\s*(?:#.*)?$"
+)
+ANY_USES = re.compile(r"^\s*-?\s*uses:\s*([^@\s]+)@([^\s#]+)")
 SECRET_PATTERN = re.compile(r"\$\{\{\s*secrets\.", re.IGNORECASE)
+WRITE_PERMISSION = re.compile(r"^\s+[A-Za-z][A-Za-z0-9_-]*:\s*write\s*$", re.MULTILINE)
+FORBIDDEN_WORKFLOW_COMMAND = re.compile(
+    r"\b(?:curl|wget|netcat|socat|ssh|scp|rsync)\b|\bgit\s+(?:push|fetch|pull|clone)\b",
+    re.IGNORECASE,
+)
 PRIVATE_MATERIAL = re.compile(
     r"-----BEGIN (?:RSA |EC |OPENSSH |PGP )?PRIVATE KEY-----|\b(?:mnemonic|seed[_ -]?phrase)\s*[:=]",
     re.IGNORECASE,
@@ -30,18 +41,18 @@ def fail(errors: list[str], message: str) -> None:
     errors.append(message)
 
 
-def check_workflow(errors: list[str]) -> None:
-    workflow = ROOT / ".github" / "workflows" / "ci.yml"
-    if not workflow.is_file():
-        fail(errors, "missing .github/workflows/ci.yml")
-        return
-    text = workflow.read_text(encoding="utf-8")
+def workflow_policy_errors(text: str) -> list[str]:
+    errors: list[str] = []
     if "pull_request_target:" in text:
         fail(errors, "pull_request_target is forbidden")
     if SECRET_PATTERN.search(text):
         fail(errors, "workflow secret references are forbidden in F0")
+    if len(re.findall(r"^permissions:\s*$", text, flags=re.MULTILINE)) != 1:
+        fail(errors, "workflow must have exactly one top-level permissions block")
     if "permissions:\n  contents: read" not in text:
         fail(errors, "workflow permissions must be contents: read")
+    if "write-all" in text or WRITE_PERMISSION.search(text):
+        fail(errors, "workflow write permissions are forbidden")
     if text.count("persist-credentials: false") != 2:
         fail(errors, "both governed checkout paths must disable persisted credentials")
     required_workflow_contracts = {
@@ -57,12 +68,40 @@ def check_workflow(errors: list[str]) -> None:
     for contract, message in required_workflow_contracts.items():
         if contract not in text:
             fail(errors, message)
-    if text.count("uses: actions/checkout@") != 2:
-        fail(errors, "workflow must contain exactly two governed checkout steps")
+
+    action_counts = {action: 0 for action in PINNED_ACTIONS}
     for line_number, line in enumerate(text.splitlines(), start=1):
         match = ANY_USES.match(line)
-        if match and ACTION_REF.match(line) is None:
+        if match is None:
+            continue
+        immutable = ACTION_REF.match(line)
+        if immutable is None:
             fail(errors, f"workflow action is not pinned to a full SHA at line {line_number}")
+            continue
+        action, revision = immutable.groups()
+        expected_revision = PINNED_ACTIONS.get(action)
+        if expected_revision is None:
+            fail(errors, f"workflow action is not allowlisted at line {line_number}: {action}")
+            continue
+        if revision.lower() != expected_revision:
+            fail(errors, f"workflow action pin drift at line {line_number}: {action}")
+            continue
+        action_counts[action] += 1
+    for action, count in action_counts.items():
+        if count != 2:
+            fail(errors, f"workflow must use {action} exactly twice")
+
+    if FORBIDDEN_WORKFLOW_COMMAND.search(text):
+        fail(errors, "workflow contains a forbidden network or publication command")
+    return errors
+
+
+def check_workflow(errors: list[str]) -> None:
+    workflow = ROOT / ".github" / "workflows" / "ci.yml"
+    if not workflow.is_file():
+        fail(errors, "missing .github/workflows/ci.yml")
+        return
+    errors.extend(workflow_policy_errors(workflow.read_text(encoding="utf-8")))
 
 
 def check_project_metadata(errors: list[str]) -> None:

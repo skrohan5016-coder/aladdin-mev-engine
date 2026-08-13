@@ -2,7 +2,15 @@ from __future__ import annotations
 
 import unittest
 
-from aladdin_mev_engine.canonical import CanonicalJsonError, canonical_json_bytes, canonical_sha256, strict_json_loads
+from aladdin_mev_engine.canonical import (
+    DEFAULT_MAX_DEPTH,
+    DEFAULT_MAX_ITEMS,
+    DEFAULT_MAX_JSON_BYTES,
+    CanonicalJsonError,
+    canonical_json_bytes,
+    canonical_sha256,
+    strict_json_loads,
+)
 
 
 class CanonicalJsonTests(unittest.TestCase):
@@ -34,6 +42,20 @@ class CanonicalJsonTests(unittest.TestCase):
         for name, value in (("max_bytes", -1), ("max_depth", True), ("max_items", -1)):
             with self.subTest(name=name), self.assertRaisesRegex(CanonicalJsonError, name):
                 strict_json_loads("0", **{name: value})
+
+    def test_configured_limits_cannot_exceed_governed_ceilings(self) -> None:
+        cases = (
+            ("max_bytes", DEFAULT_MAX_JSON_BYTES + 1),
+            ("max_depth", DEFAULT_MAX_DEPTH + 1),
+            ("max_items", DEFAULT_MAX_ITEMS + 1),
+        )
+        for name, value in cases:
+            with self.subTest(name=name), self.assertRaisesRegex(CanonicalJsonError, "governed maximum"):
+                strict_json_loads("0", **{name: value})
+
+    def test_canonical_output_is_also_byte_bounded(self) -> None:
+        with self.assertRaisesRegex(CanonicalJsonError, "canonical JSON byte limit"):
+            canonical_json_bytes("x" * DEFAULT_MAX_JSON_BYTES)
 
     def test_parser_integer_limit_is_normalized(self) -> None:
         with self.assertRaisesRegex(CanonicalJsonError, "parser safety limits"):
