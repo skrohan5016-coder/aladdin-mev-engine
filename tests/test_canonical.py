@@ -30,6 +30,21 @@ class CanonicalJsonTests(unittest.TestCase):
         with self.assertRaisesRegex(CanonicalJsonError, "valid UTF-8"):
             strict_json_loads(b"\xff")
 
+    def test_invalid_limits_fail_closed(self) -> None:
+        for name, value in (("max_bytes", -1), ("max_depth", True), ("max_items", -1)):
+            with self.subTest(name=name), self.assertRaisesRegex(CanonicalJsonError, name):
+                strict_json_loads("0", **{name: value})
+
+    def test_parser_integer_limit_is_normalized(self) -> None:
+        with self.assertRaisesRegex(CanonicalJsonError, "parser safety limits"):
+            strict_json_loads("9" * 5_000)
+
+    def test_unpaired_surrogate_cannot_enter_canonical_evidence(self) -> None:
+        with self.assertRaises(CanonicalJsonError):
+            strict_json_loads('"\ud800"')
+        with self.assertRaises(CanonicalJsonError):
+            canonical_json_bytes("\ud800")
+
 
 if __name__ == "__main__":
     unittest.main()

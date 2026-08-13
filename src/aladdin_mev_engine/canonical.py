@@ -14,6 +14,11 @@ class CanonicalJsonError(ValueError):
     """Raised when input cannot participate in canonical evidence."""
 
 
+def _require_non_negative_limit(name: str, value: int) -> None:
+    if isinstance(value, bool) or not isinstance(value, int) or value < 0:
+        raise CanonicalJsonError(f"{name} must be a non-negative integer")
+
+
 def _reject_float(value: str) -> NoReturn:
     raise CanonicalJsonError(f"floating-point numbers are forbidden: {value}")
 
@@ -83,6 +88,9 @@ def strict_json_loads(
     max_depth: int = DEFAULT_MAX_DEPTH,
     max_items: int = DEFAULT_MAX_ITEMS,
 ) -> Any:
+    _require_non_negative_limit("max_bytes", max_bytes)
+    _require_non_negative_limit("max_depth", max_depth)
+    _require_non_negative_limit("max_items", max_items)
     if isinstance(payload, bytes):
         if len(payload) > max_bytes:
             raise CanonicalJsonError("JSON byte limit exceeded")
@@ -91,7 +99,10 @@ def strict_json_loads(
         except UnicodeDecodeError as error:
             raise CanonicalJsonError("JSON is not valid UTF-8") from error
     elif isinstance(payload, str):
-        encoded = payload.encode("utf-8", errors="strict")
+        try:
+            encoded = payload.encode("utf-8", errors="strict")
+        except UnicodeEncodeError as error:
+            raise CanonicalJsonError("JSON text is not valid Unicode") from error
         if len(encoded) > max_bytes:
             raise CanonicalJsonError("JSON byte limit exceeded")
         text = payload
@@ -108,8 +119,12 @@ def strict_json_loads(
             parse_float=_reject_float,
             parse_constant=_reject_constant,
         )
+    except CanonicalJsonError:
+        raise
     except json.JSONDecodeError as error:
         raise CanonicalJsonError(f"invalid JSON: {error.msg}") from error
+    except (RecursionError, ValueError) as error:
+        raise CanonicalJsonError("JSON value exceeds parser safety limits") from error
 
     _validate_tree(
         value,
@@ -129,13 +144,16 @@ def canonical_json_bytes(value: Any) -> bytes:
         item_counter=[0],
         max_items=DEFAULT_MAX_ITEMS,
     )
-    return json.dumps(
-        value,
-        ensure_ascii=False,
-        allow_nan=False,
-        sort_keys=True,
-        separators=(",", ":"),
-    ).encode("utf-8")
+    try:
+        return json.dumps(
+            value,
+            ensure_ascii=False,
+            allow_nan=False,
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    except (RecursionError, TypeError, ValueError, UnicodeEncodeError) as error:
+        raise CanonicalJsonError("value cannot be encoded as canonical JSON") from error
 
 
 def canonical_sha256(value: Any) -> str:

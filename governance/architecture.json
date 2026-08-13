@@ -14,6 +14,7 @@
     "exact-integer-profit-firewall",
     "human-gated-risk-governor",
     "risk-budget-ledger",
+    "identity-bound-risk-reservations",
     "strategy-policy",
     "dual-simulation-evidence",
     "repository-policy-gate",
@@ -27,9 +28,11 @@
     "no-floating-point-money",
     "no-automatic-mode-promotion",
     "unknown-input-fails-closed",
-    "approved-evidence-requires-independent-simulation-agreement",
+    "approved-evidence-requires-successful-independent-simulation-agreement",
     "no-trade-when-any-profit-or-risk-gate-fails",
-    "evidence-decision-is-recomputed-from-bound-inputs"
+    "evidence-decision-is-recomputed-from-bound-inputs",
+    "incident-recovery-cannot-bypass-closure-via-stop",
+    "risk-reservations-release-by-exact-identity-only"
   ],
   "milestone": "F0",
   "network_access": "none",

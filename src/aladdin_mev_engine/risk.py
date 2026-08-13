@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from enum import StrEnum
 
-from .domain import OperatingMode, require_non_negative_int
+from .domain import OperatingMode, require_bounded_text, require_non_negative_int
 
 
 class GovernorEvent(StrEnum):
@@ -61,6 +61,12 @@ class RiskGovernor:
         if event is GovernorEvent.STOP:
             if not context.human_approved:
                 raise TransitionRejected("stopping a governed mode requires human approval")
+            if self._mode in {OperatingMode.DEGRADED, OperatingMode.HALTED}:
+                self._require_human_evidence(context)
+                self._require(
+                    context.incident_closed,
+                    "stopping after an incident requires closed incident evidence",
+                )
             self._mode = OperatingMode.STOPPED
             return self._mode
         if event is GovernorEvent.BOOTSTRAP_TO_SHADOW:
@@ -125,9 +131,20 @@ class RiskAuthorization:
 class RiskLedger:
     def __init__(self, limits: RiskLimits) -> None:
         self.limits = limits
-        self.realized_net_profit = 0
-        self.reserved_execution_cost = 0
-        self.concurrent_candidates = 0
+        self._realized_net_profit = 0
+        self._reservations: dict[str, int] = {}
+
+    @property
+    def realized_net_profit(self) -> int:
+        return self._realized_net_profit
+
+    @property
+    def reserved_execution_cost(self) -> int:
+        return sum(self._reservations.values())
+
+    @property
+    def concurrent_candidates(self) -> int:
+        return len(self._reservations)
 
     @property
     def realized_loss(self) -> int:
@@ -149,21 +166,20 @@ class RiskLedger:
             reasons.append("notional-limit")
         return RiskAuthorization(not reasons, tuple(reasons))
 
-    def reserve(self, *, execution_cost: int, notional: int) -> None:
+    def reserve(self, *, reservation_id: str, execution_cost: int, notional: int) -> None:
+        require_bounded_text("reservation_id", reservation_id, maximum=128)
+        if reservation_id in self._reservations:
+            raise ValueError("reservation_id already exists")
         decision = self.authorize(execution_cost=execution_cost, notional=notional)
         if not decision.allowed:
             raise RuntimeError("risk reservation rejected: " + ", ".join(decision.reasons))
-        self.reserved_execution_cost += execution_cost
-        self.concurrent_candidates += 1
+        self._reservations[reservation_id] = execution_cost
 
-    def settle(self, *, reserved_execution_cost: int, realized_net_profit: int) -> None:
-        require_non_negative_int("reserved_execution_cost", reserved_execution_cost)
+    def settle(self, *, reservation_id: str, realized_net_profit: int) -> None:
+        require_bounded_text("reservation_id", reservation_id, maximum=128)
         if isinstance(realized_net_profit, bool) or not isinstance(realized_net_profit, int):
             raise ValueError("realized_net_profit must be an integer")
-        if reserved_execution_cost > self.reserved_execution_cost:
-            raise ValueError("cannot settle more cost than is reserved")
-        if self.concurrent_candidates <= 0:
-            raise ValueError("no concurrent candidate is available to settle")
-        self.reserved_execution_cost -= reserved_execution_cost
-        self.concurrent_candidates -= 1
-        self.realized_net_profit += realized_net_profit
+        if reservation_id not in self._reservations:
+            raise ValueError("unknown reservation_id")
+        del self._reservations[reservation_id]
+        self._realized_net_profit += realized_net_profit

@@ -20,6 +20,16 @@ class EvidenceTests(unittest.TestCase):
             post_state_digest=DIGEST_A,
         )
 
+    def failed_simulation(self, engine_id: str) -> SimulationResult:
+        return SimulationResult(
+            engine_id=engine_id,
+            success=False,
+            gas_units=21_000,
+            output_amount=0,
+            post_state_digest=DIGEST_A,
+            error_code="reverted",
+        )
+
     def costs(self) -> CostBreakdown:
         return CostBreakdown(
             gross_profit=1_000,
@@ -82,6 +92,18 @@ class EvidenceTests(unittest.TestCase):
         record = self.record((self.simulation("local"), self.simulation("local")))
         self.assertFalse(record.decision.approved)
         self.assertIn(ProfitReason.SIMULATION_DISAGREEMENT, record.decision.reasons)
+
+    def test_matching_failed_simulations_can_never_approve(self) -> None:
+        failures = (self.failed_simulation("local"), self.failed_simulation("remote"))
+        self.assertFalse(dual_simulations_agree(failures))
+        record = self.record(failures)
+        self.assertFalse(record.decision.approved)
+        self.assertIn(ProfitReason.SIMULATION_DISAGREEMENT, record.decision.reasons)
+
+    def test_simulation_count_matches_schema_ceiling(self) -> None:
+        simulations = tuple(self.simulation(f"engine-{index}") for index in range(9))
+        with self.assertRaisesRegex(ValueError, "at most eight"):
+            self.record(simulations)
 
     def test_creation_time_before_observation_fails(self) -> None:
         with self.assertRaisesRegex(ValueError, "cannot precede"):

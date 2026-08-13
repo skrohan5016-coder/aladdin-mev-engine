@@ -55,8 +55,10 @@ def dual_simulations_agree(simulations: tuple[SimulationResult, ...]) -> bool:
     if len(engine_ids) != len(simulations):
         return False
     reference = simulations[0]
+    if not reference.success:
+        return False
     return all(
-        result.success == reference.success
+        result.success
         and result.gas_units == reference.gas_units
         and result.output_amount == reference.output_amount
         and result.post_state_digest == reference.post_state_digest
@@ -91,6 +93,8 @@ class EvidenceRecord:
             raise ValueError("evidence creation time cannot precede state observation")
         if len(self.simulations) < 2:
             raise ValueError("at least two independent simulations are required")
+        if len(self.simulations) > 8:
+            raise ValueError("at most eight independent simulations are supported")
 
     @property
     def state_age_ms(self) -> int:

@@ -34,6 +34,10 @@ class StableReadTests(unittest.TestCase):
             with self.assertRaisesRegex(StableReadError, "byte limit"):
                 read_stable_json(path, max_bytes=5)
 
+    def test_invalid_byte_limit_is_rejected_before_read(self) -> None:
+        with self.assertRaisesRegex(StableReadError, "max_bytes"):
+            read_stable_json("missing.json", max_bytes=True)
+
 
 if __name__ == "__main__":
     unittest.main()

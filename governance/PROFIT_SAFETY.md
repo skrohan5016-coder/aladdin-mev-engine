@@ -26,7 +26,7 @@ conservative_net_profit = gross_profit
 A candidate is approved only when all of the following hold:
 
 - gross profit is positive;
-- independent simulations agree exactly;
+- two or more independently identified simulations all succeed and agree exactly;
 - chain health is healthy;
 - state age is at or below policy;
 - risk budget is available;
