@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aladdin.invalid/mev/liquidation-mechanism-v1.schema.json",
+  "title": "Aladdin MEV Liquidation Mechanism v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "protocol",
+    "mechanism_version",
+    "metric",
+    "comparator",
+    "fixed_denominator",
+    "source_repository",
+    "source_commit",
+    "source_path",
+    "source_reference",
+    "docs_reference",
+    "deployment_authority",
+    "network_authority",
+    "execution_authority"
+  ],
+  "properties": {
+    "schema": {
+      "const": "aladdin-mev-liquidation-mechanism/v1"
+    },
+    "protocol": {
+      "enum": [
+        "aave-v3",
+        "morpho-blue"
+      ]
+    },
+    "mechanism_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "metric": {
+      "enum": [
+        "health-factor-wad",
+        "borrowed-assets-vs-max-borrow-assets"
+      ]
+    },
+    "comparator": {
+      "enum": [
+        "strictly-below",
+        "strictly-above"
+      ]
+    },
+    "fixed_denominator": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/uint"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "source_repository": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+      "maxLength": 128
+    },
+    "source_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "source_path": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "source_reference": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 1024
+    },
+    "docs_reference": {
+      "type": "string",
+      "format": "uri",
+      "maxLength": 1024
+    },
+    "deployment_authority": {
+      "const": "none-recorded-input-only"
+    },
+    "network_authority": {
+      "const": "none"
+    },
+    "execution_authority": {
+      "const": "none"
+    }
+  },
+  "$defs": {
+    "uint": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "maxLength": 78
+    }
+  }
+}

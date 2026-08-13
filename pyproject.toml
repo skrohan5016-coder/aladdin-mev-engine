@@ -1,7 +1,7 @@
 [project]
 name = "aladdin-mev-engine"
-version = "0.2.0"
-description = "Governed safety, observation, and replay foundation for the Aladdin MEV Engine"
+version = "0.3.0"
+description = "Governed offline observation, liquidation discovery, and profit-safety foundation for the Aladdin MEV Engine"
 requires-python = ">=3.13"
 dependencies = []
 
@@ -9,6 +9,7 @@ dependencies = []
 architecture_manifest = "governance/architecture.json"
 architecture_lock = "governance/architecture.lock.json"
 source_contracts = "governance/source-contracts.json"
+liquidation_mechanisms = "governance/liquidation-mechanisms.json"
 execution_authority = "none"
 network_access = "none"
 signing_authority = "none"

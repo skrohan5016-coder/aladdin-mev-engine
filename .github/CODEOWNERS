@@ -4,3 +4,5 @@
 /schemas/ @skrohan5016-coder
 /src/aladdin_mev_engine/profit.py @skrohan5016-coder
 /src/aladdin_mev_engine/risk.py @skrohan5016-coder
+/src/aladdin_mev_engine/liquidation.py @skrohan5016-coder
+/src/aladdin_mev_engine/liquidation_contracts.py @skrohan5016-coder

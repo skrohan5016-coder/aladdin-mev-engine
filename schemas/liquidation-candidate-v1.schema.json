@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aladdin.invalid/mev/liquidation-candidate-v1.schema.json",
+  "title": "Aladdin MEV Liquidation Candidate v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "opportunity_id",
+    "chain",
+    "strategy",
+    "protocol",
+    "mechanism_contract_sha256",
+    "deployment_address",
+    "deployment_evidence_sha256",
+    "market_id",
+    "borrower",
+    "debt_asset",
+    "collateral_asset",
+    "state_reference",
+    "observation_digests",
+    "eligibility_metric",
+    "metric_numerator",
+    "metric_denominator",
+    "repay_amount",
+    "seize_amount",
+    "valuation_unit",
+    "repay_value",
+    "seize_value",
+    "gross_profit",
+    "capital_at_risk",
+    "valuation_evidence_sha256",
+    "snapshot_sha256",
+    "execution_authority"
+  ],
+  "properties": {
+    "protocol": {
+      "enum": [
+        "aave-v3",
+        "morpho-blue"
+      ]
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base",
+        "arbitrum",
+        "bnb-smart-chain"
+      ]
+    },
+    "deployment_address": {
+      "$ref": "#/$defs/evmAddress"
+    },
+    "deployment_evidence_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "market_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 256
+    },
+    "borrower": {
+      "$ref": "#/$defs/evmAddress"
+    },
+    "debt_asset": {
+      "$ref": "#/$defs/evmAddress"
+    },
+    "collateral_asset": {
+      "$ref": "#/$defs/evmAddress"
+    },
+    "state_reference": {
+      "$ref": "#/$defs/stateReference"
+    },
+    "observation_digests": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 64,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "#/$defs/sha256"
+      }
+    },
+    "eligibility_metric": {
+      "enum": [
+        "health-factor-wad",
+        "borrowed-assets-vs-max-borrow-assets"
+      ]
+    },
+    "metric_numerator": {
+      "$ref": "#/$defs/uint"
+    },
+    "metric_denominator": {
+      "$ref": "#/$defs/positiveUint"
+    },
+    "repay_amount": {
+      "$ref": "#/$defs/positiveUint"
+    },
+    "seize_amount": {
+      "$ref": "#/$defs/positiveUint"
+    },
+    "valuation_unit": {
+      "type": "string",
+      "pattern": "^[a-z0-9](?:[a-z0-9._:-]{0,126}[a-z0-9])?$"
+    },
+    "repay_value": {
+      "$ref": "#/$defs/positiveUint"
+    },
+    "seize_value": {
+      "$ref": "#/$defs/positiveUint"
+    },
+    "valuation_evidence_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "mechanism_contract_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "schema": {
+      "const": "aladdin-mev-liquidation-candidate/v1"
+    },
+    "opportunity_id": {
+      "type": "string",
+      "pattern": "^liq-[0-9a-f]{64}$"
+    },
+    "strategy": {
+      "const": "liquidation"
+    },
+    "gross_profit": {
+      "$ref": "#/$defs/positiveUint"
+    },
+    "capital_at_risk": {
+      "$ref": "#/$defs/positiveUint"
+    },
+    "snapshot_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "execution_authority": {
+      "const": "none"
+    }
+  },
+  "$defs": {
+    "uint": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "maxLength": 78
+    },
+    "positiveUint": {
+      "type": "string",
+      "pattern": "^[1-9][0-9]*$",
+      "maxLength": 78
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "evmAddress": {
+      "type": "string",
+      "pattern": "^0x[0-9a-f]{40}$"
+    },
+    "stateReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "chain",
+        "sequence_number",
+        "sequence_hash",
+        "observed_at_unix_ms",
+        "state_digest"
+      ],
+      "properties": {
+        "chain": {
+          "enum": [
+            "ethereum",
+            "base",
+            "arbitrum",
+            "bnb-smart-chain"
+          ]
+        },
+        "sequence_number": {
+          "$ref": "#/$defs/uint"
+        },
+        "sequence_hash": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 130
+        },
+        "observed_at_unix_ms": {
+          "$ref": "#/$defs/uint"
+        },
+        "state_digest": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    }
+  }
+}

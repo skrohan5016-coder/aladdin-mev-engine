@@ -1,87 +1,64 @@
-# F1 Governed Observation and Replay Architecture
+# Aladdin MEV Engine Architecture
 
-## Mission
+## Current milestone
 
-F1 extends the accepted F0 policy, profit, risk, canonicalization, and CI authorities with a deterministic offline authority for recorded multi-chain observations. It does not acquire data from a network and cannot sign, submit, or execute a transaction.
+F2 is a stacked, offline, recorded-input liquidation opportunity discovery authority. It inherits the complete F0 profit/risk foundation and F1 observation ledger, then adds source-pinned liquidation mechanism contracts for Aave V3 and Morpho Blue.
 
-## Trust boundaries
+F2 does not contain a live RPC client, deployment registry, signer, wallet, bundle submitter, transaction broadcaster, contract deployer, or execution loop. A discovery candidate is evidence for later simulation and profitability analysis; it is never execution approval.
 
-```text
-Untrusted recorded upstream JSON
-        │
-        ▼
-Governed source contract ── exact chain + event/finality/visibility triple + limits
-        │
-        ▼
-Canonical observation envelope ── detached payload + sequence + time + digests
-        │
-        ▼
-Per-segment record hash chain ── ordinal + previous digest + envelope digest
-        │
-        ▼
-Cross-segment checkpoint chain ── previous segment + starting/ending source state
-        │
-        ▼
-Sealed immutable file ── no-follow + exclusive publish + read-only + single-link
-        │
-        ▼
-Deterministic replay and EVM head transitions
-        │
-        ▼
-F0 profit/risk/simulation gates
-        │
-        ▼
-No executor in F1
-```
+## Authority layers
 
-## Components
+1. **F1 observation authority** accepts only governed recorded source envelopes and deterministic replay segments.
+2. **F2 mechanism authority** pins each supported liquidation threshold to an exact upstream source commit.
+3. **F2 snapshot authority** binds protocol, deployment evidence, borrower, assets, state reference, source observation digests, exact eligibility metric, action quote, and same-unit valuation evidence.
+4. **F2 discovery authority** recomputes liquidatability and emits a candidate only when the threshold is crossed and the quoted seize value strictly exceeds the quoted repay value.
+5. **F0 profit authority** still subtracts gas, L1 data fee, flash-loan fee, inclusion bid, slippage, stale-state, failure-risk, infrastructure, and hedge reserves.
+6. **F0 evidence and risk authorities** still require simulation agreement, healthy chain state, freshness, available risk budget, and human-gated operating mode.
 
-1. **Inherited F0 authority** — strict canonical JSON, exact-integer profit accounting, dual-simulation evidence, strategy policy, risk governor, identity-bound reservations, and repository policy.
-2. **Source-contract registry** — nine digest-locked recorded-input contracts for Ethereum, Base, Arbitrum, and BNB Smart Chain.
-3. **Exact event-shape authority** — each source permits explicit `(kind, finality, visibility)` triples; independent allowlists cannot combine into unintended permissions.
-4. **Observation envelopes** — source identity, chain, source kind, unsigned-64-bit sequence/time, payload bytes, payload digest, and source-contract digest are immutable and canonical.
-5. **Control evidence** — source gaps and heartbeats are closed metadata records; unavailable upstream content is never synthesized.
-6. **Record chain** — every segment is an ordered SHA-256 chain of closed ledger records.
-7. **Segment chain** — each manifest binds the previous segment digest plus complete starting and ending source checkpoints, preserving continuity across files.
-8. **Stable storage** — Linux no-follow path traversal, exclusive temporary creation, data/directory `fsync`, no-overwrite publication, read-only mode, single-link checks, stable pathname identity, and optional external payload-digest verification.
-9. **Deterministic replay** — mutation, reordering, truncation, excessive record lines, wrong parent, missing prefix, source restart, time regression, framing drift, and authority drift fail closed.
-10. **EVM head tracker** — every tracker is bound to one exact source, head kind, finality, and full-visibility stream. Bootstrap, extension, reorg, duplicate, and orphan transitions bind the triggering observation digest and source sequence. Unknown-parent topology is not retained, and rejected inputs are transactional.
-11. **Source/architecture locks** — in-process registries, machine-readable governance, and exact SHA-256 identities must agree.
-12. **Exact-head CI** — the immutable pull-request source head and GitHub synthetic merge revision are validated independently with read-only permissions.
+No lower layer can bypass a later gate.
 
-## Observation scope
+## Source-pinned threshold contracts
 
-F1 governs recorded observations for:
+### Aave V3
 
-- Ethereum JSON-RPC and Flashbots MEV-Share;
-- Base JSON-RPC and Flashblocks;
-- Arbitrum HTTP JSON-RPC, sequencer feed, and Timeboost metadata;
-- BNB Smart Chain JSON-RPC and PBS metadata.
-
-Solana is intentionally absent. A later non-EVM milestone must define its own slot, account-lock, transaction, and Jito-specific contracts.
-
-## Authority limits
-
-The terms `transport`, `JSON-RPC`, `WebSocket`, `SSE`, `sequencer feed`, and `auction` describe the provenance contract of recorded bytes. They do not enable a client. F1 has:
+The pinned Aave V3.7 Origin validation source requires:
 
 ```text
-network_access       = none
-signing_authority    = none
-execution_authority  = none
-observation_authority = recorded-input-only
+healthFactor < 1e18
 ```
 
-A future collector must be isolated behind these schemas and must not redefine finality, visibility, ordering, or source completeness.
+Equality is healthy for liquidation validation. F2 therefore accepts only the fixed WAD denominator and uses a strict-below comparator.
 
-## External capability research anchors
+### Morpho Blue
 
-- Ethereum JSON-RPC: https://ethereum.org/en/developers/apis/json-rpc/
-- Flashbots MEV-Share: https://docs.flashbots.net/flashbots-mev-share/searchers/getting-started
-- Base Flashblocks: https://docs.base.org/base-chain/api-reference/flashblocks-api/flashblocks-api-overview
-- Arbitrum chain information: https://docs.arbitrum.io/for-devs/dev-tools-and-resources/chain-info
-- Arbitrum feed relay: https://docs.arbitrum.io/run-arbitrum-node/run-feed-relay
-- Arbitrum Timeboost: https://docs.arbitrum.io/how-arbitrum-works/timeboost/gentle-introduction
-- BNB Smart Chain JSON-RPC: https://docs.bnbchain.org/bnb-smart-chain/developers/json_rpc/json-rpc-endpoint/
-- BNB builder integration: https://docs.bnbchain.org/bnb-smart-chain/validator/mev/builder-integration/
+The pinned Morpho Blue core source calculates borrowed assets with upward rounding, max borrow with downward rounding, and returns healthy when:
 
-Every live adapter must re-verify current official documentation in its own milestone.
+```text
+maxBorrow >= borrowed
+```
+
+F2 therefore emits a liquidation candidate only when:
+
+```text
+borrowed > maxBorrow
+```
+
+The F2 snapshot receives those already rounded protocol quantities. Reconstructing interest accrual, share conversions, oracle quoting, and market state from raw storage belongs to a later proof-backed state interpreter.
+
+## Candidate economics
+
+`repay_value` and `seize_value` must use one explicit valuation unit and one bound valuation-evidence digest. Gross profit is:
+
+```text
+seize_value - repay_value
+```
+
+A non-positive gross edge cannot become a candidate. A positive gross edge can still be rejected by the inherited F0 profit firewall.
+
+## Deployment boundary
+
+F2 validates canonical deployment addresses and requires a deployment-evidence digest, but it does not claim that an address is an official current deployment. A future governed deployment registry must authenticate chain/address/code identities before any live adapter can exist.
+
+## Stacked parent
+
+F2 is based on exact F1 source head `a16253f6643d9a69e2f92dc79ae1c653e193e964`, tree `348eb916ad320ccaad0127dd97c630bab1f3d641`, architecture `AMEV-F1-ARCH-v1-e0cc085585eb`. F1 remains a Draft PR and must be accepted and landed before F2 can be restacked for final landing.

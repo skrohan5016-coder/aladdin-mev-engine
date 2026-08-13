@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aladdin.invalid/mev/liquidation-discovery-decision-v1.schema.json",
+  "title": "Aladdin MEV Liquidation Discovery Decision v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "snapshot_sha256",
+    "mechanism_contract_sha256",
+    "liquidatable",
+    "positive_gross_edge",
+    "reason",
+    "candidate",
+    "execution_authority"
+  ],
+  "properties": {
+    "schema": {
+      "const": "aladdin-mev-liquidation-discovery-decision/v1"
+    },
+    "snapshot_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "mechanism_contract_sha256": {
+      "$ref": "#/$defs/sha256"
+    },
+    "liquidatable": {
+      "type": "boolean"
+    },
+    "positive_gross_edge": {
+      "type": "boolean"
+    },
+    "reason": {
+      "enum": [
+        "candidate",
+        "not-liquidatable",
+        "non-positive-gross-edge"
+      ]
+    },
+    "candidate": {
+      "oneOf": [
+        {
+          "$ref": "liquidation-candidate-v1.schema.json"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "execution_authority": {
+      "const": "none"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

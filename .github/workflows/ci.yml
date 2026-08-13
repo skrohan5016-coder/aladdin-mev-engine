@@ -20,7 +20,7 @@ env:
 
 jobs:
   validate-head:
-    name: F1 exact-head conformance
+    name: F2 exact-head conformance
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -45,11 +45,13 @@ jobs:
         run: python scripts/verify_architecture_lock.py
       - name: Source contracts identity
         run: python scripts/verify_source_contracts.py
+      - name: Liquidation mechanisms identity
+        run: python scripts/verify_liquidation_mechanisms.py
       - name: Ensure validation is non-mutating
         run: git diff --exit-code
 
   validate-merge:
-    name: F1 merge integration
+    name: F2 merge integration
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -74,5 +76,7 @@ jobs:
         run: python scripts/verify_architecture_lock.py
       - name: Source contracts identity
         run: python scripts/verify_source_contracts.py
+      - name: Liquidation mechanisms identity
+        run: python scripts/verify_liquidation_mechanisms.py
       - name: Ensure validation is non-mutating
         run: git diff --exit-code

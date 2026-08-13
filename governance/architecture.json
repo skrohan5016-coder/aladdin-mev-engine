@@ -1,7 +1,12 @@
 {
-  "accepted_parent_architecture_id": "AMEV-F0-ARCH-v1-5c494565cd12",
-  "accepted_parent_head": "7190ef22f6a99c5044f434f8175c4909ef92763f",
-  "accepted_parent_tree": "8d7eb3c22226a6abdee172f4ce21cc993faa3d66",
+  "schema": "aladdin-mev-architecture/v1",
+  "repository": "skrohan5016-coder/aladdin-mev-engine",
+  "milestone": "F2",
+  "stacked_parent_architecture_id": "AMEV-F1-ARCH-v1-e0cc085585eb",
+  "stacked_parent_head": "a16253f6643d9a69e2f92dc79ae1c653e193e964",
+  "stacked_parent_tree": "348eb916ad320ccaad0127dd97c630bab1f3d641",
+  "stacked_parent_status": "draft-unmerged-ci-green",
+  "status": "shadow-liquidation-discovery",
   "chains": [
     "ethereum",
     "base",
@@ -9,6 +14,42 @@
     "bnb-smart-chain",
     "solana"
   ],
+  "observation_scope": [
+    "ethereum",
+    "base",
+    "arbitrum",
+    "bnb-smart-chain"
+  ],
+  "liquidation_discovery_scope": [
+    "ethereum",
+    "base",
+    "arbitrum",
+    "bnb-smart-chain"
+  ],
+  "execution_authority": "none",
+  "network_access": "none",
+  "signing_authority": "none",
+  "observation_authority": "recorded-input-only",
+  "discovery_authority": "offline-recorded-input-only",
+  "deployment_authority": "none-recorded-input-only",
+  "runtime_dependencies": [],
+  "source_contract_ids": [
+    "arbitrum-json-rpc",
+    "arbitrum-sequencer-feed",
+    "arbitrum-timeboost-auction",
+    "base-flashblocks",
+    "base-json-rpc",
+    "bnb-json-rpc",
+    "bnb-pbs-metadata",
+    "ethereum-json-rpc",
+    "ethereum-mev-share"
+  ],
+  "source_contract_set_sha256": "feaa1bd499bd417927687b36ff26b836589220d60bce72d3fba5885468803a5a",
+  "liquidation_protocol_ids": [
+    "aave-v3",
+    "morpho-blue"
+  ],
+  "liquidation_mechanism_set_sha256": "d86a8c761f17820b4b71aa5d7abba9e5eabf1aabd47a183292734705ed1b708c",
   "components": [
     "strict-canonical-json",
     "stable-bounded-file-reader",
@@ -34,13 +75,19 @@
     "deterministic-segment-replay",
     "exact-stream-reorg-aware-head-tracker",
     "observation-bound-head-transitions",
-    "source-contract-lock"
+    "source-contract-lock",
+    "source-pinned-liquidation-mechanism-registry",
+    "exact-liquidation-threshold-comparators",
+    "provenance-bound-liquidation-snapshot",
+    "deterministic-liquidation-candidate-discovery",
+    "same-unit-gross-edge-authority",
+    "liquidation-mechanism-lock",
+    "candidate-to-profit-firewall-separation"
   ],
-  "execution_authority": "none",
   "invariants": [
-    "no-live-execution-in-f1",
-    "no-network-client-in-f1",
-    "no-signing-or-key-handling-in-f1",
+    "no-live-execution-in-f2",
+    "no-network-client-in-f2",
+    "no-signing-or-key-handling-in-f2",
     "no-floating-point-money",
     "no-automatic-mode-promotion",
     "unknown-input-fails-closed",
@@ -75,20 +122,21 @@
     "head-transitions-bind-the-triggering-observation-digest-and-source-sequence",
     "conflicting-duplicate-block-metadata-fails-closed",
     "head-tracker-rejections-do-not-consume-source-sequence-or-mutate-topology",
-    "solana-observation-remains-unimplemented-and-fails-closed"
+    "solana-observation-remains-unimplemented-and-fails-closed",
+    "liquidation-mechanisms-are-bound-to-exact-upstream-source-commits",
+    "aave-v3-is-liquidatable-only-when-health-factor-wad-is-strictly-below-one-wad",
+    "morpho-blue-is-liquidatable-only-when-rounded-up-borrowed-assets-strictly-exceed-rounded-down-max-borrow-assets",
+    "mechanism-specific-metric-denominators-fail-closed",
+    "snapshot-chain-must-match-its-state-reference-chain",
+    "liquidation-snapshots-require-canonical-nonzero-evm-addresses",
+    "observation-digests-are-nonempty-unique-and-canonically-sorted",
+    "repay-and-seize-values-share-one-explicit-valuation-unit",
+    "candidate-requires-positive-same-unit-gross-edge",
+    "candidate-identity-binds-snapshot-and-mechanism-contract-digests",
+    "candidate-discovery-never-grants-execution-authority",
+    "liquidation-candidate-is-not-profit-simulation-or-risk-approval",
+    "deployment-identities-remain-recorded-input-without-live-registry-authority"
   ],
-  "milestone": "F1",
-  "network_access": "none",
-  "observation_authority": "recorded-input-only",
-  "observation_scope": [
-    "ethereum",
-    "base",
-    "arbitrum",
-    "bnb-smart-chain"
-  ],
-  "repository": "skrohan5016-coder/aladdin-mev-engine",
-  "runtime_dependencies": [],
-  "schema": "aladdin-mev-architecture/v1",
   "schemas": [
     "aladdin-mev-opportunity/v1",
     "aladdin-mev-execution-decision/v1",
@@ -97,22 +145,13 @@
     "aladdin-mev-observation-envelope/v1",
     "aladdin-mev-observation-ledger-record/v1",
     "aladdin-mev-observation-segment-manifest/v1",
-    "aladdin-mev-head-transition/v1"
+    "aladdin-mev-head-transition/v1",
+    "aladdin-mev-liquidation-mechanism/v1",
+    "aladdin-mev-liquidation-mechanism-set/v1",
+    "aladdin-mev-liquidation-snapshot/v1",
+    "aladdin-mev-liquidation-candidate/v1",
+    "aladdin-mev-liquidation-discovery-decision/v1"
   ],
-  "signing_authority": "none",
-  "source_contract_ids": [
-    "arbitrum-json-rpc",
-    "arbitrum-sequencer-feed",
-    "arbitrum-timeboost-auction",
-    "base-flashblocks",
-    "base-json-rpc",
-    "bnb-json-rpc",
-    "bnb-pbs-metadata",
-    "ethereum-json-rpc",
-    "ethereum-mev-share"
-  ],
-  "source_contract_set_sha256": "feaa1bd499bd417927687b36ff26b836589220d60bce72d3fba5885468803a5a",
-  "status": "shadow-observation-foundation",
   "strategy_allowlist": [
     "atomic-dex-arbitrage",
     "consensual-backrun",

@@ -1,0 +1,38 @@
+{
+  "schema": "aladdin-mev-liquidation-mechanism-set/v1",
+  "mechanisms": [
+    {
+      "schema": "aladdin-mev-liquidation-mechanism/v1",
+      "protocol": "aave-v3",
+      "mechanism_version": "aave-v3.7-origin",
+      "metric": "health-factor-wad",
+      "comparator": "strictly-below",
+      "fixed_denominator": "1000000000000000000",
+      "source_repository": "aave-dao/aave-v3-origin",
+      "source_commit": "cff15de6d1271b0c800fc001f4aea4c263e8a597",
+      "source_path": "src/contracts/protocol/libraries/logic/ValidationLogic.sol",
+      "source_reference": "https://github.com/aave-dao/aave-v3-origin/blob/cff15de6d1271b0c800fc001f4aea4c263e8a597/src/contracts/protocol/libraries/logic/ValidationLogic.sol",
+      "docs_reference": "https://aave.com/help/borrowing/liquidations",
+      "deployment_authority": "none-recorded-input-only",
+      "network_authority": "none",
+      "execution_authority": "none"
+    },
+    {
+      "schema": "aladdin-mev-liquidation-mechanism/v1",
+      "protocol": "morpho-blue",
+      "mechanism_version": "morpho-blue-core",
+      "metric": "borrowed-assets-vs-max-borrow-assets",
+      "comparator": "strictly-above",
+      "fixed_denominator": null,
+      "source_repository": "morpho-org/morpho-blue",
+      "source_commit": "d09dd1c4b9c7d9d05f976faa7ebfdc424dae5e8c",
+      "source_path": "src/Morpho.sol",
+      "source_reference": "https://github.com/morpho-org/morpho-blue/blob/d09dd1c4b9c7d9d05f976faa7ebfdc424dae5e8c/src/Morpho.sol",
+      "docs_reference": "https://docs.morpho.org/developers/borrow/concepts/liquidation/",
+      "deployment_authority": "none-recorded-input-only",
+      "network_authority": "none",
+      "execution_authority": "none"
+    }
+  ],
+  "mechanisms_sha256": "d86a8c761f17820b4b71aa5d7abba9e5eabf1aabd47a183292734705ed1b708c"
+}

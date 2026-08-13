@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.aladdin.invalid/mev/liquidation-mechanism-set-v1.schema.json",
+  "title": "Aladdin MEV Liquidation Mechanism Set v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "mechanisms",
+    "mechanisms_sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "aladdin-mev-liquidation-mechanism-set/v1"
+    },
+    "mechanisms": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "$ref": "liquidation-mechanism-v1.schema.json"
+      }
+    },
+    "mechanisms_sha256": {
+      "$ref": "#/$defs/sha256"
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}
