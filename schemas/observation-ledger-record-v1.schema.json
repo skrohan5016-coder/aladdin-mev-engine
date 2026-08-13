@@ -1,0 +1,45 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/observation-ledger-record-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "envelope": {
+      "$ref": "observation-envelope-v1.schema.json"
+    },
+    "envelope_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "ordinal": {
+      "maxLength": 5,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "previous_record_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "record_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-observation-ledger-record/v1"
+    },
+    "segment_id": {
+      "pattern": "^[a-z0-9](?:[a-z0-9._-]{0,126}[a-z0-9])?$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "segment_id",
+    "ordinal",
+    "previous_record_sha256",
+    "envelope_sha256",
+    "envelope",
+    "record_sha256"
+  ],
+  "title": "Aladdin MEV Observation Ledger Record v1",
+  "type": "object"
+}

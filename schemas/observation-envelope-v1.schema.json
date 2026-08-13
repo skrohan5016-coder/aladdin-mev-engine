@@ -1,0 +1,130 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/observation-envelope-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base",
+        "arbitrum",
+        "bnb-smart-chain"
+      ]
+    },
+    "emitted_at_unix_ms": {
+      "oneOf": [
+        {
+          "maxLength": 20,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "finality": {
+      "enum": [
+        "pending",
+        "preconfirmed",
+        "confirmed",
+        "finalized",
+        "metadata"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "block-head",
+        "pending-transaction",
+        "transaction-hint",
+        "preconfirmed-block",
+        "preconfirmed-transaction",
+        "pending-log",
+        "sequencer-batch",
+        "timeboost-round",
+        "pbs-builder-status",
+        "source-gap",
+        "source-heartbeat"
+      ]
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "payload": {
+      "type": "object"
+    },
+    "payload_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-observation-envelope/v1"
+    },
+    "source_contract_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "source_event_id": {
+      "maxLength": 256,
+      "minLength": 1,
+      "pattern": "^[^\\u0000-\\u001f]+$",
+      "type": "string"
+    },
+    "source_id": {
+      "enum": [
+        "ethereum-json-rpc",
+        "ethereum-mev-share",
+        "base-json-rpc",
+        "base-flashblocks",
+        "arbitrum-json-rpc",
+        "arbitrum-sequencer-feed",
+        "arbitrum-timeboost-auction",
+        "bnb-json-rpc",
+        "bnb-pbs-metadata"
+      ]
+    },
+    "source_kind": {
+      "enum": [
+        "evm-json-rpc",
+        "flashbots-mev-share",
+        "base-flashblocks",
+        "arbitrum-sequencer-feed",
+        "arbitrum-timeboost-auction",
+        "bsc-pbs-metadata"
+      ]
+    },
+    "source_sequence": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "visibility": {
+      "enum": [
+        "full",
+        "partial",
+        "hash-only",
+        "metadata"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "source_id",
+    "chain",
+    "source_kind",
+    "source_sequence",
+    "source_event_id",
+    "observed_at_unix_ms",
+    "emitted_at_unix_ms",
+    "kind",
+    "finality",
+    "visibility",
+    "payload",
+    "payload_sha256",
+    "source_contract_sha256"
+  ],
+  "title": "Aladdin MEV Observation Envelope v1",
+  "type": "object"
+}

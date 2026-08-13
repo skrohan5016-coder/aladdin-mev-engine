@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import argparse
-import json
 from pathlib import Path
 
 from .canonical import canonical_json_bytes, canonical_sha256
@@ -9,11 +8,17 @@ from .io import read_stable_json
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Offline Aladdin MEV F0 conformance utility")
+    parser = argparse.ArgumentParser(
+        description="Offline Aladdin MEV F1 conformance and canonical-evidence utility"
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    digest_parser = subparsers.add_parser("digest-json", help="validate and digest bounded canonical JSON")
+    digest_parser = subparsers.add_parser(
+        "digest-json", help="validate and digest bounded canonical JSON"
+    )
     digest_parser.add_argument("path", type=Path)
-    canonical_parser = subparsers.add_parser("canonicalize-json", help="emit canonical validated JSON")
+    canonical_parser = subparsers.add_parser(
+        "canonicalize-json", help="emit canonical validated JSON"
+    )
     canonical_parser.add_argument("path", type=Path)
     arguments = parser.parse_args()
 

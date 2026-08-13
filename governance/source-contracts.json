@@ -1,0 +1,342 @@
+{
+  "contracts": [
+    {
+      "allowed_events": [
+        {
+          "finality": "confirmed",
+          "kind": "block-head",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "block-head",
+          "visibility": "full"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-gap",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-heartbeat",
+          "visibility": "metadata"
+        }
+      ],
+      "chain": "arbitrum",
+      "max_future_clock_skew_ms": "5000",
+      "max_payload_bytes": "524288",
+      "network_authority": "none-recorded-input-only",
+      "official_reference": "https://docs.arbitrum.io/for-devs/dev-tools-and-resources/chain-info",
+      "partial_payload_expected": false,
+      "schema": "aladdin-mev-source-contract/v1",
+      "source_id": "arbitrum-json-rpc",
+      "source_kind": "evm-json-rpc",
+      "transport": "json-rpc-http"
+    },
+    {
+      "allowed_events": [
+        {
+          "finality": "preconfirmed",
+          "kind": "sequencer-batch",
+          "visibility": "full"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-gap",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-heartbeat",
+          "visibility": "metadata"
+        }
+      ],
+      "chain": "arbitrum",
+      "max_future_clock_skew_ms": "2000",
+      "max_payload_bytes": "786432",
+      "network_authority": "none-recorded-input-only",
+      "official_reference": "https://docs.arbitrum.io/run-arbitrum-node/run-feed-relay",
+      "partial_payload_expected": false,
+      "schema": "aladdin-mev-source-contract/v1",
+      "source_id": "arbitrum-sequencer-feed",
+      "source_kind": "arbitrum-sequencer-feed",
+      "transport": "sequencer-feed"
+    },
+    {
+      "allowed_events": [
+        {
+          "finality": "metadata",
+          "kind": "source-gap",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-heartbeat",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "timeboost-round",
+          "visibility": "metadata"
+        }
+      ],
+      "chain": "arbitrum",
+      "max_future_clock_skew_ms": "5000",
+      "max_payload_bytes": "131072",
+      "network_authority": "none-recorded-input-only",
+      "official_reference": "https://docs.arbitrum.io/how-arbitrum-works/timeboost/gentle-introduction",
+      "partial_payload_expected": false,
+      "schema": "aladdin-mev-source-contract/v1",
+      "source_id": "arbitrum-timeboost-auction",
+      "source_kind": "arbitrum-timeboost-auction",
+      "transport": "offchain-auction"
+    },
+    {
+      "allowed_events": [
+        {
+          "finality": "preconfirmed",
+          "kind": "pending-log",
+          "visibility": "full"
+        },
+        {
+          "finality": "preconfirmed",
+          "kind": "preconfirmed-block",
+          "visibility": "full"
+        },
+        {
+          "finality": "preconfirmed",
+          "kind": "preconfirmed-transaction",
+          "visibility": "full"
+        },
+        {
+          "finality": "preconfirmed",
+          "kind": "preconfirmed-transaction",
+          "visibility": "hash-only"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-gap",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-heartbeat",
+          "visibility": "metadata"
+        }
+      ],
+      "chain": "base",
+      "max_future_clock_skew_ms": "2000",
+      "max_payload_bytes": "786432",
+      "network_authority": "none-recorded-input-only",
+      "official_reference": "https://docs.base.org/base-chain/api-reference/flashblocks-api/flashblocks-api-overview",
+      "partial_payload_expected": false,
+      "schema": "aladdin-mev-source-contract/v1",
+      "source_id": "base-flashblocks",
+      "source_kind": "base-flashblocks",
+      "transport": "json-rpc-websocket"
+    },
+    {
+      "allowed_events": [
+        {
+          "finality": "confirmed",
+          "kind": "block-head",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "block-head",
+          "visibility": "full"
+        },
+        {
+          "finality": "pending",
+          "kind": "pending-transaction",
+          "visibility": "full"
+        },
+        {
+          "finality": "pending",
+          "kind": "pending-transaction",
+          "visibility": "hash-only"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-gap",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-heartbeat",
+          "visibility": "metadata"
+        }
+      ],
+      "chain": "base",
+      "max_future_clock_skew_ms": "5000",
+      "max_payload_bytes": "524288",
+      "network_authority": "none-recorded-input-only",
+      "official_reference": "https://docs.base.org/base-chain/api-reference/ethereum-json-rpc-api/eth_subscribe",
+      "partial_payload_expected": false,
+      "schema": "aladdin-mev-source-contract/v1",
+      "source_id": "base-json-rpc",
+      "source_kind": "evm-json-rpc",
+      "transport": "json-rpc-websocket"
+    },
+    {
+      "allowed_events": [
+        {
+          "finality": "confirmed",
+          "kind": "block-head",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "block-head",
+          "visibility": "full"
+        },
+        {
+          "finality": "pending",
+          "kind": "pending-transaction",
+          "visibility": "full"
+        },
+        {
+          "finality": "pending",
+          "kind": "pending-transaction",
+          "visibility": "hash-only"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-gap",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-heartbeat",
+          "visibility": "metadata"
+        }
+      ],
+      "chain": "bnb-smart-chain",
+      "max_future_clock_skew_ms": "3000",
+      "max_payload_bytes": "524288",
+      "network_authority": "none-recorded-input-only",
+      "official_reference": "https://docs.bnbchain.org/bnb-smart-chain/developers/json_rpc/json-rpc-endpoint/",
+      "partial_payload_expected": false,
+      "schema": "aladdin-mev-source-contract/v1",
+      "source_id": "bnb-json-rpc",
+      "source_kind": "evm-json-rpc",
+      "transport": "json-rpc-websocket"
+    },
+    {
+      "allowed_events": [
+        {
+          "finality": "metadata",
+          "kind": "pbs-builder-status",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-gap",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-heartbeat",
+          "visibility": "metadata"
+        }
+      ],
+      "chain": "bnb-smart-chain",
+      "max_future_clock_skew_ms": "5000",
+      "max_payload_bytes": "131072",
+      "network_authority": "none-recorded-input-only",
+      "official_reference": "https://docs.bnbchain.org/bnb-smart-chain/validator/mev/builder-integration/",
+      "partial_payload_expected": false,
+      "schema": "aladdin-mev-source-contract/v1",
+      "source_id": "bnb-pbs-metadata",
+      "source_kind": "bsc-pbs-metadata",
+      "transport": "builder-metadata"
+    },
+    {
+      "allowed_events": [
+        {
+          "finality": "confirmed",
+          "kind": "block-head",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "block-head",
+          "visibility": "full"
+        },
+        {
+          "finality": "pending",
+          "kind": "pending-transaction",
+          "visibility": "full"
+        },
+        {
+          "finality": "pending",
+          "kind": "pending-transaction",
+          "visibility": "hash-only"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-gap",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-heartbeat",
+          "visibility": "metadata"
+        }
+      ],
+      "chain": "ethereum",
+      "max_future_clock_skew_ms": "5000",
+      "max_payload_bytes": "524288",
+      "network_authority": "none-recorded-input-only",
+      "official_reference": "https://ethereum.org/en/developers/apis/json-rpc/",
+      "partial_payload_expected": false,
+      "schema": "aladdin-mev-source-contract/v1",
+      "source_id": "ethereum-json-rpc",
+      "source_kind": "evm-json-rpc",
+      "transport": "json-rpc-websocket"
+    },
+    {
+      "allowed_events": [
+        {
+          "finality": "metadata",
+          "kind": "source-gap",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "metadata",
+          "kind": "source-heartbeat",
+          "visibility": "metadata"
+        },
+        {
+          "finality": "pending",
+          "kind": "transaction-hint",
+          "visibility": "full"
+        },
+        {
+          "finality": "pending",
+          "kind": "transaction-hint",
+          "visibility": "hash-only"
+        },
+        {
+          "finality": "pending",
+          "kind": "transaction-hint",
+          "visibility": "partial"
+        }
+      ],
+      "chain": "ethereum",
+      "max_future_clock_skew_ms": "5000",
+      "max_payload_bytes": "300000",
+      "network_authority": "none-recorded-input-only",
+      "official_reference": "https://docs.flashbots.net/flashbots-mev-share/searchers/getting-started",
+      "partial_payload_expected": true,
+      "schema": "aladdin-mev-source-contract/v1",
+      "source_id": "ethereum-mev-share",
+      "source_kind": "flashbots-mev-share",
+      "transport": "server-sent-events"
+    }
+  ],
+  "contracts_sha256": "feaa1bd499bd417927687b36ff26b836589220d60bce72d3fba5885468803a5a",
+  "schema": "aladdin-mev-source-contract-set/v1"
+}

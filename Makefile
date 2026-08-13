@@ -1,4 +1,4 @@
-.PHONY: compile test policy architecture all
+.PHONY: compile test policy architecture source-contracts all
 
 PYTHON ?= python3
 export PYTHONPATH := src
@@ -15,4 +15,7 @@ policy:
 architecture:
 	$(PYTHON) scripts/verify_architecture_lock.py
 
-all: compile test policy architecture
+source-contracts:
+	$(PYTHON) scripts/verify_source_contracts.py
+
+all: compile test policy architecture source-contracts

@@ -1,0 +1,136 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/source-contract-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allowed_events": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "finality": {
+            "enum": [
+              "pending",
+              "preconfirmed",
+              "confirmed",
+              "finalized",
+              "metadata"
+            ]
+          },
+          "kind": {
+            "enum": [
+              "block-head",
+              "pending-transaction",
+              "transaction-hint",
+              "preconfirmed-block",
+              "preconfirmed-transaction",
+              "pending-log",
+              "sequencer-batch",
+              "timeboost-round",
+              "pbs-builder-status",
+              "source-gap",
+              "source-heartbeat"
+            ]
+          },
+          "visibility": {
+            "enum": [
+              "full",
+              "partial",
+              "hash-only",
+              "metadata"
+            ]
+          }
+        },
+        "required": [
+          "kind",
+          "finality",
+          "visibility"
+        ],
+        "type": "object"
+      },
+      "maxItems": 16,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base",
+        "arbitrum",
+        "bnb-smart-chain"
+      ]
+    },
+    "max_future_clock_skew_ms": {
+      "maxLength": 5,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "max_payload_bytes": {
+      "maxLength": 7,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "network_authority": {
+      "const": "none-recorded-input-only"
+    },
+    "official_reference": {
+      "maxLength": 512,
+      "pattern": "^https://",
+      "type": "string"
+    },
+    "partial_payload_expected": {
+      "type": "boolean"
+    },
+    "schema": {
+      "const": "aladdin-mev-source-contract/v1"
+    },
+    "source_id": {
+      "enum": [
+        "ethereum-json-rpc",
+        "ethereum-mev-share",
+        "base-json-rpc",
+        "base-flashblocks",
+        "arbitrum-json-rpc",
+        "arbitrum-sequencer-feed",
+        "arbitrum-timeboost-auction",
+        "bnb-json-rpc",
+        "bnb-pbs-metadata"
+      ]
+    },
+    "source_kind": {
+      "enum": [
+        "evm-json-rpc",
+        "flashbots-mev-share",
+        "base-flashblocks",
+        "arbitrum-sequencer-feed",
+        "arbitrum-timeboost-auction",
+        "bsc-pbs-metadata"
+      ]
+    },
+    "transport": {
+      "enum": [
+        "json-rpc-http",
+        "json-rpc-websocket",
+        "server-sent-events",
+        "sequencer-feed",
+        "offchain-auction",
+        "builder-metadata"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "source_id",
+    "chain",
+    "source_kind",
+    "transport",
+    "allowed_events",
+    "max_payload_bytes",
+    "max_future_clock_skew_ms",
+    "partial_payload_expected",
+    "official_reference",
+    "network_authority"
+  ],
+  "title": "Aladdin MEV Source Contract v1",
+  "type": "object"
+}
