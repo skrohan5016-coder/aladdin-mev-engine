@@ -10,6 +10,7 @@ from .canonical import DEFAULT_MAX_JSON_BYTES, canonical_sha256
 from .domain import Chain, require_bounded_text
 
 _SOURCE_ID = re.compile(r"^[a-z0-9](?:[a-z0-9.-]{0,78}[a-z0-9])?$")
+MAX_SOURCE_CONTRACT_EVENTS = 16
 
 
 class SourceKind(StrEnum):
@@ -123,6 +124,8 @@ class SourceContract:
             raise TypeError("transport must be an exact Transport")
         if type(self.allowed_events) is not tuple or not self.allowed_events:
             raise TypeError("allowed_events must be a non-empty exact tuple")
+        if len(self.allowed_events) > MAX_SOURCE_CONTRACT_EVENTS:
+            raise ValueError("allowed_events exceeds the governed schema ceiling")
         if any(type(shape) is not EventShape for shape in self.allowed_events):
             raise TypeError("allowed_events contains an ungoverned value")
         if len(self.allowed_events) != len(set(self.allowed_events)):
