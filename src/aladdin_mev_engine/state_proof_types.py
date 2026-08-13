@@ -6,6 +6,7 @@ from typing import Any
 from .canonical import canonical_json_bytes, canonical_sha256
 from .domain import Chain
 from .evm_hex import parse_decimal_integer, parse_hex_data, to_decimal, to_hex_data
+from .head_tracker import EvmHead
 from .keccak import keccak256
 from .mpt import MAX_PROOF_NODE_BYTES, MAX_PROOF_NODES, MAX_PROOF_TOTAL_BYTES
 from .observation import ObservationEnvelope, parse_decimal, require_u64
@@ -99,17 +100,7 @@ def _validate_anchor_observations(
     if state.observed_at_unix_ms < head.observed_at_unix_ms:
         raise ValueError("state observation time precedes its head")
 
-    head_payload = head.payload
-    _require_exact_keys(
-        "block-head payload",
-        head_payload,
-        {
-            "block_number",
-            "block_hash",
-            "parent_hash",
-            "block_timestamp_unix_s",
-        },
-    )
+    head_value = EvmHead.from_observation(head)
     state_payload = state.payload
     _require_exact_keys(
         "block-state payload",
@@ -118,14 +109,13 @@ def _validate_anchor_observations(
     )
     if state_payload["schema"] != BLOCK_STATE_PAYLOAD_SCHEMA:
         raise ValueError("unsupported block-state payload schema")
-    head_number = parse_decimal("head block_number", head_payload["block_number"])
     state_number = parse_decimal("state block_number", state_payload["block_number"])
-    head_hash = _parse_hash("head block_hash", head_payload["block_hash"])
+    head_hash = _parse_hash("head block_hash", head_value.block_hash)
     state_hash = _parse_hash("state block_hash", state_payload["block_hash"])
     state_root = _parse_hash("state_root", state_payload["state_root"])
-    if head_number != state_number or head_hash != state_hash:
+    if head_value.number != state_number or head_hash != state_hash:
         raise ValueError("block-state observation does not bind the recorded head")
-    return head_number, head_hash, state_root
+    return head_value.number, head_hash, state_root
 
 
 @dataclass(frozen=True, slots=True)
