@@ -32,6 +32,8 @@ class Transport(StrEnum):
 
 class ObservationKind(StrEnum):
     BLOCK_HEAD = "block-head"
+    EVM_BLOCK_STATE = "evm-block-state"
+    EVM_STATE_PROOF = "evm-state-proof"
     PENDING_TRANSACTION = "pending-transaction"
     TRANSACTION_HINT = "transaction-hint"
     PRECONFIRMED_BLOCK = "preconfirmed-block"
@@ -114,7 +116,7 @@ class SourceContract:
         if type(self.chain) is not Chain:
             raise TypeError("chain must be an exact Chain")
         if self.chain is Chain.SOLANA:
-            raise ValueError("Solana observation is not enabled by F1")
+            raise ValueError("Solana observation is not enabled by F2")
         if type(self.source_kind) is not SourceKind:
             raise TypeError("source_kind must be an exact SourceKind")
         if type(self.transport) is not Transport:
@@ -180,11 +182,7 @@ class SourceContract:
         return canonical_sha256(self.to_json_value())
 
 
-def _shape(
-    kind: ObservationKind,
-    finality: Finality,
-    visibility: Visibility,
-) -> EventShape:
+def _shape(kind: ObservationKind, finality: Finality, visibility: Visibility) -> EventShape:
     return EventShape(kind=kind, finality=finality, visibility=visibility)
 
 
@@ -196,24 +194,29 @@ def _events(*values: EventShape) -> tuple[EventShape, ...]:
     return tuple(sorted((*values, *controls), key=lambda shape: shape.sort_key))
 
 
-def _evm_rpc_events(*, pending_transactions: bool) -> tuple[EventShape, ...]:
+def _evm_rpc_events(
+    *,
+    pending_transactions: bool,
+    authenticated_state_proofs: bool,
+) -> tuple[EventShape, ...]:
     values = [
         _shape(ObservationKind.BLOCK_HEAD, Finality.CONFIRMED, Visibility.FULL),
         _shape(ObservationKind.BLOCK_HEAD, Finality.FINALIZED, Visibility.FULL),
+        _shape(ObservationKind.EVM_BLOCK_STATE, Finality.CONFIRMED, Visibility.FULL),
+        _shape(ObservationKind.EVM_BLOCK_STATE, Finality.FINALIZED, Visibility.FULL),
     ]
+    if authenticated_state_proofs:
+        values.extend(
+            [
+                _shape(ObservationKind.EVM_STATE_PROOF, Finality.CONFIRMED, Visibility.FULL),
+                _shape(ObservationKind.EVM_STATE_PROOF, Finality.FINALIZED, Visibility.FULL),
+            ]
+        )
     if pending_transactions:
         values.extend(
             [
-                _shape(
-                    ObservationKind.PENDING_TRANSACTION,
-                    Finality.PENDING,
-                    Visibility.FULL,
-                ),
-                _shape(
-                    ObservationKind.PENDING_TRANSACTION,
-                    Finality.PENDING,
-                    Visibility.HASH_ONLY,
-                ),
+                _shape(ObservationKind.PENDING_TRANSACTION, Finality.PENDING, Visibility.FULL),
+                _shape(ObservationKind.PENDING_TRANSACTION, Finality.PENDING, Visibility.HASH_ONLY),
             ]
         )
     return _events(*values)
@@ -225,7 +228,10 @@ _CONTRACTS = (
         chain=Chain.ETHEREUM,
         source_kind=SourceKind.EVM_JSON_RPC,
         transport=Transport.JSON_RPC_WEBSOCKET,
-        allowed_events=_evm_rpc_events(pending_transactions=True),
+        allowed_events=_evm_rpc_events(
+            pending_transactions=True,
+            authenticated_state_proofs=True,
+        ),
         max_payload_bytes=524_288,
         max_future_clock_skew_ms=5_000,
         partial_payload_expected=False,
@@ -251,7 +257,10 @@ _CONTRACTS = (
         chain=Chain.BASE,
         source_kind=SourceKind.EVM_JSON_RPC,
         transport=Transport.JSON_RPC_WEBSOCKET,
-        allowed_events=_evm_rpc_events(pending_transactions=True),
+        allowed_events=_evm_rpc_events(
+            pending_transactions=True,
+            authenticated_state_proofs=True,
+        ),
         max_payload_bytes=524_288,
         max_future_clock_skew_ms=5_000,
         partial_payload_expected=False,
@@ -265,16 +274,8 @@ _CONTRACTS = (
         allowed_events=_events(
             _shape(ObservationKind.PENDING_LOG, Finality.PRECONFIRMED, Visibility.FULL),
             _shape(ObservationKind.PRECONFIRMED_BLOCK, Finality.PRECONFIRMED, Visibility.FULL),
-            _shape(
-                ObservationKind.PRECONFIRMED_TRANSACTION,
-                Finality.PRECONFIRMED,
-                Visibility.FULL,
-            ),
-            _shape(
-                ObservationKind.PRECONFIRMED_TRANSACTION,
-                Finality.PRECONFIRMED,
-                Visibility.HASH_ONLY,
-            ),
+            _shape(ObservationKind.PRECONFIRMED_TRANSACTION, Finality.PRECONFIRMED, Visibility.FULL),
+            _shape(ObservationKind.PRECONFIRMED_TRANSACTION, Finality.PRECONFIRMED, Visibility.HASH_ONLY),
         ),
         max_payload_bytes=786_432,
         max_future_clock_skew_ms=2_000,
@@ -286,7 +287,10 @@ _CONTRACTS = (
         chain=Chain.ARBITRUM,
         source_kind=SourceKind.EVM_JSON_RPC,
         transport=Transport.JSON_RPC_HTTP,
-        allowed_events=_evm_rpc_events(pending_transactions=False),
+        allowed_events=_evm_rpc_events(
+            pending_transactions=False,
+            authenticated_state_proofs=False,
+        ),
         max_payload_bytes=524_288,
         max_future_clock_skew_ms=5_000,
         partial_payload_expected=False,
@@ -323,7 +327,10 @@ _CONTRACTS = (
         chain=Chain.BNB_SMART_CHAIN,
         source_kind=SourceKind.EVM_JSON_RPC,
         transport=Transport.JSON_RPC_WEBSOCKET,
-        allowed_events=_evm_rpc_events(pending_transactions=True),
+        allowed_events=_evm_rpc_events(
+            pending_transactions=True,
+            authenticated_state_proofs=False,
+        ),
         max_payload_bytes=524_288,
         max_future_clock_skew_ms=3_000,
         partial_payload_expected=False,

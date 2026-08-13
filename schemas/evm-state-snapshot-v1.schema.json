@@ -1,0 +1,132 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/evm-state-snapshot-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "account_evidence_sha256": {
+      "items": {
+        "maxLength": 64,
+        "minLength": 64,
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 4096,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "accounts": {
+      "items": {
+        "$ref": "evm-state-proof-evidence-v1.schema.json"
+      },
+      "maxItems": 4096,
+      "minItems": 1,
+      "type": "array"
+    },
+    "anchor": {
+      "additionalProperties": false,
+      "properties": {
+        "block_hash": {
+          "maxLength": 66,
+          "minLength": 66,
+          "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "block_number": {
+          "maxLength": 20,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "chain": {
+          "enum": [
+            "ethereum",
+            "base"
+          ]
+        },
+        "finality": {
+          "enum": [
+            "confirmed",
+            "finalized"
+          ]
+        },
+        "head_observation_sha256": {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "head_observed_at_unix_ms": {
+          "maxLength": 20,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "head_source_sequence": {
+          "maxLength": 20,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "source_id": {
+          "enum": [
+            "ethereum-json-rpc",
+            "base-json-rpc"
+          ]
+        },
+        "state_observation_sha256": {
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "state_observed_at_unix_ms": {
+          "maxLength": 20,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "state_root": {
+          "maxLength": 66,
+          "minLength": 66,
+          "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+          "type": "string"
+        },
+        "state_source_sequence": {
+          "maxLength": 20,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "chain",
+        "source_id",
+        "finality",
+        "block_number",
+        "block_hash",
+        "state_root",
+        "head_source_sequence",
+        "state_source_sequence",
+        "head_observed_at_unix_ms",
+        "state_observed_at_unix_ms",
+        "head_observation_sha256",
+        "state_observation_sha256"
+      ],
+      "type": "object"
+    },
+    "anchor_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-evm-state-snapshot/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "anchor",
+    "anchor_sha256",
+    "accounts",
+    "account_evidence_sha256"
+  ],
+  "title": "Aladdin MEV EVM State Snapshot v1",
+  "type": "object"
+}

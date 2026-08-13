@@ -35,6 +35,8 @@
     "kind": {
       "enum": [
         "block-head",
+        "evm-block-state",
+        "evm-state-proof",
         "pending-transaction",
         "transaction-hint",
         "preconfirmed-block",
@@ -56,6 +58,8 @@
       "type": "object"
     },
     "payload_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
       "pattern": "^[0-9a-f]{64}$",
       "type": "string"
     },
@@ -63,6 +67,8 @@
       "const": "aladdin-mev-observation-envelope/v1"
     },
     "source_contract_sha256": {
+      "maxLength": 64,
+      "minLength": 64,
       "pattern": "^[0-9a-f]{64}$",
       "type": "string"
     },

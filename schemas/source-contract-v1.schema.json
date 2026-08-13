@@ -19,6 +19,8 @@
           "kind": {
             "enum": [
               "block-head",
+              "evm-block-state",
+              "evm-state-proof",
               "pending-transaction",
               "transaction-hint",
               "preconfirmed-block",

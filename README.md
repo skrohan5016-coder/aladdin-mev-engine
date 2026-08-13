@@ -1,34 +1,34 @@
 # Aladdin MEV Engine
 
-Aladdin MEV Engine is a governed, safety-first foundation for multi-chain opportunity discovery, deterministic replay, conservative profit analysis, and evidence-backed strategy development.
+Aladdin MEV Engine is a governed, safety-first foundation for multi-chain opportunity discovery, deterministic replay, authenticated EVM state analysis, conservative profit accounting, and evidence-backed strategy development.
 
 ## Current status
 
-**F1 is an offline, recorded-input, shadow-observation foundation.** It extends the accepted F0 safety contracts with:
+**F2 is an offline, recorded-input, authenticated-state foundation.** It retains the accepted F0 safety contracts and F1 observation ledger, then adds:
 
-- nine explicit Ethereum, Base, Arbitrum, and BNB Smart Chain recorded-source contracts;
-- exact event/finality/visibility authorization rather than permissive cross-products;
-- canonical immutable observation envelopes;
-- contiguous per-source sequencing across sealed segments;
-- per-record and cross-segment SHA-256 chains;
-- deterministic JSONL replay;
-- no-follow, no-overwrite, read-only, single-link segment storage with stable-path and optional external-digest verification;
-- exact-stream, reorg-aware EVM head evidence bound to its triggering observation;
-- exact-source-head and merge-integration CI.
+- Ethereum legacy Keccak-256 implemented without a runtime dependency and locked by known vectors;
+- canonical bounded Recursive Length Prefix encoding and decoding;
+- canonical Merkle Patricia Trie inclusion and non-inclusion proof verification;
+- exact block-number, block-hash, finality, source, sequence, timestamp, and state-root anchors;
+- EIP-1186-shaped account and storage proof verification for governed Ethereum and Base sources;
+- proof evidence that is always recomputed from the exact bound anchor and proof observation;
+- deterministic, digest-addressed multi-account state snapshots;
+- explicit fail-closed capability gating for unsupported chains;
+- separate exact-source-head and GitHub merge-integration CI.
 
-This repository still contains no live RPC client, endpoint credentials, transaction signer, private-key handler, bundle submitter, contract deployer, or mainnet execution path.
+F2 records block state roots for Ethereum, Base, Arbitrum, and BNB Smart Chain. Authenticated account/storage proofs are enabled only for the governed Ethereum and Base JSON-RPC sources. Arbitrum and BNB proof verification remain disabled until their official proof capability and semantics are governed in a later milestone. Solana remains a separate non-EVM adapter.
 
-The system does not promise hourly income or guaranteed market opportunities. Its enforceable objective is to reject untrusted observations and candidates that fail source, integrity, simulation, freshness, profitability, or risk gates.
+This repository still contains no live RPC client, endpoint credential, transaction signer, private-key handler, bundle submitter, contract deployer, or mainnet execution path.
+
+The system does not promise hourly income or guaranteed market opportunities. Its enforceable objective is to reject observations, state claims, simulations, and candidate trades that fail integrity, freshness, source, proof, profitability, or risk gates.
 
 ## Repository boundaries
 
 `aladdin-mev-engine` is independent from `aladdin-auction-solver`. No wallet, signer, deployment authority, treasury authority, or execution state is shared between the projects.
 
-F1 covers recorded EVM-chain observations only. Solana remains a separate future adapter and fails closed in this milestone.
-
 ## Local validation
 
-Python 3.13 is the governed conformance runtime. F1 has no third-party runtime dependencies.
+Python 3.13 is the governed conformance runtime. F2 has no third-party runtime dependencies.
 
 ```bash
 make all
@@ -42,6 +42,7 @@ PYTHONPATH=src python3 -m unittest discover -s tests -v
 python3 scripts/check_repo_policy.py
 PYTHONPATH=src python3 scripts/verify_architecture_lock.py
 PYTHONPATH=src python3 scripts/verify_source_contracts.py
+python3 scripts/verify_f2_schemas.py
 ```
 
 ## Architecture
@@ -49,9 +50,10 @@ PYTHONPATH=src python3 scripts/verify_source_contracts.py
 Start with:
 
 - [`governance/ARCHITECTURE.md`](governance/ARCHITECTURE.md)
+- [`governance/F2_AUTHENTICATED_STATE.md`](governance/F2_AUTHENTICATED_STATE.md)
+- [`governance/F2_ACCEPTANCE.md`](governance/F2_ACCEPTANCE.md)
 - [`governance/F1_SOURCE_CONTRACTS.md`](governance/F1_SOURCE_CONTRACTS.md)
 - [`governance/F1_OBSERVATION_LEDGER.md`](governance/F1_OBSERVATION_LEDGER.md)
-- [`governance/F1_ACCEPTANCE.md`](governance/F1_ACCEPTANCE.md)
 - [`governance/PROFIT_SAFETY.md`](governance/PROFIT_SAFETY.md)
 - [`governance/THREAT_MODEL.md`](governance/THREAT_MODEL.md)
 - [`governance/STRATEGY_POLICY.md`](governance/STRATEGY_POLICY.md)

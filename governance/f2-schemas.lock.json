@@ -1,0 +1,11 @@
+{
+  "schema": "aladdin-mev-f2-schema-lock/v1",
+  "files": {
+    "schemas/evm-block-state-payload-v1.schema.json": "6070083a21a7e99ef8e28861f7c380028ff545f856e5973ed718caed2e0b5e21",
+    "schemas/evm-state-proof-payload-v1.schema.json": "63b9493d87c8bfb00c99b7d70448e7afd17c804d99736479fcdcd6432e2c2533",
+    "schemas/evm-state-proof-evidence-v1.schema.json": "33eecfca2b12cd2ec83e0c474a8ccb33be5272f61786f7b932a70d4d33bdf9c4",
+    "schemas/evm-state-snapshot-v1.schema.json": "503d67decf1f5d9459097f2e73e7cc7dc5f1459dc62ecb38e179301170a438e4",
+    "schemas/observation-envelope-v1.schema.json": "a4132286f26a9a37117adcc8c77593824ae36b30d804d16c56b7652a7a8d6aa4",
+    "schemas/source-contract-v1.schema.json": "0b9f775e7bec923c5725a06ec94128ec72e48a02828e6f61d65e821db10fc2a4"
+  }
+}

@@ -13,6 +13,16 @@
           "visibility": "full"
         },
         {
+          "finality": "confirmed",
+          "kind": "evm-block-state",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "evm-block-state",
+          "visibility": "full"
+        },
+        {
           "finality": "metadata",
           "kind": "source-gap",
           "visibility": "metadata"
@@ -149,6 +159,26 @@
           "visibility": "full"
         },
         {
+          "finality": "confirmed",
+          "kind": "evm-block-state",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "evm-block-state",
+          "visibility": "full"
+        },
+        {
+          "finality": "confirmed",
+          "kind": "evm-state-proof",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "evm-state-proof",
+          "visibility": "full"
+        },
+        {
           "finality": "pending",
           "kind": "pending-transaction",
           "visibility": "full"
@@ -190,6 +220,16 @@
         {
           "finality": "finalized",
           "kind": "block-head",
+          "visibility": "full"
+        },
+        {
+          "finality": "confirmed",
+          "kind": "evm-block-state",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "evm-block-state",
           "visibility": "full"
         },
         {
@@ -266,6 +306,26 @@
           "visibility": "full"
         },
         {
+          "finality": "confirmed",
+          "kind": "evm-block-state",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "evm-block-state",
+          "visibility": "full"
+        },
+        {
+          "finality": "confirmed",
+          "kind": "evm-state-proof",
+          "visibility": "full"
+        },
+        {
+          "finality": "finalized",
+          "kind": "evm-state-proof",
+          "visibility": "full"
+        },
+        {
           "finality": "pending",
           "kind": "pending-transaction",
           "visibility": "full"
@@ -337,6 +397,6 @@
       "transport": "server-sent-events"
     }
   ],
-  "contracts_sha256": "feaa1bd499bd417927687b36ff26b836589220d60bce72d3fba5885468803a5a",
+  "contracts_sha256": "1a57f5e0992cbdf109bc92bcc2f94e171cfcea53739938a76b43acce57e00dcd",
   "schema": "aladdin-mev-source-contract-set/v1"
 }
