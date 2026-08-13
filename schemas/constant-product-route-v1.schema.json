@@ -1,0 +1,50 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/constant-product-route-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "legs": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "pool_address": {
+            "pattern": "^0x[0-9a-f]{40}$",
+            "type": "string"
+          },
+          "token_in": {
+            "pattern": "^0x[0-9a-f]{40}$",
+            "type": "string"
+          },
+          "token_out": {
+            "pattern": "^0x[0-9a-f]{40}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "pool_address",
+          "token_in",
+          "token_out"
+        ],
+        "type": "object"
+      },
+      "maxItems": 4,
+      "minItems": 2,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "schema": {
+      "const": "aladdin-mev-constant-product-route/v1"
+    },
+    "universe_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "universe_sha256",
+    "legs"
+  ],
+  "title": "Aladdin MEV Constant Product Route v1",
+  "type": "object"
+}

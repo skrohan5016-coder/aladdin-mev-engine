@@ -1,0 +1,15 @@
+{
+  "schema": "aladdin-mev-f3-schema-lock/v1",
+  "files": {
+    "schemas/atomic-dex-opportunity-v1.schema.json": "1a53d3dff8944db0c091624d799473e3f803f9be0e00561043e04f6f0b439681",
+    "schemas/authenticated-constant-product-pool-v1.schema.json": "388d2557fecd3edf5b74565aa7c74b0ddee033da9abbe8bb7b0760249e9b07e5",
+    "schemas/constant-product-implementation-v1.schema.json": "0ccafa31a711d4eb23419923730692ce00d5479834d05131aba8e05b6eca17e5",
+    "schemas/constant-product-model-registry-v1.schema.json": "24867ecdc6cffe962676c4469f43e051ce50756292bc5908c9f2611de70cd075",
+    "schemas/constant-product-pool-spec-v1.schema.json": "b7d58d319ce7129469f8eb1b6e91f3646c6908a2d10da957b3da69ac4b662297",
+    "schemas/constant-product-pool-universe-v1.schema.json": "66c616f0a590d9d1b852cf34682393be437f42d8b2a465f5d2128112d045ff96",
+    "schemas/constant-product-route-v1.schema.json": "e0d51674f5bb7f19d412508703d0286f9bee69a06cf53e3ce35c96b1b2b795d6",
+    "schemas/opportunity-search-report-v1.schema.json": "37a922140c1071444bb8b21a795abbebf34fea28d6794ea6d879436f6583e731",
+    "schemas/opportunity-v1.schema.json": "afdd566d44c9afc54767a7f1675b765d6c1d8fa5e69565b5f2125262fa3cf4b9",
+    "schemas/route-optimization-v1.schema.json": "33e0c71a6463d32d12651937b7ef1a02b5e8b3c37c092dc77bfaf3c8e3f79007"
+  }
+}

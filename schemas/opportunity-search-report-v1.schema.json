@@ -1,0 +1,140 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/opportunity-search-report-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority": {
+      "const": "authenticated-state-explicit-model-gross-shadow-search"
+    },
+    "base_token": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "incomplete_route_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 4096,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "maximum_hops": {
+      "enum": [
+        "2",
+        "3",
+        "4"
+      ],
+      "type": "string"
+    },
+    "model_registry_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "optimization_limits": {
+      "additionalProperties": false,
+      "properties": {
+        "exhaustive_threshold": {
+          "maxLength": 4,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        },
+        "maximum_input": {
+          "maxLength": 78,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        },
+        "maximum_intervals": {
+          "maxLength": 7,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "maximum_input",
+        "maximum_intervals",
+        "exhaustive_threshold"
+      ],
+      "type": "object"
+    },
+    "positive_route_count": {
+      "maxLength": 4,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "positive_route_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 4096,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "result_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 4096,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "route_count": {
+      "maxLength": 4,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "route_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 4096,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "schema": {
+      "const": "aladdin-mev-opportunity-search-report/v1"
+    },
+    "state_reference": {
+      "$ref": "opportunity-v1.schema.json#/$defs/stateReference"
+    },
+    "universe_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "state_reference",
+    "universe_sha256",
+    "model_registry_sha256",
+    "base_token",
+    "maximum_hops",
+    "optimization_limits",
+    "complete",
+    "route_count",
+    "positive_route_count",
+    "route_sha256",
+    "result_sha256",
+    "incomplete_route_sha256",
+    "positive_route_sha256",
+    "authority",
+    "execution_eligible",
+    "created_at_unix_ms"
+  ],
+  "title": "Aladdin MEV Opportunity Search Report v1",
+  "type": "object"
+}

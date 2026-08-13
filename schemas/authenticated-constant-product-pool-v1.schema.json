@@ -1,0 +1,41 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/authenticated-constant-product-pool-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "evidence_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "reserve0": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "reserve1": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-authenticated-constant-product-pool/v1"
+    },
+    "spec": {
+      "$ref": "constant-product-pool-spec-v1.schema.json"
+    },
+    "spec_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "spec",
+    "spec_sha256",
+    "evidence_sha256",
+    "reserve0",
+    "reserve1"
+  ],
+  "title": "Aladdin MEV Authenticated Constant Product Pool v1",
+  "type": "object"
+}

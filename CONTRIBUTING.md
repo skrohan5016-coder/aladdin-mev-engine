@@ -1,25 +1,5 @@
 # Contributing
 
-All changes must preserve the governed architecture and fail-closed behavior.
+Run `make all` before opening a pull request. Every PR must state its base, head, scope, authority impact, security impact, and validation evidence.
 
-## Required before opening a pull request
-
-```bash
-make all
-```
-
-A pull request must state its base commit, head commit, changed-file scope, security impact, authority impact, and validation evidence.
-
-## Hard rules
-
-- No live network client, signing, broadcasting, deployment, or execution capability may enter F2.
-- No secret may be committed, even as a test fixture.
-- Monetary values use non-negative integers in one explicitly named settlement asset.
-- JSON evidence never uses floating-point numbers.
-- Strategy promotion is always human-gated.
-- Unknown chains, strategies, fields, states, proof forms, reason codes, transition objects, and raised parser ceilings fail closed.
-- Risk governors always start stopped; no constructor or restore shortcut may create an active mode.
-- EVM proof code must use Ethereum legacy Keccak-256, canonical RLP, and exact MPT semantics.
-- Derived state-proof evidence must be recomputed from exact bound observations.
-- State-proof capability is chain-specific; EVM compatibility alone never enables it.
-- CI actions are pinned to full commit SHAs and run with read-only repository permissions.
+Hard rules: no live networking, secrets, signing, broadcasting, deployment, or execution in F3; exact integer money math only; unknown inputs fail closed; F2 proof authority remains exact; pool tokens/reserves must be authenticated; one code hash cannot authorize conflicting models; continuous math may only upper-bound exact search; incomplete/nonpositive optimization cannot become an opportunity; every F3 opportunity remains gross-only and execution-disabled; CI actions are immutable SHA-pinned with read-only permissions.

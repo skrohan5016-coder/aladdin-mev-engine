@@ -9,15 +9,17 @@ from .io import read_stable_json
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Offline Aladdin MEV F1 conformance and canonical-evidence utility"
+        description="Offline Aladdin MEV F3 conformance and canonical-evidence utility"
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     digest_parser = subparsers.add_parser(
-        "digest-json", help="validate and digest bounded canonical JSON"
+        "digest-json",
+        help="validate and digest bounded canonical JSON",
     )
     digest_parser.add_argument("path", type=Path)
     canonical_parser = subparsers.add_parser(
-        "canonicalize-json", help="emit canonical validated JSON"
+        "canonicalize-json",
+        help="emit canonical validated JSON",
     )
     canonical_parser.add_argument("path", type=Path)
     arguments = parser.parse_args()

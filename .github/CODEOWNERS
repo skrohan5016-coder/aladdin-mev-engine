@@ -2,5 +2,9 @@
 /.github/ @skrohan5016-coder
 /governance/ @skrohan5016-coder
 /schemas/ @skrohan5016-coder
+/src/aladdin_mev_engine/constant_product.py @skrohan5016-coder
+/src/aladdin_mev_engine/opportunity.py @skrohan5016-coder
+/src/aladdin_mev_engine/opportunity_graph.py @skrohan5016-coder
+/src/aladdin_mev_engine/optimizer.py @skrohan5016-coder
 /src/aladdin_mev_engine/profit.py @skrohan5016-coder
 /src/aladdin_mev_engine/risk.py @skrohan5016-coder

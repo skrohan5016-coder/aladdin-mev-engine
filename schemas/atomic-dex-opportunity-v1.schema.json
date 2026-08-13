@@ -1,0 +1,234 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/atomic-dex-opportunity-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority": {
+      "const": "authenticated-state-explicit-model-exact-gross-shadow-only"
+    },
+    "capital_at_risk": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base"
+      ]
+    },
+    "cost_completeness": {
+      "const": "gross-only-no-gas-no-inclusion-no-funding"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "gross_profit": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "model_registry_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "opportunity_id": {
+      "pattern": "^atomic-dex-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "optimization": {
+      "$ref": "route-optimization-v1.schema.json"
+    },
+    "optimization_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "route": {
+      "$ref": "constant-product-route-v1.schema.json"
+    },
+    "route_quote": {
+      "additionalProperties": false,
+      "properties": {
+        "amount_in": {
+          "maxLength": 78,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        },
+        "amount_out": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "gross_profit": {
+          "maxLength": 79,
+          "pattern": "^(0|[1-9][0-9]*|-[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "leg_sha256": {
+          "items": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "maxItems": 4,
+          "minItems": 2,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "legs": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "amount_in": {
+                "maxLength": 78,
+                "pattern": "^(0|[1-9][0-9]*)$",
+                "type": "string"
+              },
+              "amount_out": {
+                "maxLength": 78,
+                "pattern": "^(0|[1-9][0-9]*)$",
+                "type": "string"
+              },
+              "fee_denominator": {
+                "maxLength": 10,
+                "pattern": "^[1-9][0-9]*$",
+                "type": "string"
+              },
+              "fee_numerator": {
+                "maxLength": 10,
+                "pattern": "^[1-9][0-9]*$",
+                "type": "string"
+              },
+              "implementation_sha256": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "pool_address": {
+                "pattern": "^0x[0-9a-f]{40}$",
+                "type": "string"
+              },
+              "pool_sha256": {
+                "pattern": "^[0-9a-f]{64}$",
+                "type": "string"
+              },
+              "post_reserve_in": {
+                "maxLength": 78,
+                "pattern": "^[1-9][0-9]*$",
+                "type": "string"
+              },
+              "post_reserve_out": {
+                "maxLength": 78,
+                "pattern": "^(0|[1-9][0-9]*)$",
+                "type": "string"
+              },
+              "reserve_in": {
+                "maxLength": 78,
+                "pattern": "^[1-9][0-9]*$",
+                "type": "string"
+              },
+              "reserve_in_capacity": {
+                "maxLength": 78,
+                "pattern": "^[1-9][0-9]*$",
+                "type": "string"
+              },
+              "reserve_out": {
+                "maxLength": 78,
+                "pattern": "^[1-9][0-9]*$",
+                "type": "string"
+              },
+              "token_in": {
+                "pattern": "^0x[0-9a-f]{40}$",
+                "type": "string"
+              },
+              "token_out": {
+                "pattern": "^0x[0-9a-f]{40}$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "pool_sha256",
+              "implementation_sha256",
+              "pool_address",
+              "token_in",
+              "token_out",
+              "amount_in",
+              "amount_out",
+              "reserve_in",
+              "reserve_out",
+              "reserve_in_capacity",
+              "post_reserve_in",
+              "post_reserve_out",
+              "fee_numerator",
+              "fee_denominator"
+            ],
+            "type": "object"
+          },
+          "maxItems": 4,
+          "minItems": 2,
+          "type": "array"
+        },
+        "route_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "route_sha256",
+        "amount_in",
+        "amount_out",
+        "gross_profit",
+        "legs",
+        "leg_sha256"
+      ],
+      "type": "object"
+    },
+    "route_quote_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "route_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-atomic-dex-opportunity/v1"
+    },
+    "state_reference": {
+      "$ref": "opportunity-v1.schema.json#/$defs/stateReference"
+    },
+    "strategy": {
+      "const": "atomic-dex-arbitrage"
+    },
+    "universe_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "opportunity_id",
+    "chain",
+    "strategy",
+    "state_reference",
+    "capital_at_risk",
+    "gross_profit",
+    "universe_sha256",
+    "model_registry_sha256",
+    "route",
+    "route_sha256",
+    "route_quote",
+    "route_quote_sha256",
+    "optimization",
+    "optimization_sha256",
+    "authority",
+    "cost_completeness",
+    "execution_eligible",
+    "created_at_unix_ms"
+  ],
+  "title": "Aladdin MEV Atomic DEX Gross Opportunity v1",
+  "type": "object"
+}

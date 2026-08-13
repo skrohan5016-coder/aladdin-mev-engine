@@ -1,0 +1,54 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/constant-product-pool-universe-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "model_registry": {
+      "$ref": "constant-product-model-registry-v1.schema.json"
+    },
+    "model_registry_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "opportunity_authority": {
+      "const": "authenticated-state-explicit-model-gross-shadow-only"
+    },
+    "pool_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "pools": {
+      "items": {
+        "$ref": "authenticated-constant-product-pool-v1.schema.json"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "schema": {
+      "const": "aladdin-mev-constant-product-pool-universe/v1"
+    },
+    "state_snapshot_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "state_snapshot_sha256",
+    "model_registry",
+    "model_registry_sha256",
+    "pools",
+    "pool_sha256",
+    "opportunity_authority"
+  ],
+  "title": "Aladdin MEV Constant Product Pool Universe v1",
+  "type": "object"
+}
