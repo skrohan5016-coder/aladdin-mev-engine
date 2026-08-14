@@ -19,7 +19,7 @@ jobs:
           persist-credentials: false
       - name: Reconstruct and verify deterministic overlay
         run: |
-          cat .f4-overlay/chunk-00 .f4-overlay/chunk-01 .f4-overlay/chunk-02 > /tmp/f4-overlay.b64
+          cat .f4-overlay/chunk-00 .f4-overlay/chunk-00a .f4-overlay/chunk-01 .f4-overlay/chunk-02 > /tmp/f4-overlay.b64
           test "$(wc -c < /tmp/f4-overlay.b64)" = "58760"
           base64 -d /tmp/f4-overlay.b64 > /tmp/f4-overlay.tar.gz
           echo "0ec553e2cf7acc4a4623878ed5c01a76ad466f60890ca6d6eecf21d9aa30f75f  /tmp/f4-overlay.tar.gz" | sha256sum -c -
