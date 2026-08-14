@@ -24,6 +24,7 @@ class CostBreakdown:
     gross_profit: int
     execution_gas_cost: int
     l1_data_fee: int
+    operator_fee: int
     flash_loan_fee: int
     inclusion_bid: int
     slippage_reserve: int
@@ -41,6 +42,7 @@ class CostBreakdown:
         return (
             self.execution_gas_cost
             + self.l1_data_fee
+            + self.operator_fee
             + self.flash_loan_fee
             + self.slippage_reserve
             + self.stale_state_reserve

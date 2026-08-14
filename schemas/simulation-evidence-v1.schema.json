@@ -36,6 +36,9 @@
         "l1_data_fee": {
           "$ref": "#/$defs/uint"
         },
+        "operator_fee": {
+          "$ref": "#/$defs/uint"
+        },
         "slippage_reserve": {
           "$ref": "#/$defs/uint"
         },
@@ -47,6 +50,7 @@
         "gross_profit",
         "execution_gas_cost",
         "l1_data_fee",
+        "operator_fee",
         "flash_loan_fee",
         "inclusion_bid",
         "slippage_reserve",

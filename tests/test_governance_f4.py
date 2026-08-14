@@ -9,21 +9,21 @@ from aladdin_mev_engine.canonical import canonical_sha256
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class F4GovernanceTests(unittest.TestCase):
-    def test_architecture_binds_accepted_f3_and_disables_live_authority(self) -> None:
+class F4GovernanceRetentionTests(unittest.TestCase):
+    def test_f5_architecture_retains_f4_shadow_authorities(self) -> None:
         architecture = json.loads((ROOT / "governance" / "architecture.json").read_text())
-        self.assertEqual(architecture["milestone"], "F4")
+        self.assertEqual(architecture["milestone"], "F5")
         self.assertEqual(
             architecture["accepted_parent_head"],
-            "046b6b2e39c06feba8eb77da2f2139663e84e50e",
+            "5e9497695c08ec4bd1ef724b39fb941f100c3e73",
         )
         self.assertEqual(
             architecture["accepted_parent_tree"],
-            "1c94f705477863b62906f5ec6e5a37ad7a850580",
+            "d909eb7d378a5c188e71a5c475cb36b8c61099a3",
         )
         self.assertEqual(
             architecture["accepted_parent_architecture_id"],
-            "AMEV-F3-ARCH-v1-d2caf73e6121",
+            "AMEV-F4-ARCH-v1-36ee2dc379f7",
         )
         self.assertEqual(architecture["network_access"], "none")
         self.assertEqual(architecture["signing_authority"], "none")
@@ -54,7 +54,7 @@ class F4GovernanceTests(unittest.TestCase):
         )
         self.assertEqual(architecture["runtime_dependencies"], [])
 
-    def test_f4_schema_lock_and_architecture_lock_are_exact(self) -> None:
+    def test_f4_schema_lock_is_retained_and_f5_architecture_lock_is_exact(self) -> None:
         architecture = json.loads((ROOT / "governance" / "architecture.json").read_text())
         schema_lock = json.loads((ROOT / "governance" / "f4-schemas.lock.json").read_text())
         lock = json.loads((ROOT / "governance" / "architecture.lock.json").read_text())
@@ -64,7 +64,7 @@ class F4GovernanceTests(unittest.TestCase):
         )
         digest = canonical_sha256(architecture)
         self.assertEqual(lock["manifest_sha256"], digest)
-        self.assertEqual(lock["architecture_id"], f"AMEV-F4-ARCH-v1-{digest[:12]}")
+        self.assertEqual(lock["architecture_id"], f"AMEV-F5-ARCH-v1-{digest[:12]}")
 
     def test_f4_required_invariants_are_machine_bound(self) -> None:
         architecture = json.loads((ROOT / "governance" / "architecture.json").read_text())
@@ -85,6 +85,9 @@ class F4GovernanceTests(unittest.TestCase):
             "route-simulation-agreement-requires-one-exact-environment-digest",
             "risk-budget-pending-daily-and-concurrency-aggregation-is-checked-uint256",
             "risk-budget-snapshot-cannot-precede-the-bound-execution-cost-envelope",
+            "op-stack-operator-fee-is-explicit-separate-from-eip1559-gas-l1-data-and-direct-payment",
+            "ethereum-operator-fee-upper-bound-and-paid-amount-are-zero",
+            "base-operator-fee-upper-bound-is-recorded-converted-and-included-in-authenticated-sender-balance",
             "f4-profit-policy-integer-fields-are-closed-to-uint256",
         }
         self.assertTrue(required.issubset(invariants))

@@ -2,40 +2,47 @@
 
 ## Accepted lineage
 
-F4 is built from accepted F3 landing `046b6b2e39c06feba8eb77da2f2139663e84e50e`, tree `1c94f705477863b62906f5ec6e5a37ad7a850580`, and architecture `AMEV-F3-ARCH-v1-d2caf73e6121`. F0 supplies canonical evidence, profit policy, and risk controls; F1 supplies recorded observation/replay; F2 supplies authenticated EVM state; F3 supplies exact gross opportunities; F4 adds structural plans and cost-complete shadow economics.
+F5 is built from accepted F4 landing `5e9497695c08ec4bd1ef724b39fb941f100c3e73`, tree `d909eb7d378a5c188e71a5c475cb36b8c61099a3`, and architecture `AMEV-F4-ARCH-v1-36ee2dc379f7`. F0 supplies canonical evidence, profit policy, and risk controls; F1 supplies recorded observation and replay; F2 supplies authenticated EVM state; F3 supplies exact gross opportunities; F4 supplies deterministic plans and cost-complete shadow economics; F5 adds authenticated executor identity, governed calldata, unsigned EIP-1559 transaction preimages, private bundle intent, and transaction-bound simulation evidence.
 
 ## Inherited authority retention
 
-F4 does not weaken or replace the accepted F0-F3 contracts. Their canonical evidence, source registry, tamper-evident replay, reorg handling, authenticated state proofs, code-hash-bound pool models, exact route math, bounded optimizer, and gross-only authority remain independently locked and tested.
+F5 does not weaken or replace F0-F4. Canonical evidence, source contracts, tamper-evident replay, reorg handling, authenticated state proofs, code-hash-bound pool mathematics, exact optimization, recorded cost reconciliation, source-bound context, and F4 profit decisions remain independently locked and tested.
 
 ## Trust flow
 
 ```text
 Recorded observations
-  -> authenticated state
+  -> authenticated pool, executor, and sender account state
   -> exact F3 opportunity
-  -> structural plan + funding
-  -> distinct-implementation/source simulation agreement in one exact environment
-  -> exact fee/reserve/valuation reconciliation
-  -> source-bound health + recomputed risk snapshot
-  -> F0 profit assessment
+  -> F4 plan, cost envelope, simulation/context, approved shadow economics
+  -> code-hash-bound executor interface and deployment evidence
+  -> plan-derived route commands and economic minimum-output floor
+  -> canonical unsigned EIP-1559 signing preimage
+  -> relay-neutral private bundle intent
+  -> distinct implementation/source transaction simulations
+  -> unsigned execution-package evidence
 ```
 
-## F4 authority boundaries
+## F5 authority boundaries
 
 ```text
-network_access          = none
-signing_authority       = none
-execution_authority     = none
-execution_plan_authority= offline-structural-plan-only
-simulation_authority    = recorded-distinct-implementation-exact-agreement-only
-cost_evidence_authority = offline-recorded-upper-bound-shadow-only
-chain_health_authority  = recorded-source-bound-shadow-context-only
-risk_budget_authority   = recorded-recomputed-snapshot-shadow-only
+network_access                 = none
+signing_authority              = none
+submission_authority           = none
+execution_authority            = none
+deployment_registry_authority  = authenticated-recorded-direct-runtime-shadow-only
+calldata_authority             = offline-deterministic-governed-encoding-only
+sender_state_authority         = offline-authenticated-eoa-nonce-balance-only
+unsigned_transaction_authority = offline-eip1559-signing-preimage-only
+private_bundle_intent_authority= offline-relay-neutral-intent-only
+execution_package_authority    = offline-unsigned-transaction-bound-shadow-only
+inclusion_guarantee            = none
 ```
 
-The architecture manifest and lock are the machine-readable authority.
+An F5 package is not a signature request, a relay submission, a deployment instruction, an inclusion approval, or permission to move funds.
 
-## F4 hardening invariants
+## F5 hardening invariants
 
-Valuation uses exact required pairs only and checked `uint256` multiplication before ceiling division. Simulations require distinct implementation and result-source digests, one exact environment digest, exact state binding, canonical order, and final-time validity. Chain health and risk budget are source-bound evidence, not bare caller values. Risk aggregation is checked `uint256`, and the risk snapshot cannot predate the exact cost envelope it binds. F4 closes all profit-policy integer inputs to `uint256`. Funding, fee, reserve, valuation, simulation, health, and risk inputs are revalidated at final evidence creation.
+A runtime code hash authorizes only one exact executor interface, and every authenticated deployment must be an exact registry member. Executor address, chain, code hash, canonical empty storage root, validity, and proof-observation time bind exact F2 evidence. Route command bytes and calldata are recomputed from the accepted F4 plan; the exported raw encoder independently enforces one simple cycle with unique pools, exact base-token endpoints, exact principal/amount continuity, and an exact final minimum; route and final slippage minima use ceiling division so integer rounding cannot weaken the policy. Sender nonce and balance come from an authenticated EOA proof sharing the exact pool/deployment state anchor, and transaction creation cannot predate that proof. The EIP-1559 type-2 payload is canonical RLP with no signature, and its gas limit cannot be below canonical calldata intrinsic gas. L1-data, OP Stack operator-fee, and direct-payment bounds remain separate evidence; all are included in conservative economics and authenticated sender-balance coverage. Bundle nonces begin at the authenticated sender nonce and remain ordered/contiguous, target blocks are bounded, aggregate worst-case upfront native cost must fit the authenticated balance, and no relay endpoint or credential is retained. Transaction simulations cannot predate the bundle and require distinct engines, implementation digests, and source digests while agreeing on one environment and the exact state anchor, transaction signing hash, bundle, explicit in-range block/timestamp/base-fee context, intrinsic-to-limit-bounded gas, operator fee paid within its recorded upper bound, exact F4 base-token output, flash-loan repayment, authenticated sender beneficiary, complete base-token residual delta, logs, post-state, and payment. Package schema v1 binds exactly one unsigned transaction and inherits the executor-call deadline as a transitive validity limit.
+
+The machine-readable architecture manifest and lock are authoritative.

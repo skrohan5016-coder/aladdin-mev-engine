@@ -44,6 +44,11 @@
           "pattern": "^(0|[1-9][0-9]*)$",
           "type": "string"
         },
+        "operator_fee": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
         "slippage_reserve": {
           "maxLength": 78,
           "pattern": "^(0|[1-9][0-9]*)$",
@@ -58,6 +63,7 @@
       "required": [
         "execution_gas_cost",
         "l1_data_fee",
+        "operator_fee",
         "flash_loan_fee",
         "inclusion_bid",
         "slippage_reserve",
@@ -111,6 +117,11 @@
           "pattern": "^(0|[1-9][0-9]*)$",
           "type": "string"
         },
+        "operator_fee": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
         "slippage_reserve": {
           "maxLength": 78,
           "pattern": "^(0|[1-9][0-9]*)$",
@@ -126,6 +137,7 @@
         "gross_profit",
         "execution_gas_cost",
         "l1_data_fee",
+        "operator_fee",
         "flash_loan_fee",
         "inclusion_bid",
         "slippage_reserve",

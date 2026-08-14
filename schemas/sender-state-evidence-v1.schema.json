@@ -1,0 +1,49 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/sender-state-evidence-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "account_kind": {
+      "const": "externally-owned-account"
+    },
+    "balance": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "evidence": {
+      "$ref": "evm-state-proof-evidence-v1.schema.json"
+    },
+    "evidence_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "nonce": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-sender-state-evidence/v1"
+    },
+    "sender": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "signing_authority": {
+      "const": "none"
+    }
+  },
+  "required": [
+    "schema",
+    "evidence",
+    "evidence_sha256",
+    "sender",
+    "nonce",
+    "balance",
+    "account_kind",
+    "signing_authority"
+  ],
+  "title": "Aladdin MEV Sender State Evidence v1",
+  "type": "object"
+}

@@ -50,6 +50,14 @@
       "pattern": "^(0|[1-9][0-9]*)$",
       "type": "string"
     },
+    "operator_fee_semantics": {
+      "const": "separate-recorded-protocol-fee-upper-bound-not-in-eip1559-gas"
+    },
+    "operator_fee_upper_bound": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
     "priority_fee_semantics": {
       "const": "included-inside-max-fee-per-gas-not-added-again"
     },
@@ -80,9 +88,11 @@
     "max_priority_fee_per_gas",
     "execution_gas_cost_upper_bound",
     "l1_data_fee_upper_bound",
+    "operator_fee_upper_bound",
     "direct_inclusion_payment_upper_bound",
     "total_native_upper_bound",
     "priority_fee_semantics",
+    "operator_fee_semantics",
     "direct_payment_semantics",
     "observed_at_unix_ms",
     "valid_until_unix_ms",

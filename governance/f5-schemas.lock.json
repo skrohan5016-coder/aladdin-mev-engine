@@ -1,0 +1,17 @@
+{
+  "files": {
+    "schemas/authenticated-executor-deployment-v1.schema.json": "ed2b818ba5cfc12a9ad877aea99d4007c703f15d308025be631311f92f833380",
+    "schemas/execution-constraint-policy-v1.schema.json": "f7b6c58aab1d9d5a7be46a4b9fd36c8fb97f8bdb83599a139544b81d41d0b150",
+    "schemas/executor-deployment-registry-v1.schema.json": "c8ddec83411a6b92fdca46a56340028628791abd601fbb6e8134afd83f4d4075",
+    "schemas/executor-deployment-spec-v1.schema.json": "a2100c9c88808b67e3bc2c253edcba151b22ac6060e4081736fcce42dc7b262e",
+    "schemas/executor-interface-v1.schema.json": "ce690a2141c0666ff1bc6578b74d51f537e1835a69adf062fc9f95258a7f76e0",
+    "schemas/governed-executor-call-v1.schema.json": "4742adff4bce1eccc6c6b42f5817bddf8577cecad3d769bf2f09a2794f013a0a",
+    "schemas/private-bundle-intent-v1.schema.json": "149c77e77d3d65e00f36e1d5951ced9acee0204258dea9e578465d76eed7250f",
+    "schemas/route-command-v1.schema.json": "cc6bcdb4fe052f85eeffc317e3f5bad985463e2745d8251aea272a4d7a8ef766",
+    "schemas/sender-state-evidence-v1.schema.json": "997cfd345af1b646cf82495e2b82b1812270f65f19e2e150094c2600738aebbf",
+    "schemas/transaction-simulation-result-v1.schema.json": "4a1790ab28121e632778557f87f606fa7ffe0c45f6ae7974bc200ae59c7bf1f3",
+    "schemas/unsigned-eip1559-transaction-v1.schema.json": "570a5b4a7f228d2499badca4c2cfa48b845ec69d966b49e634c0856157583618",
+    "schemas/unsigned-execution-package-v1.schema.json": "bc772d636041a833bd382dc32a915f12e81bf67ad8ba0bae00c2849678c57d64"
+  },
+  "schema": "aladdin-mev-f5-schema-lock/v1"
+}

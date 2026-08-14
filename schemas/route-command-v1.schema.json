@@ -1,0 +1,64 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/route-command-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "amount_in": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "binary": {
+      "pattern": "^0x[0-9a-f]{378}$",
+      "type": "string"
+    },
+    "expected_amount_out": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "index": {
+      "maxLength": 1,
+      "pattern": "^[0-3]$",
+      "type": "string"
+    },
+    "minimum_amount_out": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "pool_address": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "quote_sha256": {
+      "pattern": "^(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-route-command/v1"
+    },
+    "token_in": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "token_out": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "index",
+    "pool_address",
+    "token_in",
+    "token_out",
+    "amount_in",
+    "expected_amount_out",
+    "minimum_amount_out",
+    "quote_sha256",
+    "binary"
+  ],
+  "title": "Aladdin MEV Route Command v1",
+  "type": "object"
+}

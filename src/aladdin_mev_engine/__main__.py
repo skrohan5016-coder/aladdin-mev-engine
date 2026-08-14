@@ -9,7 +9,7 @@ from .io import read_stable_json
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Offline Aladdin MEV F4 conformance and canonical-evidence utility"
+        description="Offline Aladdin MEV F5 conformance and canonical-evidence utility"
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
     digest_parser = subparsers.add_parser(

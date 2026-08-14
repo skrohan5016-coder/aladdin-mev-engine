@@ -10,7 +10,7 @@ F4 is accepted only when one exact source head and its current GitHub synthetic 
 - valuation book equal to the exact consumed conversion-pair set;
 - deterministic plan steps recomputed from exact F3 route quotes;
 - own-inventory or explicit recorded flash-loan funding;
-- EIP-1559/Base cost upper bounds without priority-fee double counting;
+- separate EIP-1559 gas, L1-data, OP Stack operator-fee, and direct-payment upper bounds without priority-fee double counting;
 - exactly one of every reserve-cost category;
 - independently identified simulations bound to exact state, opportunity, plan, implementation, environment, result source, and lifetime;
 - full base-asset cost reconciliation;
