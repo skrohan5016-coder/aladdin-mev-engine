@@ -1,0 +1,19 @@
+{
+  "files": {
+    "schemas/asset-amount-v1.schema.json": "ff204845c0aa6d235403cd5e91eb7c1001dbf1137184e4a8d4d8feb0d0d7c8bf",
+    "schemas/asset-id-v1.schema.json": "d0a0b50f942b3215e0f83fd8d4d293281f5e85ba323324e9fb99da8f6a484c5f",
+    "schemas/atomic-execution-plan-v1.schema.json": "3d4593394a7bd4cedfcab3a4cc3e7532f01e59244f867ab4d1bf8130baf41a4b",
+    "schemas/chain-health-evidence-v1.schema.json": "2f5e6b16bacef889b0e13795c1525cbe830cb9d38bae655bf5e3f0801dfd3e02",
+    "schemas/conservative-net-profit-evidence-v1.schema.json": "7bf639639b1e5679a84a37e0d64ac365b16182af93ef11b478d8c2f92f6e34e7",
+    "schemas/conservative-valuation-rate-v1.schema.json": "c1cadbcf7b5bff20a18306b22aad6bad67f775b3a8f729ab2457ac49bf8f4d85",
+    "schemas/eip1559-cost-envelope-v1.schema.json": "0755a6d1bc8e221b060008ec9773e826e7cd4380a1cdafd2de8d9916f6d2d6c0",
+    "schemas/execution-cost-envelope-v1.schema.json": "7d0700a5c5d81b0e70599995fe43731fa3ef5f487dabc0b71b9f19da14474496",
+    "schemas/execution-decision-v1.schema.json": "145bbca15892b5bd35e06031335dcb68a43f1366c63c1e219a0f77538434a706",
+    "schemas/funding-plan-v1.schema.json": "f30ce4477543ba95a5c3a4d2aa030b956dd315d8933726dba95729c901f02c55",
+    "schemas/reserve-cost-component-v1.schema.json": "6dfe5e826a792a5d1a87eb16b4de7e7f86fd49dcd17e6bd961b62949fdebb681",
+    "schemas/risk-budget-evidence-v1.schema.json": "ea0f44132ee6ed37fd95a61eca850e90ec1266cf684f7bee28ec47d1ac639b4c",
+    "schemas/route-simulation-result-v1.schema.json": "23a750ef06b1fd711db29b3af761e949a458959b386f6c6fc02b548748b30aca",
+    "schemas/valuation-book-v1.schema.json": "17f6160d29ff3739daf85df7e2a31aaf41bb6e73a16c4576a679ef12d263dfa4"
+  },
+  "schema": "aladdin-mev-f4-schema-lock/v1"
+}

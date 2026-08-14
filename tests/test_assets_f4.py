@@ -96,6 +96,14 @@ class AssetAndValuationF4Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "absent"):
             book.convert_upper_bound(AssetAmount(token, 1), native, at_unix_ms=150)
 
+        self.assertEqual(len(book.pair_sha256), 1)
+        self.assertEqual(
+            book.require_exact_pairs(((native, token),), at_unix_ms=150),
+            book.rates,
+        )
+        with self.assertRaisesRegex(ValueError, "exact required"):
+            book.require_exact_pairs((), at_unix_ms=150)
+
     def test_converted_upper_bound_is_uint256_closed(self) -> None:
         native = AssetId.native(Chain.ETHEREUM)
         token = AssetId.erc20(Chain.ETHEREUM, bytes.fromhex("44" * 20))
@@ -109,9 +117,23 @@ class AssetAndValuationF4Tests(unittest.TestCase):
             1,
             "55" * 32,
         )
-        with self.assertRaisesRegex(ValueError, "exceeds uint256"):
+        with self.assertRaisesRegex(ValueError, "multiplication exceeds uint256"):
             rate.convert_upper_bound(
                 AssetAmount(native, MAX_UINT256), at_unix_ms=0
+            )
+        quotient_would_fit = ConservativeValuationRate(
+            "intermediate-overflow",
+            native,
+            token,
+            MAX_UINT256,
+            MAX_UINT256,
+            0,
+            1,
+            "66" * 32,
+        )
+        with self.assertRaisesRegex(ValueError, "multiplication exceeds uint256"):
+            quotient_would_fit.convert_upper_bound(
+                AssetAmount(native, 2), at_unix_ms=0
             )
 
 

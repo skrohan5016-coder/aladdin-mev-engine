@@ -13,23 +13,23 @@ from aladdin_mev_engine.source_contracts import (
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class F3GovernanceTests(unittest.TestCase):
-    def test_architecture_binds_f2_parent_and_disabled_live_authorities(self) -> None:
+class InheritedGovernanceRetentionTests(unittest.TestCase):
+    def test_architecture_binds_accepted_f3_parent_and_disabled_live_authorities(self) -> None:
         architecture = json.loads(
             (ROOT / "governance" / "architecture.json").read_text(encoding="utf-8")
         )
-        self.assertEqual(architecture["milestone"], "F3")
+        self.assertEqual(architecture["milestone"], "F4")
         self.assertEqual(
             architecture["accepted_parent_head"],
-            "49b694f0e3034679b9e87f33b8008ad9fa83035c",
+            "046b6b2e39c06feba8eb77da2f2139663e84e50e",
         )
         self.assertEqual(
             architecture["accepted_parent_tree"],
-            "79e0e4c8aab824aac895e81bbb452c5c0d0e73d2",
+            "1c94f705477863b62906f5ec6e5a37ad7a850580",
         )
         self.assertEqual(
             architecture["accepted_parent_architecture_id"],
-            "AMEV-F2-ARCH-v1-bce8012e3ea7",
+            "AMEV-F3-ARCH-v1-d2caf73e6121",
         )
         self.assertEqual(architecture["source_contract_ids"], sorted(SOURCE_CONTRACTS))
         self.assertEqual(
@@ -54,30 +54,22 @@ class F3GovernanceTests(unittest.TestCase):
         for key in ("network_access", "signing_authority", "execution_authority"):
             self.assertEqual(architecture[key], "none")
 
-    def test_architecture_binds_f2_and_f3_schema_locks(self) -> None:
+    def test_architecture_retains_f2_and_f3_schema_locks(self) -> None:
         architecture = json.loads(
             (ROOT / "governance" / "architecture.json").read_text(encoding="utf-8")
         )
-        f2_lock = json.loads(
-            (ROOT / "governance" / "f2-schemas.lock.json").read_text(
-                encoding="utf-8"
+        for milestone in ("f2", "f3"):
+            lock = json.loads(
+                (ROOT / "governance" / f"{milestone}-schemas.lock.json").read_text(
+                    encoding="utf-8"
+                )
             )
-        )
-        f3_lock = json.loads(
-            (ROOT / "governance" / "f3-schemas.lock.json").read_text(
-                encoding="utf-8"
+            self.assertEqual(
+                architecture[f"{milestone}_schema_lock_sha256"],
+                canonical_sha256(lock),
             )
-        )
-        self.assertEqual(
-            architecture["f2_schema_lock_sha256"],
-            canonical_sha256(f2_lock),
-        )
-        self.assertEqual(
-            architecture["f3_schema_lock_sha256"],
-            canonical_sha256(f3_lock),
-        )
 
-    def test_architecture_lock_matches_canonical_manifest(self) -> None:
+    def test_architecture_lock_matches_canonical_f4_manifest(self) -> None:
         architecture = json.loads(
             (ROOT / "governance" / "architecture.json").read_text(encoding="utf-8")
         )
@@ -88,7 +80,7 @@ class F3GovernanceTests(unittest.TestCase):
         )
         digest = canonical_sha256(architecture)
         self.assertEqual(lock["manifest_sha256"], digest)
-        self.assertEqual(lock["architecture_id"], f"AMEV-F3-ARCH-v1-{digest[:12]}")
+        self.assertEqual(lock["architecture_id"], f"AMEV-F4-ARCH-v1-{digest[:12]}")
         self.assertEqual(lock["manifest_path"], "governance/architecture.json")
         self.assertEqual(lock["schema"], "aladdin-mev-architecture-lock/v1")
 

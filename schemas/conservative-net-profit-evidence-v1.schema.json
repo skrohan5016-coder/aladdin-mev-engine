@@ -1,0 +1,180 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/conservative-net-profit-evidence-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority": {
+      "const": "offline-recorded-cost-complete-shadow-net-evidence"
+    },
+    "chain_health": {
+      "enum": [
+        "healthy",
+        "degraded",
+        "unknown"
+      ]
+    },
+    "chain_health_evidence": {
+      "$ref": "chain-health-evidence-v1.schema.json"
+    },
+    "chain_health_evidence_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "cost_completeness": {
+      "const": "complete-recorded-upper-bound-no-inclusion-guarantee"
+    },
+    "cost_envelope": {
+      "$ref": "execution-cost-envelope-v1.schema.json"
+    },
+    "cost_envelope_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "decision": {
+      "$ref": "execution-decision-v1.schema.json"
+    },
+    "decision_authority": {
+      "const": "shadow-economics-only"
+    },
+    "evidence_id": {
+      "pattern": "^net-evidence-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "execution_plan_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "inclusion_guarantee": {
+      "const": false
+    },
+    "inputs_valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "opportunity_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "opportunity_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "profit_policy": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum_bid_fraction_bps": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "maximum_state_age_ms": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "minimum_absolute_profit": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "minimum_return_bps": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "policy_id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "policy_id",
+        "minimum_absolute_profit",
+        "minimum_return_bps",
+        "maximum_bid_fraction_bps",
+        "maximum_state_age_ms"
+      ],
+      "type": "object"
+    },
+    "risk_budget_available": {
+      "type": "boolean"
+    },
+    "risk_budget_evidence": {
+      "$ref": "risk-budget-evidence-v1.schema.json"
+    },
+    "risk_budget_evidence_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-conservative-net-profit-evidence/v1"
+    },
+    "signing_authority": {
+      "const": "none"
+    },
+    "simulation_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 2,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "simulations": {
+      "items": {
+        "$ref": "route-simulation-result-v1.schema.json"
+      },
+      "maxItems": 8,
+      "minItems": 2,
+      "type": "array"
+    },
+    "state_age_ms": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "evidence_id",
+    "opportunity_id",
+    "opportunity_sha256",
+    "execution_plan_sha256",
+    "cost_envelope",
+    "cost_envelope_sha256",
+    "simulations",
+    "simulation_sha256",
+    "profit_policy",
+    "chain_health_evidence",
+    "chain_health_evidence_sha256",
+    "risk_budget_evidence",
+    "risk_budget_evidence_sha256",
+    "chain_health",
+    "risk_budget_available",
+    "state_age_ms",
+    "decision",
+    "decision_authority",
+    "cost_completeness",
+    "authority",
+    "inclusion_guarantee",
+    "signing_authority",
+    "execution_eligible",
+    "created_at_unix_ms",
+    "inputs_valid_until_unix_ms"
+  ],
+  "title": "Aladdin MEV Conservative Net Profit Evidence v1",
+  "type": "object"
+}

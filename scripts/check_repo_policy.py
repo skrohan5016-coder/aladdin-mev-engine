@@ -9,6 +9,8 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 
+EXPECTED_WORKFLOW_SHA256 = "aeb8458302dbb41777f3f5178942af54e3ebf35000a142f05674a36cf2b923f8"
+
 PINNED_ACTIONS = {
     "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
     "actions/setup-python": "5fda3b95a4ea91299a34e894583c3862153e4b97",
@@ -23,6 +25,7 @@ EXPECTED_RUN_COMMANDS = {
     "python scripts/verify_source_contracts.py": 2,
     "python scripts/verify_f2_schemas.py": 2,
     "python scripts/verify_f3_schemas.py": 2,
+    "python scripts/verify_f4_schemas.py": 2,
     "git diff --exit-code": 2,
 }
 EXPECTED_SOURCE_IDS = (
@@ -37,9 +40,9 @@ EXPECTED_SOURCE_IDS = (
     "ethereum-mev-share",
 )
 EXPECTED_PARENT = {
-    "accepted_parent_architecture_id": "AMEV-F2-ARCH-v1-bce8012e3ea7",
-    "accepted_parent_head": "49b694f0e3034679b9e87f33b8008ad9fa83035c",
-    "accepted_parent_tree": "79e0e4c8aab824aac895e81bbb452c5c0d0e73d2",
+    "accepted_parent_architecture_id": "AMEV-F3-ARCH-v1-d2caf73e6121",
+    "accepted_parent_head": "046b6b2e39c06feba8eb77da2f2139663e84e50e",
+    "accepted_parent_tree": "1c94f705477863b62906f5ec6e5a37ad7a850580",
 }
 REQUIRED_COMPONENTS = {
     "explicit-code-hash-bound-constant-product-models",
@@ -57,7 +60,30 @@ REQUIRED_COMPONENTS = {
     "deterministic-smaller-input-tie-break",
     "gross-only-opportunity-evidence-recomputation",
     "f3-schema-lock",
-    "fixed-hosted-runner-shell-and-environment-ci-contract",
+    "chain-bound-native-and-erc20-asset-identity",
+    "checked-uint256-valuation-intermediate",
+    "directional-ceiling-valuation-authority",
+    "deterministic-atomic-route-execution-plan",
+    "explicit-own-inventory-or-recorded-flash-funding",
+    "eip1559-and-base-fee-upper-bound-envelope",
+    "independent-route-simulation-binding",
+    "source-build-and-time-bound-route-simulation-evidence",
+    "canonical-route-simulation-ordering",
+    "cost-input-lifetime-revalidation",
+    "exact-required-valuation-pair-set",
+    "recorded-chain-health-context",
+    "recomputed-risk-budget-snapshot",
+    "distinct-simulator-implementation-and-result-source-binding",
+    "final-evidence-transitive-validity-recheck",
+    "exact-state-reference-bound-route-simulation-evidence",
+    "exact-complete-reserve-cost-category-set",
+    "base-asset-cost-reconciliation",
+    "conservative-shadow-net-profit-evidence",
+    "exact-simulation-environment-consensus",
+    "checked-uint256-risk-budget-aggregation",
+    "risk-budget-post-cost-envelope-ordering",
+    "uint256-closed-f4-profit-policy",
+    "f4-schema-lock",
 }
 REQUIRED_INVARIANTS = {
     "explicit-model-registry-is-evidence-identity-not-production-approval",
@@ -84,8 +110,38 @@ REQUIRED_INVARIANTS = {
     "intermediate-route-quote-and-optimization-values-grant-no-standalone-opportunity-authority",
     "f3-opportunities-are-gross-only-cost-incomplete-and-never-execution-eligible",
     "f3-schema-lock-binds-all-new-schemas-and-the-transitive-opportunity-schema-dependency",
-    "ci-forbids-custom-shell-defaults-containers-services-job-environments-and-continue-on-error",
-    "ci-requires-the-exact-hosted-runner-top-level-environment-condition-and-timeout",
+    "asset-identities-are-chain-and-kind-bound",
+    "valuation-is-directional-explicit-time-bounded-and-rounded-up",
+    "valuation-multiplication-is-checked-uint256-before-ceiling-division",
+    "implicit-inverse-or-cross-chain-valuation-is-forbidden",
+    "execution-plans-recompute-every-step-from-the-exact-f3-route-quote",
+    "execution-plans-carry-no-calldata-signing-or-execution-authority",
+    "funding-principal-and-asset-equal-the-exact-f3-capital-and-base-token",
+    "flash-loan-fees-are-explicit-recorded-inputs-not-hardcoded-protocol-assumptions",
+    "eip1559-priority-fee-is-contained-inside-max-fee-and-never-added-again",
+    "ethereum-l1-data-fee-is-zero-and-base-l1-security-fee-is-explicit",
+    "direct-inclusion-payment-is-separated-from-priority-fee",
+    "route-simulations-bind-the-exact-opportunity-and-plan-and-require-unique-engines",
+    "route-simulation-independence-requires-distinct-engine-implementation-and-result-source-digests",
+    "route-simulations-bind-the-exact-state-reference-and-remain-valid-at-final-evidence-time",
+    "simulation-order-does-not-change-net-evidence-identity",
+    "successful-route-simulations-agree-on-gas-output-token-deltas-and-post-state",
+    "every-reserve-cost-category-is-present-exactly-once",
+    "all-cost-assets-are-converted-to-the-f3-base-asset-with-conservative-ceiling",
+    "gross-profit-and-flash-fee-are-derived-from-bound-f3-and-funding-authority",
+    "simulated-gas-cannot-exceed-the-recorded-gas-upper-bound",
+    "cost-complete-shadow-approval-never-grants-inclusion-signing-or-execution-authority",
+    "funding-fee-reserve-and-valuation-inputs-remain-valid-at-cost-and-net-evidence-times",
+    "valuation-book-contains-exactly-the-required-cost-conversion-pairs",
+    "chain-health-is-source-bound-time-bound-and-chain-bound",
+    "risk-budget-is-recomputed-from-a-source-bound-snapshot-and-binds-plan-cost-and-notional",
+    "route-simulation-agreement-requires-one-exact-environment-digest",
+    "risk-budget-pending-daily-and-concurrency-aggregation-is-checked-uint256",
+    "risk-budget-snapshot-cannot-precede-the-bound-execution-cost-envelope",
+    "f4-profit-policy-integer-fields-are-closed-to-uint256",
+    "cost-envelope-and-all-transitive-inputs-remain-valid-at-final-net-evidence-time",
+    "bare-chain-health-and-risk-budget-values-have-no-decision-authority",
+    "f4-schema-lock-binds-all-new-schemas-and-the-inherited-decision-schema",
 }
 F3_SCHEMA_FILES = {
     "authenticated-constant-product-pool-v1.schema.json",
@@ -98,6 +154,22 @@ F3_SCHEMA_FILES = {
     "opportunity-search-report-v1.schema.json",
     "opportunity-v1.schema.json",
     "route-optimization-v1.schema.json",
+}
+F4_SCHEMA_FILES = {
+    "asset-amount-v1.schema.json",
+    "asset-id-v1.schema.json",
+    "atomic-execution-plan-v1.schema.json",
+    "chain-health-evidence-v1.schema.json",
+    "conservative-net-profit-evidence-v1.schema.json",
+    "conservative-valuation-rate-v1.schema.json",
+    "eip1559-cost-envelope-v1.schema.json",
+    "execution-cost-envelope-v1.schema.json",
+    "execution-decision-v1.schema.json",
+    "funding-plan-v1.schema.json",
+    "reserve-cost-component-v1.schema.json",
+    "risk-budget-evidence-v1.schema.json",
+    "route-simulation-result-v1.schema.json",
+    "valuation-book-v1.schema.json",
 }
 REQUIRED_FILES = {
     # Inherited F1/F2 authority.
@@ -132,6 +204,22 @@ REQUIRED_FILES = {
     "tests/test_opportunity_graph_f3.py",
     "tests/test_optimizer_f3.py",
     "tests/test_repository_policy_f3.py",
+    # F4 authority.
+    "governance/F4_ACCEPTANCE.md",
+    "governance/F4_COST_COMPLETE_PROFIT.md",
+    "governance/f4-schemas.lock.json",
+    "scripts/verify_f4_schemas.py",
+    "src/aladdin_mev_engine/assets.py",
+    "src/aladdin_mev_engine/context_evidence.py",
+    "src/aladdin_mev_engine/cost_evidence.py",
+    "src/aladdin_mev_engine/execution_plan.py",
+    "tests/f4_helpers.py",
+    "tests/test_assets_f4.py",
+    "tests/test_cost_evidence_f4.py",
+    "tests/test_execution_plan_f4.py",
+    "tests/test_f4_schema_contracts.py",
+    "tests/test_governance_f4.py",
+    "tests/test_repository_policy_f4.py",
 }
 
 ACTION_REF = re.compile(
@@ -165,15 +253,6 @@ FORBIDDEN_SOURCE_TERMS = re.compile(
     re.IGNORECASE,
 )
 FORBIDDEN_DYNAMIC_EXECUTION = re.compile(r"\b(?:eval|exec)\s*\(")
-UNSAFE_WORKFLOW_KEY = re.compile(
-    r"^[ \t]+(?:defaults|shell|container|services|continue-on-error|"
-    r"working-directory|environment|strategy|needs|permissions):\s*",
-    re.MULTILINE,
-)
-INDENTED_WORKFLOW_ENV = re.compile(r"^[ \t]+env:[ \t]*$", re.MULTILINE)
-RUNNER_LINE = re.compile(r"^[ \t]+runs-on:[ \t]*([^#\s]+)[ \t]*(?:#.*)?$", re.MULTILINE)
-IF_LINE = re.compile(r"^[ \t]+if:[ \t]*(.*?)[ \t]*$", re.MULTILINE)
-TIMEOUT_LINE = re.compile(r"^[ \t]+timeout-minutes:[ \t]*([0-9]+)[ \t]*$", re.MULTILINE)
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -188,37 +267,16 @@ def _canonical_sha256(value: object) -> str:
     return hashlib.sha256(payload).hexdigest()
 
 
-def _mapping_blocks(text: str, key: str) -> list[tuple[str, ...]]:
-    """Return exact direct-child lines for simple YAML mapping blocks."""
-
-    lines = text.splitlines()
-    blocks: list[tuple[str, ...]] = []
-    for index, line in enumerate(lines):
-        stripped = line.strip()
-        if stripped != f"{key}:":
-            continue
-        indent = len(line) - len(line.lstrip(" "))
-        children: list[str] = []
-        for child in lines[index + 1 :]:
-            if not child.strip():
-                break
-            child_indent = len(child) - len(child.lstrip(" "))
-            if child_indent <= indent:
-                break
-            if child_indent == indent + 2:
-                children.append(child.strip())
-        blocks.append(tuple(children))
-    return blocks
-
-
 def workflow_policy_errors(text: str) -> list[str]:
     errors: list[str] = []
     if type(text) is not str:
         return ["workflow source must be an exact string"]
+    if hashlib.sha256(text.encode("utf-8")).hexdigest() != EXPECTED_WORKFLOW_SHA256:
+        errors.append("workflow source does not match the exact governed F4 template")
     if "pull_request_target:" in text:
         errors.append("pull_request_target is forbidden")
     if SECRET_PATTERN.search(text):
-        errors.append("workflow secret references are forbidden in F3")
+        errors.append("workflow secret references are forbidden in F4")
     if len(re.findall(r"^permissions:\s*$", text, flags=re.MULTILINE)) != 1:
         errors.append("workflow must have exactly one top-level permissions block")
     if "permissions:\n  contents: read" not in text:
@@ -227,37 +285,15 @@ def workflow_policy_errors(text: str) -> list[str]:
         errors.append("workflow write permissions are forbidden")
     if text.count("persist-credentials: false") != 2:
         errors.append("both governed checkout paths must disable persisted credentials")
-    if _mapping_blocks(text, "env") != [
-        ("PYTHONPATH: src", 'PYTHONDONTWRITEBYTECODE: "1"')
-    ] or INDENTED_WORKFLOW_ENV.search(text):
-        errors.append("workflow environment must be the exact governed top-level block")
-    if _mapping_blocks(text, "with") != [
-        (
-            "ref: ${{ github.event.pull_request.head.sha || github.sha }}",
-            "persist-credentials: false",
-        ),
-        ('python-version: "3.13"',),
-        ("persist-credentials: false",),
-        ('python-version: "3.13"',),
-    ]:
-        errors.append("workflow action inputs must equal the exact governed with blocks")
-    if UNSAFE_WORKFLOW_KEY.search(text):
-        errors.append("workflow contains an unsafe execution-control key")
-    if RUNNER_LINE.findall(text) != ["ubuntu-latest", "ubuntu-latest"]:
-        errors.append("both governed jobs must use the exact ubuntu-latest hosted runner")
-    if IF_LINE.findall(text) != ["github.event_name == 'pull_request'"]:
-        errors.append("workflow conditions must equal the single governed merge-job condition")
-    if TIMEOUT_LINE.findall(text) != ["10", "10"]:
-        errors.append("both governed jobs must use the exact ten-minute timeout")
 
     required_contracts = {
         "validate-head:": "missing exact-head validation job",
-        "name: F3 exact-head conformance": "missing F3 exact-head job identity",
+        "name: F4 exact-head conformance": "missing F4 exact-head job identity",
         "ref: ${{ github.event.pull_request.head.sha || github.sha }}": (
             "exact-head checkout is not bound to the source SHA"
         ),
         "validate-merge:": "missing merge-integration validation job",
-        "name: F3 merge integration": "missing F3 merge-integration job identity",
+        "name: F4 merge integration": "missing F4 merge-integration job identity",
         "if: github.event_name == 'pull_request'": (
             "merge-integration job must be pull-request-only"
         ),
@@ -334,9 +370,9 @@ def _check_project_metadata(errors: list[str]) -> None:
         return
     project = document.get("project", {})
     if project.get("dependencies") != []:
-        errors.append("F3 runtime dependencies must be exactly empty")
-    if project.get("version") != "0.4.0":
-        errors.append("F3 project version must be 0.4.0")
+        errors.append("F4 runtime dependencies must be exactly empty")
+    if project.get("version") != "0.5.0":
+        errors.append("F4 project version must be 0.5.0")
     aladdin = document.get("tool", {}).get("aladdin", {})
     expected = {
         "architecture_manifest": "governance/architecture.json",
@@ -344,12 +380,24 @@ def _check_project_metadata(errors: list[str]) -> None:
         "source_contracts": "governance/source-contracts.json",
         "f2_schema_lock": "governance/f2-schemas.lock.json",
         "f3_schema_lock": "governance/f3-schemas.lock.json",
+        "f4_schema_lock": "governance/f4-schemas.lock.json",
         "observation_authority": "recorded-input-only",
         "state_proof_authority": "offline-recorded-input-only",
         "opportunity_authority": (
             "offline-authenticated-model-bound-gross-shadow-only"
         ),
         "production_model_lock": "none",
+        "execution_plan_authority": "offline-structural-plan-only",
+        "simulation_authority": (
+            "recorded-distinct-implementation-exact-agreement-only"
+        ),
+        "chain_health_authority": (
+            "recorded-source-bound-shadow-context-only"
+        ),
+        "risk_budget_authority": (
+            "recorded-recomputed-snapshot-shadow-only"
+        ),
+        "cost_evidence_authority": "offline-recorded-upper-bound-shadow-only",
         "execution_authority": "none",
         "network_access": "none",
         "signing_authority": "none",
@@ -419,7 +467,7 @@ def _check_repository_hygiene(errors: list[str]) -> None:
 def _check_required_files(errors: list[str]) -> None:
     for relative in sorted(REQUIRED_FILES):
         if not (ROOT / relative).is_file():
-            errors.append(f"missing governed F3 file: {relative}")
+            errors.append(f"missing governed F4 file: {relative}")
 
 
 def _check_schemas(errors: list[str]) -> None:
@@ -442,6 +490,9 @@ def _check_schemas(errors: list[str]) -> None:
     missing = F3_SCHEMA_FILES - found
     if missing:
         errors.append("missing F3 schemas: " + ", ".join(sorted(missing)))
+    missing_f4 = F4_SCHEMA_FILES - found
+    if missing_f4:
+        errors.append("missing F4 schemas: " + ", ".join(sorted(missing_f4)))
 
 
 def _load_json(relative: str, errors: list[str]) -> dict[str, object] | None:
@@ -461,14 +512,15 @@ def _check_architecture(errors: list[str]) -> None:
     lock = _load_json("governance/architecture.lock.json", errors)
     f2_lock = _load_json("governance/f2-schemas.lock.json", errors)
     f3_lock = _load_json("governance/f3-schemas.lock.json", errors)
+    f4_lock = _load_json("governance/f4-schemas.lock.json", errors)
     source_contracts = _load_json("governance/source-contracts.json", errors)
     if architecture is None:
         return
-    if architecture.get("milestone") != "F3":
-        errors.append("architecture milestone must be F3")
+    if architecture.get("milestone") != "F4":
+        errors.append("architecture milestone must be F4")
     for key, expected in EXPECTED_PARENT.items():
         if architecture.get(key) != expected:
-            errors.append(f"architecture {key} does not bind the accepted F2 parent")
+            errors.append(f"architecture {key} does not bind the accepted F3 parent")
     expected_authority = {
         "network_access": "none",
         "signing_authority": "none",
@@ -479,9 +531,23 @@ def _check_architecture(errors: list[str]) -> None:
             "offline-authenticated-model-bound-gross-shadow-only"
         ),
         "production_model_lock": "none",
+        "execution_plan_authority": "offline-structural-plan-only",
+        "cost_evidence_authority": "offline-recorded-upper-bound-shadow-only",
         "model_registry_authority": (
             "explicit-evidence-model-set-not-production-approval"
         ),
+        "execution_plan_authority": "offline-structural-plan-only",
+        "simulation_authority": (
+            "recorded-distinct-implementation-exact-agreement-only"
+        ),
+        "chain_health_authority": (
+            "recorded-source-bound-shadow-context-only"
+        ),
+        "risk_budget_authority": (
+            "recorded-recomputed-snapshot-shadow-only"
+        ),
+        "cost_evidence_authority": "offline-recorded-upper-bound-shadow-only",
+        "cost_completeness": "complete-recorded-upper-bound-no-inclusion-guarantee",
     }
     for key, expected in expected_authority.items():
         if architecture.get(key) != expected:
@@ -497,14 +563,16 @@ def _check_architecture(errors: list[str]) -> None:
         errors.append("architecture source-contract identifiers are not governed")
     components = architecture.get("components")
     if type(components) is not list or not REQUIRED_COMPONENTS.issubset(set(components)):
-        errors.append("architecture is missing required F3 components")
+        errors.append("architecture is missing required F4 components")
     invariants = architecture.get("invariants")
     if type(invariants) is not list or not REQUIRED_INVARIANTS.issubset(set(invariants)):
-        errors.append("architecture is missing required F3 invariants")
+        errors.append("architecture is missing required F4 invariants")
     if f2_lock is not None and architecture.get("f2_schema_lock_sha256") != _canonical_sha256(f2_lock):
         errors.append("architecture F2 schema-lock digest does not match")
     if f3_lock is not None and architecture.get("f3_schema_lock_sha256") != _canonical_sha256(f3_lock):
         errors.append("architecture F3 schema-lock digest does not match")
+    if f4_lock is not None and architecture.get("f4_schema_lock_sha256") != _canonical_sha256(f4_lock):
+        errors.append("architecture F4 schema-lock digest does not match")
     if source_contracts is not None and architecture.get("source_contract_set_sha256") != source_contracts.get("contracts_sha256"):
         errors.append("architecture source-contract digest does not match")
 
@@ -524,7 +592,7 @@ def _check_architecture(errors: list[str]) -> None:
         errors.append("architecture lock path is not governed")
     if lock.get("manifest_sha256") != digest:
         errors.append("architecture lock does not bind the canonical manifest")
-    if lock.get("architecture_id") != f"AMEV-F3-ARCH-v1-{digest[:12]}":
+    if lock.get("architecture_id") != f"AMEV-F4-ARCH-v1-{digest[:12]}":
         errors.append("architecture id does not bind the canonical manifest")
 
 

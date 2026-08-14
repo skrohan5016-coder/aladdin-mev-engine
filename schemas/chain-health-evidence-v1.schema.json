@@ -1,0 +1,59 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/chain-health-evidence-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority": {
+      "const": "recorded-chain-health-shadow-context-only"
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base",
+        "arbitrum",
+        "bnb-smart-chain",
+        "solana"
+      ]
+    },
+    "evidence_id": {
+      "pattern": "^chain-health-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "health": {
+      "enum": [
+        "healthy",
+        "degraded",
+        "unknown"
+      ]
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-chain-health-evidence/v1"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "evidence_id",
+    "chain",
+    "health",
+    "observed_at_unix_ms",
+    "valid_until_unix_ms",
+    "source_sha256",
+    "authority"
+  ],
+  "title": "Aladdin MEV Chain Health Evidence v1",
+  "type": "object"
+}

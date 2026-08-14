@@ -3,10 +3,17 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import StrEnum
 
-from .assets import AssetAmount, AssetId, AssetKind, ValuationBook
+from .assets import (
+    AssetAmount,
+    AssetId,
+    AssetKind,
+    ValuationBook,
+    valuation_pair_sha256,
+)
 from .canonical import canonical_json_bytes, canonical_sha256
 from .constant_product import MAX_UINT256
-from .domain import Chain, ChainHealth, require_bounded_text, require_sha256
+from .context_evidence import ChainHealthEvidence, RiskBudgetEvidence
+from .domain import Chain, require_bounded_text, require_sha256
 from .execution_plan import AtomicExecutionPlan
 from .opportunity import MAX_UINT64
 from .profit import CostBreakdown, ProfitAssessment, ProfitPolicy, assess_profit
@@ -205,6 +212,10 @@ class ReserveCostComponent:
 @dataclass(frozen=True, slots=True)
 class RouteSimulationResult:
     engine_id: str
+    engine_implementation_sha256: str
+    environment_sha256: str
+    result_source_sha256: str
+    state_reference_sha256: str
     success: bool
     opportunity_sha256: str
     execution_plan_sha256: str
@@ -212,6 +223,8 @@ class RouteSimulationResult:
     output_amount: int
     token_deltas_sha256: str
     post_state_sha256: str
+    observed_at_unix_ms: int
+    valid_until_unix_ms: int
     error_code: str | None = None
     schema: str = ROUTE_SIMULATION_SCHEMA
 
@@ -219,6 +232,13 @@ class RouteSimulationResult:
         if self.schema != ROUTE_SIMULATION_SCHEMA:
             raise ValueError("unsupported route-simulation-result schema")
         require_bounded_text("engine_id", self.engine_id, maximum=128)
+        require_sha256(
+            "engine_implementation_sha256",
+            self.engine_implementation_sha256,
+        )
+        require_sha256("environment_sha256", self.environment_sha256)
+        require_sha256("result_source_sha256", self.result_source_sha256)
+        require_sha256("state_reference_sha256", self.state_reference_sha256)
         if type(self.success) is not bool:
             raise TypeError("success must be an exact bool")
         require_sha256("opportunity_sha256", self.opportunity_sha256)
@@ -227,6 +247,10 @@ class RouteSimulationResult:
         _uint("output_amount", self.output_amount)
         require_sha256("token_deltas_sha256", self.token_deltas_sha256)
         require_sha256("post_state_sha256", self.post_state_sha256)
+        _time("observed_at_unix_ms", self.observed_at_unix_ms)
+        _time("valid_until_unix_ms", self.valid_until_unix_ms)
+        if self.valid_until_unix_ms < self.observed_at_unix_ms:
+            raise ValueError("simulation validity cannot precede observation")
         if self.error_code is not None:
             require_bounded_text("error_code", self.error_code, maximum=128)
         if self.success:
@@ -238,10 +262,18 @@ class RouteSimulationResult:
             raise ValueError("failed route simulation requires an error code")
         canonical_json_bytes(self.to_json_value())
 
+    def is_valid_at(self, at_unix_ms: int) -> bool:
+        _time("at_unix_ms", at_unix_ms)
+        return self.observed_at_unix_ms <= at_unix_ms <= self.valid_until_unix_ms
+
     def to_json_value(self) -> dict[str, object]:
         return {
             "schema": self.schema,
             "engine_id": self.engine_id,
+            "engine_implementation_sha256": self.engine_implementation_sha256,
+            "environment_sha256": self.environment_sha256,
+            "result_source_sha256": self.result_source_sha256,
+            "state_reference_sha256": self.state_reference_sha256,
             "success": self.success,
             "opportunity_sha256": self.opportunity_sha256,
             "execution_plan_sha256": self.execution_plan_sha256,
@@ -249,6 +281,8 @@ class RouteSimulationResult:
             "output_amount": str(self.output_amount),
             "token_deltas_sha256": self.token_deltas_sha256,
             "post_state_sha256": self.post_state_sha256,
+            "observed_at_unix_ms": str(self.observed_at_unix_ms),
+            "valid_until_unix_ms": str(self.valid_until_unix_ms),
             "error_code": self.error_code,
         }
 
@@ -266,11 +300,18 @@ def dual_route_simulations_agree(
         return False
     if len({item.engine_id for item in simulations}) != len(simulations):
         return False
+    if len({item.engine_implementation_sha256 for item in simulations}) != len(simulations):
+        return False
+    if len({item.result_source_sha256 for item in simulations}) != len(simulations):
+        return False
+    if len({item.environment_sha256 for item in simulations}) != 1:
+        return False
     reference = simulations[0]
     if not reference.success:
         return False
     return all(
         item.success
+        and item.state_reference_sha256 == reference.state_reference_sha256
         and item.opportunity_sha256 == reference.opportunity_sha256
         and item.execution_plan_sha256 == reference.execution_plan_sha256
         and item.gas_units == reference.gas_units
@@ -292,6 +333,11 @@ class ExecutionCostEnvelope:
     schema: str = COST_ENVELOPE_SCHEMA
     _costs: CostBreakdown = field(init=False, repr=False)
     _converted_components: tuple[tuple[str, int], ...] = field(init=False, repr=False)
+    _required_valuation_pairs: tuple[tuple[AssetId, AssetId], ...] = field(
+        init=False,
+        repr=False,
+    )
+    _valid_until_unix_ms: int = field(init=False, repr=False)
     _envelope_id: str = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
@@ -312,18 +358,41 @@ class ExecutionCostEnvelope:
             raise ValueError("cost envelope cannot precede its execution plan")
         if self.fee_envelope.chain is not self.plan.opportunity.universe.chain:
             raise ValueError("fee envelope chain does not match the execution plan")
+        if not self.plan.funding.is_valid_at(self.created_at_unix_ms):
+            raise ValueError("funding plan is not valid at cost-envelope creation time")
         if not self.fee_envelope.is_valid_at(self.created_at_unix_ms):
             raise ValueError("fee envelope is not valid at cost-envelope creation time")
+
         ordered = tuple(sorted(self.reserve_components, key=lambda item: item.category.value))
         object.__setattr__(self, "reserve_components", ordered)
         categories = [item.category for item in ordered]
-        required = set(ReserveCostCategory)
-        if len(categories) != len(required) or set(categories) != required:
+        required_categories = set(ReserveCostCategory)
+        if len(categories) != len(required_categories) or set(categories) != required_categories:
             raise ValueError("reserve cost components must contain every category exactly once")
         if any(not item.is_valid_at(self.created_at_unix_ms) for item in ordered):
             raise ValueError("reserve component is not valid at cost-envelope creation time")
+
         base = self.plan.base_asset
         native = self.fee_envelope.native_asset
+        cost_assets = (native, self.plan.funding.asset, *(item.amount.asset for item in ordered))
+        if any(asset.chain is not base.chain for asset in cost_assets):
+            raise ValueError("cost component asset does not match the execution-plan chain")
+        required_pairs_set = {
+            (asset, base)
+            for asset in cost_assets
+            if asset != base
+        }
+        required_pairs = tuple(
+            sorted(
+                required_pairs_set,
+                key=lambda pair: valuation_pair_sha256(pair[0], pair[1]),
+            )
+        )
+        rates = self.valuation_book.require_exact_pairs(
+            required_pairs,
+            at_unix_ms=self.created_at_unix_ms,
+        )
+        object.__setattr__(self, "_required_valuation_pairs", required_pairs)
 
         def convert(asset: AssetId, amount: int) -> int:
             return self.valuation_book.convert_upper_bound(
@@ -363,17 +432,26 @@ class ExecutionCostEnvelope:
             inventory_hedge_cost=values["inventory_hedge_cost"],
         )
         converted = tuple(sorted(values.items()))
+        valid_until = min(
+            self.plan.funding.valid_until_unix_ms,
+            self.fee_envelope.valid_until_unix_ms,
+            *(item.valid_until_unix_ms for item in ordered),
+            *(item.valid_until_unix_ms for item in rates),
+        )
         identity = {
             "schema": self.schema,
             "execution_plan_sha256": self.plan.digest,
             "fee_envelope_sha256": self.fee_envelope.digest,
             "reserve_component_sha256": [item.digest for item in ordered],
             "valuation_book_sha256": self.valuation_book.digest,
+            "required_valuation_pair_sha256": list(self.required_valuation_pair_sha256),
             "converted_costs": {key: str(value) for key, value in converted},
+            "valid_until_unix_ms": str(valid_until),
             "cost_completeness": COST_COMPLETENESS,
         }
         object.__setattr__(self, "_costs", costs)
         object.__setattr__(self, "_converted_components", converted)
+        object.__setattr__(self, "_valid_until_unix_ms", valid_until)
         object.__setattr__(
             self,
             "_envelope_id",
@@ -390,8 +468,42 @@ class ExecutionCostEnvelope:
         return self._converted_components
 
     @property
+    def required_valuation_pairs(self) -> tuple[tuple[AssetId, AssetId], ...]:
+        return self._required_valuation_pairs
+
+    @property
+    def required_valuation_pair_sha256(self) -> tuple[str, ...]:
+        return tuple(
+            valuation_pair_sha256(asset_in, asset_out)
+            for asset_in, asset_out in self.required_valuation_pairs
+        )
+
+    @property
+    def valid_until_unix_ms(self) -> int:
+        return self._valid_until_unix_ms
+
+    @property
     def envelope_id(self) -> str:
         return self._envelope_id
+
+    def is_valid_at(self, at_unix_ms: int) -> bool:
+        _time("at_unix_ms", at_unix_ms)
+        if not self.created_at_unix_ms <= at_unix_ms <= self.valid_until_unix_ms:
+            return False
+        if not self.plan.funding.is_valid_at(at_unix_ms):
+            return False
+        if not self.fee_envelope.is_valid_at(at_unix_ms):
+            return False
+        if any(not item.is_valid_at(at_unix_ms) for item in self.reserve_components):
+            return False
+        try:
+            self.valuation_book.require_exact_pairs(
+                self.required_valuation_pairs,
+                at_unix_ms=at_unix_ms,
+            )
+        except (TypeError, ValueError):
+            return False
+        return True
 
     def to_json_value(self) -> dict[str, object]:
         return {
@@ -405,6 +517,9 @@ class ExecutionCostEnvelope:
             "reserve_component_sha256": [item.digest for item in self.reserve_components],
             "valuation_book": self.valuation_book.to_json_value(),
             "valuation_book_sha256": self.valuation_book.digest,
+            "required_valuation_pair_sha256": list(
+                self.required_valuation_pair_sha256
+            ),
             "converted_costs": {
                 key: str(value) for key, value in self.converted_components
             },
@@ -412,6 +527,7 @@ class ExecutionCostEnvelope:
             "cost_completeness": COST_COMPLETENESS,
             "execution_eligible": False,
             "created_at_unix_ms": str(self.created_at_unix_ms),
+            "valid_until_unix_ms": str(self.valid_until_unix_ms),
         }
 
     @property
@@ -424,12 +540,13 @@ class ConservativeNetProfitEvidence:
     cost_envelope: ExecutionCostEnvelope
     simulations: tuple[RouteSimulationResult, ...]
     profit_policy: ProfitPolicy
-    chain_health: ChainHealth
-    risk_budget_available: bool
+    chain_health_evidence: ChainHealthEvidence
+    risk_budget_evidence: RiskBudgetEvidence
     created_at_unix_ms: int
     schema: str = NET_EVIDENCE_SCHEMA
     _decision: ProfitAssessment = field(init=False, repr=False)
     _evidence_id: str = field(init=False, repr=False)
+    _inputs_valid_until_unix_ms: int = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
         if self.schema != NET_EVIDENCE_SCHEMA:
@@ -440,18 +557,49 @@ class ConservativeNetProfitEvidence:
             raise ValueError("two to eight exact route simulations are required")
         if any(type(item) is not RouteSimulationResult for item in self.simulations):
             raise TypeError("simulations contain an ungoverned result")
+        ordered = tuple(
+            sorted(
+                self.simulations,
+                key=lambda item: (
+                    item.engine_id,
+                    item.engine_implementation_sha256,
+                    item.digest,
+                ),
+            )
+        )
+        object.__setattr__(self, "simulations", ordered)
         if type(self.profit_policy) is not ProfitPolicy:
             raise TypeError("profit_policy must be an exact ProfitPolicy")
-        if type(self.chain_health) is not ChainHealth:
-            raise TypeError("chain_health must be an exact ChainHealth")
-        if type(self.risk_budget_available) is not bool:
-            raise TypeError("risk_budget_available must be an exact bool")
+        for name in (
+            "minimum_absolute_profit",
+            "minimum_return_bps",
+            "maximum_bid_fraction_bps",
+            "maximum_state_age_ms",
+        ):
+            _uint(f"profit_policy.{name}", getattr(self.profit_policy, name))
+        if type(self.chain_health_evidence) is not ChainHealthEvidence:
+            raise TypeError("chain_health_evidence must be exact ChainHealthEvidence")
+        if type(self.risk_budget_evidence) is not RiskBudgetEvidence:
+            raise TypeError("risk_budget_evidence must be exact RiskBudgetEvidence")
         _time("created_at_unix_ms", self.created_at_unix_ms)
         if self.created_at_unix_ms < self.cost_envelope.created_at_unix_ms:
             raise ValueError("net-profit evidence cannot precede its cost envelope")
+        if not self.cost_envelope.is_valid_at(self.created_at_unix_ms):
+            raise ValueError("cost envelope inputs are not valid at net-evidence time")
         if not dual_route_simulations_agree(self.simulations):
             raise ValueError("route simulations do not provide independent exact agreement")
+
         plan = self.cost_envelope.plan
+        state_reference_sha256 = canonical_sha256(
+            plan.opportunity.universe.state_reference.to_json_value()
+        )
+        for simulation in self.simulations:
+            if simulation.observed_at_unix_ms < plan.created_at_unix_ms:
+                raise ValueError("route simulation cannot precede the execution plan")
+            if not simulation.is_valid_at(self.created_at_unix_ms):
+                raise ValueError("route simulation is not valid at net-evidence time")
+            if simulation.state_reference_sha256 != state_reference_sha256:
+                raise ValueError("route simulation does not bind the exact state reference")
         reference = self.simulations[0]
         if reference.opportunity_sha256 != plan.opportunity.digest:
             raise ValueError("route simulation does not bind the exact F3 opportunity")
@@ -461,6 +609,28 @@ class ConservativeNetProfitEvidence:
             raise ValueError("route simulation output disagrees with exact F3 output")
         if reference.gas_units > self.cost_envelope.fee_envelope.gas_units_upper_bound:
             raise ValueError("simulated gas exceeds the recorded gas upper bound")
+
+        if self.chain_health_evidence.chain is not plan.opportunity.universe.chain:
+            raise ValueError("chain-health evidence does not match the execution-plan chain")
+        if not self.chain_health_evidence.is_valid_at(self.created_at_unix_ms):
+            raise ValueError("chain-health evidence is not valid at net-evidence time")
+        if not self.risk_budget_evidence.is_valid_at(self.created_at_unix_ms):
+            raise ValueError("risk-budget evidence is not valid at net-evidence time")
+        if self.risk_budget_evidence.observed_at_unix_ms < self.cost_envelope.created_at_unix_ms:
+            raise ValueError("risk-budget evidence cannot precede the execution cost envelope")
+        if self.risk_budget_evidence.execution_plan_sha256 != plan.digest:
+            raise ValueError("risk-budget evidence does not bind the exact execution plan")
+        if (
+            self.risk_budget_evidence.requested_execution_cost
+            != self.cost_envelope.costs.total_cost
+        ):
+            raise ValueError("risk-budget evidence does not bind the exact execution cost")
+        if (
+            self.risk_budget_evidence.requested_notional
+            != plan.opportunity.capital_at_risk
+        ):
+            raise ValueError("risk-budget evidence does not bind the exact notional")
+
         state_age_ms = (
             self.created_at_unix_ms
             - plan.opportunity.universe.state_reference.observed_at_unix_ms
@@ -471,20 +641,29 @@ class ConservativeNetProfitEvidence:
             capital_at_risk=plan.opportunity.capital_at_risk,
             state_age_ms=state_age_ms,
             simulations_agree=True,
-            chain_health=self.chain_health,
-            risk_budget_available=self.risk_budget_available,
+            chain_health=self.chain_health_evidence.health,
+            risk_budget_available=self.risk_budget_evidence.allowed,
+        )
+        inputs_valid_until = min(
+            self.cost_envelope.valid_until_unix_ms,
+            self.chain_health_evidence.valid_until_unix_ms,
+            self.risk_budget_evidence.valid_until_unix_ms,
+            *(item.valid_until_unix_ms for item in self.simulations),
         )
         identity = {
             "schema": self.schema,
             "cost_envelope_sha256": self.cost_envelope.digest,
             "simulation_sha256": [item.digest for item in self.simulations],
             "profit_policy": self.profit_policy.to_json_value(),
-            "chain_health": self.chain_health.value,
-            "risk_budget_available": self.risk_budget_available,
+            "chain_health_evidence_sha256": self.chain_health_evidence.digest,
+            "risk_budget_evidence_sha256": self.risk_budget_evidence.digest,
             "decision": decision.to_json_value(),
+            "created_at_unix_ms": str(self.created_at_unix_ms),
+            "inputs_valid_until_unix_ms": str(inputs_valid_until),
             "authority": NET_AUTHORITY,
         }
         object.__setattr__(self, "_decision", decision)
+        object.__setattr__(self, "_inputs_valid_until_unix_ms", inputs_valid_until)
         object.__setattr__(self, "_evidence_id", "net-evidence-" + canonical_sha256(identity))
         canonical_json_bytes(self.to_json_value())
 
@@ -507,6 +686,10 @@ class ConservativeNetProfitEvidence:
             - self.plan.opportunity.universe.state_reference.observed_at_unix_ms
         )
 
+    @property
+    def inputs_valid_until_unix_ms(self) -> int:
+        return self._inputs_valid_until_unix_ms
+
     def to_json_value(self) -> dict[str, object]:
         return {
             "schema": self.schema,
@@ -519,8 +702,12 @@ class ConservativeNetProfitEvidence:
             "simulations": [item.to_json_value() for item in self.simulations],
             "simulation_sha256": [item.digest for item in self.simulations],
             "profit_policy": self.profit_policy.to_json_value(),
-            "chain_health": self.chain_health.value,
-            "risk_budget_available": self.risk_budget_available,
+            "chain_health_evidence": self.chain_health_evidence.to_json_value(),
+            "chain_health_evidence_sha256": self.chain_health_evidence.digest,
+            "risk_budget_evidence": self.risk_budget_evidence.to_json_value(),
+            "risk_budget_evidence_sha256": self.risk_budget_evidence.digest,
+            "chain_health": self.chain_health_evidence.health.value,
+            "risk_budget_available": self.risk_budget_evidence.allowed,
             "state_age_ms": str(self.state_age_ms),
             "decision": self.decision.to_json_value(),
             "decision_authority": "shadow-economics-only",
@@ -530,6 +717,7 @@ class ConservativeNetProfitEvidence:
             "signing_authority": "none",
             "execution_eligible": False,
             "created_at_unix_ms": str(self.created_at_unix_ms),
+            "inputs_valid_until_unix_ms": str(self.inputs_valid_until_unix_ms),
         }
 
     @property

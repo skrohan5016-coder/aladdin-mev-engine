@@ -1,90 +1,41 @@
-# F3 Governed Authenticated Opportunity Architecture
+# Aladdin MEV Engine Architecture
 
-## Mission
+## Accepted lineage
 
-F3 extends accepted F0 policy/profit/risk authority, accepted F1 observation/replay authority, and accepted F2 authenticated EVM state with deterministic offline construction of model-bound constant-product pool universes, simple arbitrage routes, exact integer route optimization, and gross-only shadow opportunities.
+F4 is built from accepted F3 landing `046b6b2e39c06feba8eb77da2f2139663e84e50e`, tree `1c94f705477863b62906f5ec6e5a37ad7a850580`, and architecture `AMEV-F3-ARCH-v1-d2caf73e6121`. F0 supplies canonical evidence, profit policy, and risk controls; F1 supplies recorded observation/replay; F2 supplies authenticated EVM state; F3 supplies exact gross opportunities; F4 adds structural plans and cost-complete shadow economics.
 
-All chain inputs remain recorded observations. F3 does not connect to a chain, establish token semantics, estimate gas or inclusion, sign, submit a bundle, deploy a contract, or execute a trade.
+## Inherited authority retention
 
-## Trust boundaries
+F4 does not weaken or replace the accepted F0-F3 contracts. Their canonical evidence, source registry, tamper-evident replay, reorg handling, authenticated state proofs, code-hash-bound pool models, exact route math, bounded optimizer, and gross-only authority remain independently locked and tested.
 
-```text
-F2 authenticated account + storage evidence
-        │
-        ├── exact address + runtime code hash
-        ├── authenticated token identities
-        └── authenticated packed reserves
-        ▼
-Explicit one-code-hash/one-model registry
-        │
-        ▼
-Exact snapshot-bound pool universe
-        │
-        ▼
-Deterministic simple-cycle graph (2..4 hops, no pool reuse)
-        │
-        ▼
-Exact per-hop integer floor quotes
-        │
-        ├── continuous upper bound for pruning only
-        └── bounded deterministic exact optimizer
-        ▼
-Complete positive gross-only shadow opportunity
-        │
-        ▼
-execution_eligible = false
-```
-
-## Components
-
-1. Inherited F0 canonical, profit, evidence, policy, risk, and CI authority.
-2. Inherited F1 source-contract, ledger, replay, and head authority.
-3. Inherited F2 legacy Keccak, canonical RLP/MPT, proof, anchor, and snapshot authority.
-4. Runtime-code-hash-bound constant-product implementation models.
-5. One-code-hash/one-model registry with exact fee and storage-layout identity.
-6. Authenticated token and packed-reserve decoding from exact F2 evidence.
-7. Checked `uint256` and packed-reserve input-domain gates.
-8. Exact-snapshot pool universe with no missing or extra accounts.
-9. Deterministic two-to-four-hop simple-cycle enumeration with bounded traversal work.
-10. Exact per-hop floor route quoting.
-11. Concave `A*x/(B+C*x)` upper bounds used only for pruning.
-12. Bounded exact optimizer with smaller-input tie-breaking.
-13. Opportunity and search-report evidence that recompute authoritative results.
-14. Ten-file F3 schema lock including the inherited opportunity schema dependency.
-15. Separate exact-head and synthetic-merge CI, locked to the hosted `ubuntu-latest` runner, exact action inputs, one exact top-level environment, default shell semantics, one merge-job condition, and ten-minute timeouts. Custom shells, defaults, containers, services, job/step environments, strategies, dependencies, working directories, job permissions, and `continue-on-error` are forbidden.
-
-## Authority limits
+## Trust flow
 
 ```text
-network_access         = none
-signing_authority      = none
-execution_authority    = none
-observation_authority  = recorded-input-only
-state_proof_authority  = offline-recorded-input-only
-opportunity_authority  = offline-authenticated-model-bound-gross-shadow-only
-production_model_lock  = none
+Recorded observations
+  -> authenticated state
+  -> exact F3 opportunity
+  -> structural plan + funding
+  -> distinct-implementation/source simulation agreement in one exact environment
+  -> exact fee/reserve/valuation reconciliation
+  -> source-bound health + recomputed risk snapshot
+  -> F0 profit assessment
 ```
 
-An explicit model registry is evidence identity, not production approval. A later milestone must govern deployed model identities, token behavior, EVM simulation, gas, inclusion, funding, signing, and execution before any F3 result can influence a transaction.
-
-## Chain scope
-
-| Chain | F2 authenticated proof | F3 pool opportunity | Execution |
-|---|---:|---:|---:|
-| Ethereum | Enabled | Model-bound shadow only | Disabled |
-| Base | Enabled | Model-bound shadow only | Disabled |
-| Arbitrum | Disabled | Disabled | Disabled |
-| BNB Smart Chain | Disabled | Disabled | Disabled |
-| Solana | Separate scope | Disabled | Disabled |
-
-## Exact mathematics
+## F4 authority boundaries
 
 ```text
-amount_in_with_fee = amount_in * fee_numerator
-amount_out = floor(
-    amount_in_with_fee * reserve_out
-    / (reserve_in * fee_denominator + amount_in_with_fee)
-)
+network_access          = none
+signing_authority       = none
+execution_authority     = none
+execution_plan_authority= offline-structural-plan-only
+simulation_authority    = recorded-distinct-implementation-exact-agreement-only
+cost_evidence_authority = offline-recorded-upper-bound-shadow-only
+chain_health_authority  = recorded-source-bound-shadow-context-only
+risk_budget_authority   = recorded-recomputed-snapshot-shadow-only
 ```
 
-Every modeled multiplication and addition must fit checked `uint256`; the post-input reserve must fit its authenticated packed field. Floating-point values never enter authoritative money math.
+The architecture manifest and lock are the machine-readable authority.
+
+## F4 hardening invariants
+
+Valuation uses exact required pairs only and checked `uint256` multiplication before ceiling division. Simulations require distinct implementation and result-source digests, one exact environment digest, exact state binding, canonical order, and final-time validity. Chain health and risk budget are source-bound evidence, not bare caller values. Risk aggregation is checked `uint256`, and the risk snapshot cannot predate the exact cost envelope it binds. F4 closes all profit-policy integer inputs to `uint256`. Funding, fee, reserve, valuation, simulation, health, and risk inputs are revalidated at final evidence creation.

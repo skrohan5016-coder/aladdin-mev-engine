@@ -1,5 +1,28 @@
-"""Governed offline authenticated-state and gross-opportunity core for F3."""
+"""Governed offline cost-complete shadow economics core for F4."""
 
+from .assets import (
+    AssetAmount,
+    AssetId,
+    AssetKind,
+    ConservativeValuationRate,
+    ValuationBook,
+)
+from .cost_evidence import (
+    ConservativeNetProfitEvidence,
+    Eip1559CostEnvelope,
+    ExecutionCostEnvelope,
+    ReserveCostCategory,
+    ReserveCostComponent,
+    RouteSimulationResult,
+    dual_route_simulations_agree,
+)
+from .context_evidence import ChainHealthEvidence, RiskBudgetEvidence
+from .execution_plan import (
+    AtomicExecutionPlan,
+    ExecutionStep,
+    FundingKind,
+    FundingPlan,
+)
 from .constant_product import (
     AuthenticatedConstantProductPool,
     ConstantProductArithmeticError,
@@ -64,10 +87,26 @@ from .state_proof import (
 )
 
 __all__ = [
+    "AssetAmount",
+    "AssetId",
+    "AssetKind",
+    "AtomicExecutionPlan",
+    "ConservativeNetProfitEvidence",
+    "ConservativeValuationRate",
+    "Eip1559CostEnvelope",
+    "ExecutionCostEnvelope",
+    "ExecutionStep",
+    "FundingKind",
+    "FundingPlan",
+    "ReserveCostCategory",
+    "ReserveCostComponent",
+    "RouteSimulationResult",
+    "ValuationBook",
     "AtomicDexOpportunityEvidence",
     "AuthenticatedConstantProductPool",
     "Chain",
     "ChainHealth",
+    "ChainHealthEvidence",
     "ConstantProductArithmeticError",
     "ConstantProductImplementationSpec",
     "ConstantProductModelRegistry",
@@ -103,6 +142,7 @@ __all__ = [
     "PoolUniverse",
     "ProfitAssessment",
     "ProfitPolicy",
+    "RiskBudgetEvidence",
     "RiskGovernor",
     "RiskLedger",
     "RiskLimits",
@@ -121,6 +161,7 @@ __all__ = [
     "VerifiedStorageValue",
     "Visibility",
     "assess_profit",
+    "dual_route_simulations_agree",
     "dual_simulations_agree",
     "enumerate_simple_cycles",
     "get_source_contract",
@@ -138,4 +179,4 @@ __all__ = [
     "write_segment_once",
 ]
 
-__version__ = "0.4.0"
+__version__ = "0.5.0"

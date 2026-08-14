@@ -34,12 +34,35 @@ def _time(name: str, value: object) -> int:
     return value
 
 
+def _checked_mul(left: int, right: int, name: str) -> int:
+    _uint(f"{name} left", left)
+    _uint(f"{name} right", right)
+    if left and right > MAX_UINT256 // left:
+        raise ValueError(f"{name} multiplication exceeds uint256")
+    return left * right
+
+
 def _address(name: str, value: object, *, nonzero: bool = True) -> bytes:
     if type(value) is not bytes or len(value) != 20:
         raise ValueError(f"{name} must be exact immutable 20-byte data")
     if nonzero and value == bytes(20):
         raise ValueError(f"{name} cannot be zero")
     return value
+
+
+def valuation_pair_sha256(asset_in: AssetId, asset_out: AssetId) -> str:
+    if type(asset_in) is not AssetId or type(asset_out) is not AssetId:
+        raise TypeError("valuation pair assets must be exact AssetId values")
+    if asset_in.chain is not asset_out.chain:
+        raise ValueError("valuation pair cannot cross chains")
+    if asset_in == asset_out:
+        raise ValueError("identity valuation pair is forbidden")
+    return canonical_sha256(
+        {
+            "asset_in": asset_in.to_json_value(),
+            "asset_out": asset_out.to_json_value(),
+        }
+    )
 
 
 @dataclass(frozen=True, slots=True)
@@ -147,8 +170,15 @@ class ConservativeValuationRate:
             raise ValueError("valuation input asset mismatch")
         if not self.is_valid_at(at_unix_ms):
             raise ValueError("valuation rate is not valid at the evidence time")
-        product = amount.amount * self.numerator
-        converted = (product + self.denominator - 1) // self.denominator
+        if amount.amount and self.numerator > MAX_UINT256 // amount.amount:
+            raise ValueError("valuation multiplication exceeds uint256")
+        product = _checked_mul(
+            amount.amount,
+            self.numerator,
+            "valuation",
+        )
+        quotient, remainder = divmod(product, self.denominator)
+        converted = quotient + (1 if remainder else 0)
         if converted > MAX_UINT256:
             raise ValueError("converted upper bound exceeds uint256")
         return AssetAmount(self.asset_out, converted)
@@ -230,11 +260,46 @@ class ValuationBook:
             at_unix_ms=at_unix_ms,
         )
 
+    @property
+    def pairs(self) -> tuple[tuple[AssetId, AssetId], ...]:
+        return tuple((item.asset_in, item.asset_out) for item in self.rates)
+
+    @property
+    def pair_sha256(self) -> tuple[str, ...]:
+        return tuple(valuation_pair_sha256(asset_in, asset_out) for asset_in, asset_out in self.pairs)
+
+    def require_exact_pairs(
+        self,
+        required_pairs: tuple[tuple[AssetId, AssetId], ...],
+        *,
+        at_unix_ms: int,
+    ) -> tuple[ConservativeValuationRate, ...]:
+        if type(required_pairs) is not tuple:
+            raise TypeError("required_pairs must be an exact tuple")
+        _time("at_unix_ms", at_unix_ms)
+        normalized: list[tuple[AssetId, AssetId]] = []
+        for pair in required_pairs:
+            if type(pair) is not tuple or len(pair) != 2:
+                raise TypeError("each required valuation pair must be an exact two-item tuple")
+            asset_in, asset_out = pair
+            _ = valuation_pair_sha256(asset_in, asset_out)
+            normalized.append((asset_in, asset_out))
+        if len(normalized) != len(set(normalized)):
+            raise ValueError("required valuation pairs contain a duplicate")
+        required = set(normalized)
+        present = set(self.pairs)
+        if present != required or len(self.rates) != len(required):
+            raise ValueError("valuation book does not contain the exact required asset pairs")
+        if any(not item.is_valid_at(at_unix_ms) for item in self.rates):
+            raise ValueError("valuation rate is not valid at the evidence time")
+        return self.rates
+
     def to_json_value(self) -> dict[str, object]:
         return {
             "schema": self.schema,
             "rates": [item.to_json_value() for item in self.rates],
             "rate_sha256": [item.digest for item in self.rates],
+            "pair_sha256": list(self.pair_sha256),
         }
 
     @property

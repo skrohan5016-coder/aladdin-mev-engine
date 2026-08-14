@@ -1,0 +1,50 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/reserve-cost-component-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "amount": {
+      "$ref": "asset-amount-v1.schema.json"
+    },
+    "bound_semantics": {
+      "const": "conservative-upper-bound"
+    },
+    "category": {
+      "enum": [
+        "slippage_reserve",
+        "stale_state_reserve",
+        "failure_risk_reserve",
+        "infrastructure_cost",
+        "inventory_hedge_cost"
+      ]
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-reserve-cost-component/v1"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "category",
+    "amount",
+    "bound_semantics",
+    "observed_at_unix_ms",
+    "valid_until_unix_ms",
+    "source_sha256"
+  ],
+  "title": "Aladdin MEV Reserve Cost Component v1",
+  "type": "object"
+}

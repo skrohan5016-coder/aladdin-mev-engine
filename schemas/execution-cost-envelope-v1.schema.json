@@ -1,0 +1,229 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/execution-cost-envelope-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "base_asset": {
+      "$ref": "asset-id-v1.schema.json"
+    },
+    "converted_costs": {
+      "additionalProperties": false,
+      "properties": {
+        "execution_gas_cost": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "failure_risk_reserve": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "flash_loan_fee": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "inclusion_bid": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "infrastructure_cost": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "inventory_hedge_cost": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "l1_data_fee": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "slippage_reserve": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "stale_state_reserve": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "execution_gas_cost",
+        "l1_data_fee",
+        "flash_loan_fee",
+        "inclusion_bid",
+        "slippage_reserve",
+        "stale_state_reserve",
+        "failure_risk_reserve",
+        "infrastructure_cost",
+        "inventory_hedge_cost"
+      ],
+      "type": "object"
+    },
+    "cost_breakdown": {
+      "additionalProperties": false,
+      "properties": {
+        "execution_gas_cost": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "failure_risk_reserve": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "flash_loan_fee": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "gross_profit": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "inclusion_bid": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "infrastructure_cost": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "inventory_hedge_cost": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "l1_data_fee": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "slippage_reserve": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "stale_state_reserve": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "gross_profit",
+        "execution_gas_cost",
+        "l1_data_fee",
+        "flash_loan_fee",
+        "inclusion_bid",
+        "slippage_reserve",
+        "stale_state_reserve",
+        "failure_risk_reserve",
+        "infrastructure_cost",
+        "inventory_hedge_cost"
+      ],
+      "type": "object"
+    },
+    "cost_completeness": {
+      "const": "complete-recorded-upper-bound-no-inclusion-guarantee"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "envelope_id": {
+      "pattern": "^execution-cost-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "execution_plan_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "fee_envelope": {
+      "$ref": "eip1559-cost-envelope-v1.schema.json"
+    },
+    "fee_envelope_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "required_valuation_pair_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 64,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "reserve_component_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 5,
+      "minItems": 5,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "reserve_components": {
+      "items": {
+        "$ref": "reserve-cost-component-v1.schema.json"
+      },
+      "maxItems": 5,
+      "minItems": 5,
+      "type": "array"
+    },
+    "schema": {
+      "const": "aladdin-mev-execution-cost-envelope/v1"
+    },
+    "valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "valuation_book": {
+      "$ref": "valuation-book-v1.schema.json"
+    },
+    "valuation_book_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "envelope_id",
+    "execution_plan_sha256",
+    "base_asset",
+    "fee_envelope",
+    "fee_envelope_sha256",
+    "reserve_components",
+    "reserve_component_sha256",
+    "valuation_book",
+    "valuation_book_sha256",
+    "required_valuation_pair_sha256",
+    "converted_costs",
+    "cost_breakdown",
+    "cost_completeness",
+    "execution_eligible",
+    "created_at_unix_ms",
+    "valid_until_unix_ms"
+  ],
+  "title": "Aladdin MEV Execution Cost Envelope v1",
+  "type": "object"
+}

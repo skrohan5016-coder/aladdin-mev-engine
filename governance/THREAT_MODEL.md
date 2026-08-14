@@ -1,37 +1,31 @@
-# F3 Threat Model
+# Threat Model
 
 ## Protected assets
 
-Inherited F0–F2 integrity; model-registry identity; authenticated token/reserve correctness; exact arithmetic and route math; optimizer completeness and upper-bound safety; honest separation of gross shadow evidence from executable profit; future signer/executor/treasury separation.
+Authenticated state/opportunity identity; exact token and amount flow; funding and fee identity; simulation independence; valuation and cost correctness; chain-health/risk context integrity; honest separation between shadow approval and execution authority; future keys and funds.
 
-## Failure modes
+## Inherited failure modes remain active
 
-- wrong code hash, token pair, storage layout, fee, or reserve interpretation;
-- conflicting models for one runtime code hash;
-- proxy, dynamic-fee, fee-on-transfer, rebasing, hook, or callback behavior misrepresented as a direct static model;
-- overlapping or malformed packed fields;
-- checked arithmetic or packed-reserve overflow;
-- route reuse, disconnection, repeated token, early base return, unbounded enumeration, or multiplicative report-work exhaustion;
-- continuous approximation treated as exact or an unsafe bound pruning the optimum;
-- budget exhaustion treated as complete;
-- caller-injected optimization, quote, identity, or timestamp;
-- gross profit mislabeled as net, funded, included, or executable;
-- networking, credential, signing, deployment, or execution capability introduced silently.
+F4 does not replace F0-F3 controls. Canonical-JSON ambiguity, ledger truncation or reordering, source-contract drift, reorg misclassification, malformed RLP/MPT proofs, state-anchor mismatch, code-hash/model ambiguity, packed-reserve overflow, unsafe optimizer pruning, and gross-opportunity authority escalation remain governed by their accepted milestone contracts and regression suites.
+
+## F4 failure modes
+
+- treating different assets as one unit or using implicit/inverse/extra/stale valuation;
+- floor-rounding a cost or overflowing a governed integer intermediate;
+- caller-injected gross profit, funding, route, output, gas, health, or risk approval;
+- priority-fee, L1-fee, or direct-payment double counting;
+- duplicate simulator implementations or result sources hidden behind different names, or agreement claimed across different environments;
+- simulation bound to the wrong state, plan, source, or validity interval;
+- missing, duplicate, wrong-chain, or expired reserve categories;
+- cost inputs valid at envelope creation but expired at final evidence time;
+- risk snapshot not binding the exact plan, total cost, or notional; risk arithmetic overflow; or a risk snapshot observed before its cost envelope;
+- positive shadow assessment presented as inclusion, signing, or execution approval;
+- CI shell, environment, runner, container, condition, timeout, action-input, or error-handling bypass.
 
 ## Controls
 
-Exact F2 types at every state boundary; one-code-hash/one-model invariant; exact slot/token/reserve binding; checked arithmetic and capacity gates; simple-cycle constraints; exact per-hop floor; tested optimistic bounds; bounded per-route and aggregate exact search; constructor-time recomputation; hardcoded gross-only execution-disabled labels; zero runtime dependencies; read-only exact-head CI.
+Exact runtime types; closed schemas; constructor-time recomputation; exact required valuation pairs; checked integer products/sums; exact route-step derivation; EIP-1559 semantic separation; distinct implementation/source simulation evidence with one exact environment; source-bound chain health; recomputed risk-budget snapshot with checked aggregation and observation ordering; transitive final-time validity checks; inherited F0 profit policy; immutable locks; hardened read-only CI.
 
 ## Residual risks
 
-F3 does not prove that an explicit model describes a production deployment, that a token has standard transfer behavior, or that authenticated reserves are economically current. It does not execute EVM bytecode, model pending ordering, estimate costs/inclusion, source capital, or construct/sign/submit transactions.
-
-## Final authority hardening
-
-
-- The canonical empty-code hash cannot be registered as a pool runtime model.
-- Optimization result counters, bounds, and status-specific winner fields are cross-validated.
-- Route and optimizer input ceilings are closed to exact uint256 values.
-- A budget-exhausted result is incomplete and cannot carry a winning input, output, or profit.
-- Continuous pruning bounds are themselves bounded to uint256 and remain non-authoritative.
-- CI cannot substitute a custom shell, `BASH_ENV`, runner, container, service, environment, strategy, dependency, working directory, condition, timeout, or `continue-on-error` around allowlisted commands.
+F4 uses recorded bounds, simulations, health, and risk snapshots. It does not prove live state freshness, production token behavior, builder/sequencer inclusion, available capital at submission time, signer correctness, or transaction landing. Those require later governed milestones.
