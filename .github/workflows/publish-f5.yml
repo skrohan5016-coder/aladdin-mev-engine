@@ -1,0 +1,51 @@
+name: Publish verified F5 overlay
+
+on:
+  push:
+    branches:
+      - agent/f5-publication-helper
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout publication helper
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Reconstruct and verify deterministic overlay
+        run: |
+          cat .f5-overlay/chunk-00 .f5-overlay/chunk-01 .f5-overlay/chunk-02 .f5-overlay/chunk-03 .f5-overlay/chunk-04 .f5-overlay/chunk-05 > /tmp/f5-overlay.b64
+          test "$(wc -c < /tmp/f5-overlay.b64)" = "78844"
+          echo "39f898e2d4dfd022116990c0e53d6795ab291a017a77a64e5cd0208092854150  /tmp/f5-overlay.b64" | sha256sum -c -
+          base64 -d /tmp/f5-overlay.b64 > /tmp/f5-overlay.tar.gz
+          echo "c0bfd0835e751019411b0ef50e1feba80d272919acf83a027b15b639858e5f69  /tmp/f5-overlay.tar.gz" | sha256sum -c -
+          mkdir /tmp/f5-overlay
+          tar -xzf /tmp/f5-overlay.tar.gz -C /tmp/f5-overlay
+      - name: Checkout exact F5 checkpoint
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/f5-unsigned-bundle-simulation-v1
+          path: target
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Commit exact F5 non-workflow tree
+        run: |
+          cd target
+          test "$(git rev-parse HEAD)" = "76ef694ebf4d6f8fcae2ad178545eaf807b8fc74"
+          cp -a /tmp/f5-overlay/. .
+          git add -A
+          actual_count="$(git diff --cached --name-only | wc -l | tr -d ' ')"
+          actual_tree="$(git write-tree)"
+          echo "staged_delta_files=${actual_count}"
+          echo "nonworkflow_tree=${actual_tree}"
+          test "${actual_count}" = "47"
+          test "${actual_tree}" = "089892b85615a026fa317f386288ad37d08081c7"
+          git config user.name "skrohan5016-coder"
+          git config user.email "skrohan5016@gmail.com"
+          git commit -m "Complete F5 unsigned execution package evidence"
+          git push origin HEAD:agent/f5-unsigned-bundle-simulation-v1
