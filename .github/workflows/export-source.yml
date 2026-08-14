@@ -1,0 +1,28 @@
+name: Source snapshot export
+
+on:
+  push:
+    branches:
+      - agent/f4-source-snapshot-export
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout exact source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Create source archive
+        run: tar --exclude=.git -czf aladdin-mev-engine-source.tar.gz .
+      - name: Upload source archive
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: aladdin-mev-engine-source
+          path: aladdin-mev-engine-source.tar.gz
+          if-no-files-found: error
+          retention-days: 1
