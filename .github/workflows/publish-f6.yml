@@ -46,11 +46,18 @@ jobs:
           53cf6db0101c66211060224852947e857d14eb23acb361ba7624a6707fc0584c  helper/.f6-publication/chunk-05.b64
           7b8a561911a4998b1d5516dcaba31530715e08f6d507477787c1a82fe90fe537  helper/.f6-publication/chunk-06.b64
           d06b2555d154db81573847f99eae95437a983388659842f7fc59cc3871ee770d  helper/.f6-publication/chunk-07.b64
-          05a5d39b341663aab96a01e38ff6d485ef426c38e073119afe06eee8f7eed2b7  helper/.f6-publication/chunk-08.b64
-          dbfe0e8c970043d33608f3dc702024c18a41aac53338e5d001074987ff60d1f3  helper/.f6-publication/chunk-09.b64
+          76d3a29777941fa8836d7a9d87cbae655f041ff66b3c76bb802ebda37e9ba2ab  helper/.f6-publication/chunk-08-00.b64
+          4af67275155e6bc88901a28e550b731bd91cfdcdc844be13bd67e8fc81123c38  helper/.f6-publication/chunk-08-01.b64
+          1e6e9112b821cf080d54887e6dfe662c55e9ac7537ca24005efc7f19a4ce8957  helper/.f6-publication/chunk-08-02.b64
+          de45dc2b9fdc6d34352c26ab21daf713a3453b7f82805538fd733227fb9bada5  helper/.f6-publication/chunk-08-03.b64
+          3b28b62209a5cae61c214e271830211cd6bb5a929f98a561bb7530e023af78c9  helper/.f6-publication/chunk-08-04.b64
+          22188774e1bc3fd4284ac35af875e95369bb71cbdaeb05ffbaa1914d61fb81c2  helper/.f6-publication/chunk-08-05.b64
+          09d844283d9a481eea4dcb156d2672fa54b60401da71e3b7b15ea80d19d74848  helper/.f6-publication/chunk-09-00.b64
+          15b52183db2bf83db8cafc6625befbd83483ee7aacdbe315154ed8a88754e57b  helper/.f6-publication/chunk-09-01.b64
+          de92ed8ee20ce1605e75347396c74838ecb8d72f8d701f176a7d8b3acd5fe82f  helper/.f6-publication/chunk-09-02.b64
           F6_CHUNK_HASHES
           sha256sum --check /tmp/f6-chunks.sha256
-          cat helper/.f6-publication/chunk-*.b64 > /tmp/f6.patch.gz.b64
+          cat helper/.f6-publication/chunk-0[0-7].b64 helper/.f6-publication/chunk-08-*.b64 helper/.f6-publication/chunk-09-*.b64 > /tmp/f6.patch.gz.b64
           test "$(wc -c < /tmp/f6.patch.gz.b64 | tr -d ' ')" = "56474"
           test "$(sha256sum /tmp/f6.patch.gz.b64 | cut -d' ' -f1)" = "dbdb9473584991ead7deeb74a6c3b7fc28cb982b99d61cf1b2d1e2b53c060094"
           base64 --decode /tmp/f6.patch.gz.b64 > /tmp/f6.patch.gz
