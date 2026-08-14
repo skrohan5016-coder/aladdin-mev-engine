@@ -38,8 +38,11 @@ jobs:
           test "$(git rev-parse HEAD)" = "553642fc826a5fe7c96dc28de5ab70610d171fd3"
           cp -a /tmp/f4-overlay/. .
           git add -A
-          test "$(git diff --cached --name-only | wc -l)" = "43"
-          test "$(git write-tree)" = "d909eb7d378a5c188e71a5c475cb36b8c61099a3"
+          actual_count="$(git diff --cached --name-only | wc -l | tr -d ' ')"
+          actual_tree="$(git write-tree)"
+          echo "staged_delta_files=${actual_count}"
+          echo "final_tree=${actual_tree}"
+          test "${actual_tree}" = "d909eb7d378a5c188e71a5c475cb36b8c61099a3"
           git config user.name "skrohan5016-coder"
           git config user.email "skrohan5016@gmail.com"
           git commit -m "Complete F4 cost-complete shadow profit evidence"
