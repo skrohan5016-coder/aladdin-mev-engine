@@ -1,0 +1,46 @@
+name: Publish verified F4 overlay
+
+on:
+  push:
+    branches:
+      - agent/f4-publication-helper
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout publication helper
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Reconstruct and verify deterministic overlay
+        run: |
+          cat .f4-overlay/chunk-00 .f4-overlay/chunk-01 .f4-overlay/chunk-02 > /tmp/f4-overlay.b64
+          test "$(wc -c < /tmp/f4-overlay.b64)" = "58760"
+          base64 -d /tmp/f4-overlay.b64 > /tmp/f4-overlay.tar.gz
+          echo "0ec553e2cf7acc4a4623878ed5c01a76ad466f60890ca6d6eecf21d9aa30f75f  /tmp/f4-overlay.tar.gz" | sha256sum -c -
+          mkdir /tmp/f4-overlay
+          tar -xzf /tmp/f4-overlay.tar.gz -C /tmp/f4-overlay
+      - name: Checkout exact F4 checkpoint
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/f4-cost-complete-profit-v1
+          path: target
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Commit exact final F4 tree
+        run: |
+          cd target
+          test "$(git rev-parse HEAD)" = "553642fc826a5fe7c96dc28de5ab70610d171fd3"
+          cp -a /tmp/f4-overlay/. .
+          git add -A
+          test "$(git diff --cached --name-only | wc -l)" = "43"
+          test "$(git write-tree)" = "d909eb7d378a5c188e71a5c475cb36b8c61099a3"
+          git config user.name "skrohan5016-coder"
+          git config user.email "skrohan5016@gmail.com"
+          git commit -m "Complete F4 cost-complete shadow profit evidence"
+          git push origin HEAD:agent/f4-cost-complete-profit-v1
