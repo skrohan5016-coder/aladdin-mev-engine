@@ -265,6 +265,7 @@ class UnsignedExecutionPackageEvidence:
     schema: str = UNSIGNED_PACKAGE_SCHEMA
     _valid_until_unix_ms: int = field(init=False, repr=False)
     _package_id: str = field(init=False, repr=False)
+    _digest: str = field(init=False, repr=False, compare=False)
 
     def __post_init__(self) -> None:
         if self.schema != UNSIGNED_PACKAGE_SCHEMA:
@@ -388,7 +389,9 @@ class UnsignedExecutionPackageEvidence:
         }
         object.__setattr__(self, "_valid_until_unix_ms", valid_until)
         object.__setattr__(self, "_package_id", "unsigned-package-" + canonical_sha256(identity))
-        canonical_json_bytes(self.to_json_value())
+        payload = self.to_json_value()
+        canonical_json_bytes(payload)
+        object.__setattr__(self, "_digest", canonical_sha256(payload))
 
     @property
     def package_id(self) -> str:
@@ -428,4 +431,4 @@ class UnsignedExecutionPackageEvidence:
 
     @property
     def digest(self) -> str:
-        return canonical_sha256(self.to_json_value())
+        return self._digest

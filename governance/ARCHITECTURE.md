@@ -2,47 +2,51 @@
 
 ## Accepted lineage
 
-F5 is built from accepted F4 landing `5e9497695c08ec4bd1ef724b39fb941f100c3e73`, tree `d909eb7d378a5c188e71a5c475cb36b8c61099a3`, and architecture `AMEV-F4-ARCH-v1-36ee2dc379f7`. F0 supplies canonical evidence, profit policy, and risk controls; F1 supplies recorded observation and replay; F2 supplies authenticated EVM state; F3 supplies exact gross opportunities; F4 supplies deterministic plans and cost-complete shadow economics; F5 adds authenticated executor identity, governed calldata, unsigned EIP-1559 transaction preimages, private bundle intent, and transaction-bound simulation evidence.
+F6 is built from accepted F5 landing `f068d1f1ffad9d4c2439dd6f0fa36e333d73817f`, tree `89df1b1bf5d665c1ea1b2abb80320d824b6e7bb4`, and architecture `AMEV-F5-ARCH-v1-4359fcd9d1a2`. F0 supplies canonical evidence, profit policy, and risk controls; F1 supplies recorded observation and replay; F2 supplies authenticated EVM state; F3 supplies exact gross opportunities; F4 supplies deterministic plans and cost-complete shadow economics; F5 supplies authenticated unsigned transaction and transaction-bound simulation packages; F6 verifies externally produced signatures and records offline relay request/response evidence.
 
 ## Inherited authority retention
 
-F5 does not weaken or replace F0-F4. Canonical evidence, source contracts, tamper-evident replay, reorg handling, authenticated state proofs, code-hash-bound pool mathematics, exact optimization, recorded cost reconciliation, source-bound context, and F4 profit decisions remain independently locked and tested.
+F6 does not weaken or replace F0–F5. Canonical evidence, source contracts, tamper-evident replay, reorg handling, authenticated state proofs, code-hash-bound market mathematics, exact optimization, conservative cost reconciliation, authenticated deployment/sender state, calldata, unsigned EIP-1559 identity, private bundle intent, and transaction-bound simulation authority remain independently locked and tested.
 
 ## Trust flow
 
 ```text
-Recorded observations
-  -> authenticated pool, executor, and sender account state
-  -> exact F3 opportunity
-  -> F4 plan, cost envelope, simulation/context, approved shadow economics
-  -> code-hash-bound executor interface and deployment evidence
-  -> plan-derived route commands and economic minimum-output floor
-  -> canonical unsigned EIP-1559 signing preimage
-  -> relay-neutral private bundle intent
-  -> distinct implementation/source transaction simulations
-  -> unsigned execution-package evidence
+Recorded observations and authenticated EVM state
+  -> exact F3 opportunity and F4 cost-complete shadow decision
+  -> F5 authenticated unsigned execution package
+  -> externally observed low-s secp256k1 signature
+  -> exact authenticated-sender recovery
+  -> canonical signed EIP-1559 transaction and signed private bundle
+  -> URL-free/credential-free offline relay endpoint evidence
+  -> immutable normalized request evidence (not dispatched)
+  -> optional recorded relay responses
+  -> externally-signed package evidence
 ```
 
-## F5 authority boundaries
+## F6 authority boundaries
 
 ```text
-network_access                 = none
-signing_authority              = none
-submission_authority           = none
-execution_authority            = none
-deployment_registry_authority  = authenticated-recorded-direct-runtime-shadow-only
-calldata_authority             = offline-deterministic-governed-encoding-only
-sender_state_authority         = offline-authenticated-eoa-nonce-balance-only
-unsigned_transaction_authority = offline-eip1559-signing-preimage-only
-private_bundle_intent_authority= offline-relay-neutral-intent-only
-execution_package_authority    = offline-unsigned-transaction-bound-shadow-only
-inclusion_guarantee            = none
+network_access                   = none
+relay_access                     = none
+credential_authority             = none
+key_authority                    = none
+local_signing_authority          = none
+signing_authority                = external-unmodeled
+submission_authority             = none
+execution_authority              = none
+inclusion_authority              = none
+signature_verification_authority = offline-secp256k1-recovery-only
+signed_transaction_authority     = offline-external-signature-evidence-only
+signed_bundle_authority          = offline-externally-signed-private-intent-only
+relay_request_authority          = offline-normalized-request-only
+relay_response_authority         = recorded-input-only
+inclusion_guarantee              = none
 ```
 
-An F5 package is not a signature request, a relay submission, a deployment instruction, an inclusion approval, or permission to move funds.
+An F6 package is not a signing request, network request, relay submission, inclusion proof, execution approval, or permission to move funds.
 
-## F5 hardening invariants
+## F6 hardening invariants
 
-A runtime code hash authorizes only one exact executor interface, and every authenticated deployment must be an exact registry member. Executor address, chain, code hash, canonical empty storage root, validity, and proof-observation time bind exact F2 evidence. Route command bytes and calldata are recomputed from the accepted F4 plan; the exported raw encoder independently enforces one simple cycle with unique pools, exact base-token endpoints, exact principal/amount continuity, and an exact final minimum; route and final slippage minima use ceiling division so integer rounding cannot weaken the policy. Sender nonce and balance come from an authenticated EOA proof sharing the exact pool/deployment state anchor, and transaction creation cannot predate that proof. The EIP-1559 type-2 payload is canonical RLP with no signature, and its gas limit cannot be below canonical calldata intrinsic gas. L1-data, OP Stack operator-fee, and direct-payment bounds remain separate evidence; all are included in conservative economics and authenticated sender-balance coverage. Bundle nonces begin at the authenticated sender nonce and remain ordered/contiguous, target blocks are bounded, aggregate worst-case upfront native cost must fit the authenticated balance, and no relay endpoint or credential is retained. Transaction simulations cannot predate the bundle and require distinct engines, implementation digests, and source digests while agreeing on one environment and the exact state anchor, transaction signing hash, bundle, explicit in-range block/timestamp/base-fee context, intrinsic-to-limit-bounded gas, operator fee paid within its recorded upper bound, exact F4 base-token output, flash-loan repayment, authenticated sender beneficiary, complete base-token residual delta, logs, post-state, and payment. Package schema v1 binds exactly one unsigned transaction and inherits the executor-call deadline as a transitive validity limit.
+Signature parity is exact, scalars are bounded, and low-s form is mandatory. Recovery must produce exactly one address matching the F5 authenticated sender. Signed transaction bytes preserve every F5 unsigned field and the empty access list, and the transaction hash is legacy Keccak-256 of those bytes. Signed bundle order and identity equal the exact F5 bundle. Relay endpoints contain no URL, credential, or production approval. Normalized request payloads are canonical immutable bytes and caller-visible mappings are detached copies. Recorded relay response source IDs and source digests are independently unique. Accepted relay evidence never implies inclusion, execution, or profit. Production source and scripts expose no private-key, signing, HTTP, or submission function.
 
 The machine-readable architecture manifest and lock are authoritative.

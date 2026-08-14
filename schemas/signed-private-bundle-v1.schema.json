@@ -1,0 +1,124 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/signed-private-bundle-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bundle_authority": {
+      "const": "offline-externally-signed-private-intent-only"
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base"
+      ]
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "delivery_class": {
+      "enum": [
+        "private-builder",
+        "private-sequencer"
+      ]
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "inclusion_guarantee": {
+      "const": false
+    },
+    "inputs_valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "maximum_block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "network_dispatched": {
+      "const": false
+    },
+    "raw_transactions": {
+      "items": {
+        "maxLength": 262146,
+        "pattern": "^0x(?:[0-9a-f]{2})*$",
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "type": "array"
+    },
+    "relay_credentials_present": {
+      "const": false
+    },
+    "schema": {
+      "const": "aladdin-mev-signed-private-bundle/v1"
+    },
+    "sender": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "signed_bundle_id": {
+      "pattern": "^signed-bundle-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "signed_transaction_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "submission_eligible": {
+      "const": false
+    },
+    "target_block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "transaction_hashes": {
+      "items": {
+        "pattern": "^0x[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "unsigned_bundle_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "signed_bundle_id",
+    "unsigned_bundle_sha256",
+    "signed_transaction_sha256",
+    "raw_transactions",
+    "transaction_hashes",
+    "chain",
+    "delivery_class",
+    "sender",
+    "target_block_number",
+    "maximum_block_number",
+    "created_at_unix_ms",
+    "inputs_valid_until_unix_ms",
+    "bundle_authority",
+    "relay_credentials_present",
+    "network_dispatched",
+    "submission_eligible",
+    "execution_eligible",
+    "inclusion_guarantee"
+  ],
+  "type": "object"
+}

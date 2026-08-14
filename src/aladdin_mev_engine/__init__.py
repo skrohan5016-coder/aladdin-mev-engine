@@ -1,4 +1,4 @@
-"""Governed offline unsigned execution-package evidence core for F5."""
+"""Governed offline external-signature and recorded relay-evidence core for F6."""
 
 from .assets import (
     AssetAmount,
@@ -101,6 +101,35 @@ from .source_contracts import (
     get_source_contract,
     source_contract_set_digest,
 )
+from .secp256k1 import (
+    FIELD_MODULUS,
+    GENERATOR,
+    GROUP_ORDER,
+    HALF_GROUP_ORDER,
+    Secp256k1Point,
+    lift_x,
+    point_add,
+    point_negate,
+    public_key_to_address,
+    recover_addresses,
+    recover_public_keys,
+    scalar_multiply,
+    verify_signature,
+)
+from .signed_transaction import (
+    Eip1559Signature,
+    SignedEip1559TransactionEvidence,
+    SignedPrivateBundleEvidence,
+)
+from .relay_evidence import (
+    ExternallySignedExecutionPackageEvidence,
+    RelayEndpointRegistry,
+    RelayEndpointSpec,
+    RelayProtocol,
+    RelayResponseEvidence,
+    RelayResponseStatus,
+    RelaySubmissionRequestEvidence,
+)
 from .state_proof import (
     EMPTY_CODE_HASH,
     EvmBlockStateAnchor,
@@ -110,6 +139,29 @@ from .state_proof import (
 )
 
 __all__ = [
+    "FIELD_MODULUS",
+    "GENERATOR",
+    "GROUP_ORDER",
+    "HALF_GROUP_ORDER",
+    "Secp256k1Point",
+    "lift_x",
+    "point_add",
+    "point_negate",
+    "public_key_to_address",
+    "recover_addresses",
+    "recover_public_keys",
+    "scalar_multiply",
+    "verify_signature",
+    "Eip1559Signature",
+    "SignedEip1559TransactionEvidence",
+    "SignedPrivateBundleEvidence",
+    "ExternallySignedExecutionPackageEvidence",
+    "RelayEndpointRegistry",
+    "RelayEndpointSpec",
+    "RelayProtocol",
+    "RelayResponseEvidence",
+    "RelayResponseStatus",
+    "RelaySubmissionRequestEvidence",
     "AuthenticatedExecutorDeployment",
     "ExecutorDeploymentRegistry",
     "ExecutorDeploymentSpec",
@@ -217,4 +269,4 @@ __all__ = [
     "write_segment_once",
 ]
 
-__version__ = "0.6.0"
+__version__ = "0.7.0"

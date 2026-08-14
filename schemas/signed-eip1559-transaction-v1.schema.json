@@ -1,0 +1,109 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/signed-eip1559-transaction-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base"
+      ]
+    },
+    "chain_id": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "inputs_valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "nonce": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "private_key_present": {
+      "const": false
+    },
+    "raw_transaction": {
+      "maxLength": 262146,
+      "pattern": "^0x(?:[0-9a-f]{2})*$",
+      "type": "string"
+    },
+    "recovered_sender": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-signed-eip1559-transaction/v1"
+    },
+    "signature": {
+      "$ref": "eip1559-signature-v1.schema.json"
+    },
+    "signature_present": {
+      "const": true
+    },
+    "signature_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "signature_verification_authority": {
+      "const": "offline-secp256k1-recovery-only"
+    },
+    "signed_transaction_id": {
+      "pattern": "^signed-tx-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "signing_authority": {
+      "const": "external-unmodeled"
+    },
+    "submission_eligible": {
+      "const": false
+    },
+    "transaction_hash": {
+      "pattern": "^0x[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "unsigned_signing_hash": {
+      "pattern": "^0x[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "unsigned_transaction_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "signed_transaction_id",
+    "unsigned_transaction_sha256",
+    "unsigned_signing_hash",
+    "chain",
+    "chain_id",
+    "nonce",
+    "signature",
+    "signature_sha256",
+    "raw_transaction",
+    "transaction_hash",
+    "recovered_sender",
+    "created_at_unix_ms",
+    "inputs_valid_until_unix_ms",
+    "signature_present",
+    "private_key_present",
+    "signature_verification_authority",
+    "signing_authority",
+    "submission_eligible",
+    "execution_eligible"
+  ],
+  "type": "object"
+}

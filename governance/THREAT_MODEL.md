@@ -2,32 +2,33 @@
 
 ## Protected assets
 
-Inherited F0-F4 evidence and economics; executor interface/deployment identity; calldata and route-command integrity; authenticated sender nonce and balance; EIP-1559 signing-preimage integrity; bundle ordering and target bounds; simulation independence; honest separation of an unsigned package from signing, submission, execution, and inclusion authority; future keys and funds.
+Inherited F0–F5 evidence, economics, authenticated sender/deployment state, unsigned transaction and bundle identity, secp256k1 verification correctness, signed transaction bytes, relay evidence identity, honest separation of recorded relay acceptance from inclusion, and future keys and funds.
 
 ## Inherited failure modes remain active
 
-F5 does not replace earlier controls. Canonical-JSON ambiguity, ledger truncation, source drift, reorg errors, malformed RLP/MPT proofs, state-anchor mismatch, pool code-hash/model ambiguity, optimizer errors, valuation/cost errors, stale simulations/context, and false F4 profit approval remain governed by accepted milestone contracts and regression tests.
+F6 does not replace earlier controls. Canonical-JSON ambiguity, ledger truncation, source drift, reorg errors, malformed proofs, state mismatch, market-model ambiguity, optimizer errors, valuation/cost errors, stale simulations, unsigned transaction drift, and false F5 package approval remain governed by accepted contracts and regression tests.
 
-## F5 failure modes
+## F6 failure modes
 
-- an unproved, unregistered, wrong-chain, wrong-address, proxy, empty-code, non-empty-storage, expired, or conflicting executor deployment;
-- one runtime code hash assigned conflicting interfaces;
-- caller-supplied arbitrary calldata, disconnected/reused route bytes, base-token or principal drift, broken amount flow, funding kind/provider/source, or transaction-value semantics that do not reconcile with F4 and the executor interface;
-- floor-rounded minimum output, a deadline, or proof-observation ordering that weakens accepted F4 economics;
-- sender nonce, account type, balance, or anchor spoofing;
-- non-canonical type-2 transaction encoding, a gas limit below intrinsic gas, fee-field drift, hidden access-list data, or a signature smuggled into evidence;
-- underfunding one transaction or the aggregate complete bundle for gas, direct payment, Base L1 cost, or configurable OP Stack operator fee;
-- stale-anchor, duplicate, cross-chain, cross-sender, cross-anchor, non-contiguous, or unbounded bundle entries;
-- relay endpoints or credentials entering evidence;
-- simulations agreeing only by display name while sharing implementation/source authority;
-- simulations bound to the wrong anchor, transaction, signing hash, bundle, simulated block/timestamp/base fee, sub-intrinsic or over-limit gas, operator fee, route output asset/amount, principal repayment, flash fee, residual, base-token beneficiary or beneficiary delta, logs, deltas, post-state, payment, validity interval, or created before the bundle intent;
-- an unsigned package presented as permission to sign, submit, deploy, or trade;
+- invalid curve points or signature scalars;
+- high-s malleable signatures;
+- wrong hash, parity, key, or recovered sender;
+- changing an F5 unsigned field while presenting the result as the same signed transaction;
+- non-canonical signed RLP or wrong transaction hash;
+- signed bundle count, order, target, sender, or validity drift;
+- an endpoint ID assigned conflicting chain or protocol semantics;
+- URL, credential, token, production approval, or transport capability entering relay evidence;
+- request payload mutation after construction;
+- a relay response predating its request, arriving after validity, or carrying contradictory accepted/error fields;
+- duplicate response authorities hidden behind source aliases;
+- relay acceptance presented as inclusion, execution, or realized profit;
+- private keys or signing/submission helpers entering production source;
 - CI command, action, runner, shell, environment, permission, condition, timeout, or error-handling bypass.
 
 ## Controls
 
-Exact runtime types; closed schemas; constructor-time recomputation; F2 deployment and EOA proofs with proof-time causality; exact registry membership, one-code-hash/one-interface authority, canonical empty executor storage, runtime-bound flash-loan provider/source identity, and fixed `msg.value` direct-payment semantics; fixed selector and ABI layout; plan-derived binary commands; public raw-frame validation for unique pools, exact base-token endpoints, principal/amount continuity, and exact final minimum; ceiling-rounded F4-preserving output floors; checked integer arithmetic; explicit separate L1-data, operator-fee, and direct-payment bounds; canonical intrinsic gas, RLP, and legacy Keccak; empty access list; authenticated-start contiguous nonce, block-distance, and one-second anchor-freshness gates; aggregate bundle balance coverage including the operator-fee upper bound; no endpoint/credential fields; distinct implementation/source simulation agreement with explicit block/timestamp/base-fee and operator-fee context, flash-loan repayment, authenticated-sender beneficiary, and complete residual-delta reconciliation; transitive validity checks; immutable locks; hardened read-only CI.
+Exact runtime types; closed schemas; constructor-time recomputation; dependency-free curve arithmetic; known address vectors and randomized test-only signature round trips; bounded low-s scalars; unique authenticated-sender recovery; canonical type-2 RLP and legacy Keccak; exact F5 identity retention; deterministic endpoint registry; immutable canonical request bytes; detached request payload copies; independently unique response source IDs and digests; transitive time validity; explicit false eligibility/guarantee fields; static production-source denial of keys, signing, networking, and dispatch; immutable locks; hardened read-only CI.
 
 ## Residual risks
 
-F5 uses recorded state, deployment specifications, registry-declared direct-runtime semantics, fee bounds, bundle targets, and simulation results. It does not independently classify arbitrary runtime bytecode as non-proxy or non-upgradeable, prove live lender availability or fee stability, or govern own-inventory ERC-20 balances and allowances. It does not prove a live RPC or relay view, production token behavior, mempool competition, builder/sequencer acceptance, available funds at submission time, key custody, signature correctness, transaction inclusion, or realized profit. Those require later explicitly governed milestones and separate human approval.
+F6 verifies recorded signature and relay evidence. It does not prove who controlled an external signer, whether a signature source was trustworthy, whether a relay endpoint exists or is available, whether a response was authentic beyond its recorded source authority, whether the relay accepted the exact request live, whether a transaction was included, or whether profit was realized. Those require later separately governed live infrastructure, key custody, submission, inclusion, and settlement milestones with explicit human approval.
