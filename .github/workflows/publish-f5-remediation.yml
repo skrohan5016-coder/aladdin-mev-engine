@@ -22,7 +22,13 @@ jobs:
         run: |
           test "$(find helper/.staging -maxdepth 1 -name 'f5-patch-??.txt' | wc -l)" = "10"
           test "$(find helper/.staging -maxdepth 1 -name 'f5-patch-tail-??.txt' | wc -l)" = "17"
+          for file in helper/.staging/f5-patch-??.txt helper/.staging/f5-patch-tail-??.txt; do
+            printf '%s ' "$file"
+            tr -d '\r\n' < "$file" | sha256sum
+          done
           cat helper/.staging/f5-patch-??.txt helper/.staging/f5-patch-tail-??.txt | tr -d '\r\n' > /tmp/f5.patch.gz.b64
+          wc -c /tmp/f5.patch.gz.b64
+          sha256sum /tmp/f5.patch.gz.b64
           echo 'c80b1654e530d5a94891d1ec428f84c9d22a2a41af6df84d8765ff33b72876b4  /tmp/f5.patch.gz.b64' | sha256sum -c -
           base64 -d /tmp/f5.patch.gz.b64 > /tmp/f5.patch.gz
           echo '25719b6c40444699bfce687a5c28b34ee6efbe6a237d2c97b54710aaabbedc2a  /tmp/f5.patch.gz' | sha256sum -c -
