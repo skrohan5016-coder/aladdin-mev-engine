@@ -19,7 +19,7 @@ jobs:
           ref: a527bd6b328e25e3314f5c012a89b9627b058c13
           persist-credentials: false
       - name: Create exact source archive
-        run: tar --exclude=.git --exclude=f5-source.tar.gz -czf f5-source.tar.gz .
+        run: git archive --format=tar.gz --output=f5-source.tar.gz HEAD
       - name: Upload exact source archive
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
