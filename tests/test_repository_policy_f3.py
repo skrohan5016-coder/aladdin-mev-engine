@@ -8,14 +8,14 @@ from scripts.check_repo_policy import workflow_policy_errors
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class RepositoryWorkflowPolicyF3Tests(unittest.TestCase):
+class RepositoryWorkflowPolicyF3RetentionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(
             encoding="utf-8"
         )
 
-    def test_governed_f3_workflow_is_accepted(self) -> None:
+    def test_governed_f4_workflow_retains_f3_gates(self) -> None:
         self.assertEqual(workflow_policy_errors(self.workflow), [])
 
     def test_f3_schema_verification_is_mandatory(self) -> None:
@@ -34,24 +34,24 @@ class RepositoryWorkflowPolicyF3Tests(unittest.TestCase):
 
     def test_source_head_and_merge_job_identities_are_mandatory(self) -> None:
         source_mutation = self.workflow.replace(
-            "name: F3 exact-head conformance",
+            "name: F4 exact-head conformance",
             "name: generic validation",
             1,
         )
         merge_mutation = self.workflow.replace(
-            "name: F3 merge integration",
+            "name: F4 merge integration",
             "name: generic merge validation",
             1,
         )
         self.assertTrue(
             any(
-                "F3 exact-head" in error
+                "F4 exact-head" in error
                 for error in workflow_policy_errors(source_mutation)
             )
         )
         self.assertTrue(
             any(
-                "F3 merge-integration" in error
+                "F4 merge-integration" in error
                 for error in workflow_policy_errors(merge_mutation)
             )
         )

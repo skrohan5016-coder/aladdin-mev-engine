@@ -1,0 +1,43 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/valuation-book-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "pair_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 64,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "rate_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 64,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "rates": {
+      "items": {
+        "$ref": "conservative-valuation-rate-v1.schema.json"
+      },
+      "maxItems": 64,
+      "type": "array"
+    },
+    "schema": {
+      "const": "aladdin-mev-valuation-book/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "rates",
+    "rate_sha256",
+    "pair_sha256"
+  ],
+  "title": "Aladdin MEV Valuation Book v1",
+  "type": "object"
+}

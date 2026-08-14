@@ -1,0 +1,21 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/asset-amount-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "amount": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "asset": {
+      "$ref": "asset-id-v1.schema.json"
+    }
+  },
+  "required": [
+    "asset",
+    "amount"
+  ],
+  "title": "Aladdin MEV Asset Amount v1",
+  "type": "object"
+}

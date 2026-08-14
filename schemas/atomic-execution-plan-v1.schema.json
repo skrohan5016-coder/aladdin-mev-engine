@@ -1,0 +1,178 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/atomic-execution-plan-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "base_asset": {
+      "$ref": "asset-id-v1.schema.json"
+    },
+    "calldata_authority": {
+      "const": "none"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "funding": {
+      "$ref": "funding-plan-v1.schema.json"
+    },
+    "funding_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "gross_profit": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "opportunity_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "opportunity_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "plan_id": {
+      "pattern": "^atomic-plan-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "residual_before_external_costs": {
+      "maxLength": 79,
+      "pattern": "^(0|[1-9][0-9]*|-[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-atomic-execution-plan/v1"
+    },
+    "signing_authority": {
+      "const": "none"
+    },
+    "state_reference": {
+      "additionalProperties": false,
+      "properties": {
+        "chain": {
+          "enum": [
+            "ethereum",
+            "base",
+            "arbitrum",
+            "bnb-smart-chain",
+            "solana"
+          ]
+        },
+        "observed_at_unix_ms": {
+          "maxLength": 20,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "sequence_hash": {
+          "maxLength": 130,
+          "minLength": 1,
+          "type": "string"
+        },
+        "sequence_number": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "state_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "chain",
+        "sequence_number",
+        "sequence_hash",
+        "observed_at_unix_ms",
+        "state_digest"
+      ],
+      "type": "object"
+    },
+    "step_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 4,
+      "minItems": 2,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "steps": {
+      "items": {
+        "additionalProperties": false,
+        "properties": {
+          "amount_in": {
+            "maxLength": 78,
+            "pattern": "^(0|[1-9][0-9]*)$",
+            "type": "string"
+          },
+          "amount_out": {
+            "maxLength": 78,
+            "pattern": "^(0|[1-9][0-9]*)$",
+            "type": "string"
+          },
+          "index": {
+            "pattern": "^[0-3]$",
+            "type": "string"
+          },
+          "pool_address": {
+            "pattern": "^0x[0-9a-f]{40}$",
+            "type": "string"
+          },
+          "quote_sha256": {
+            "pattern": "^[0-9a-f]{64}$",
+            "type": "string"
+          },
+          "token_in": {
+            "pattern": "^0x[0-9a-f]{40}$",
+            "type": "string"
+          },
+          "token_out": {
+            "pattern": "^0x[0-9a-f]{40}$",
+            "type": "string"
+          }
+        },
+        "required": [
+          "index",
+          "pool_address",
+          "token_in",
+          "token_out",
+          "amount_in",
+          "amount_out",
+          "quote_sha256"
+        ],
+        "type": "object"
+      },
+      "maxItems": 4,
+      "minItems": 2,
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "plan_id",
+    "opportunity_id",
+    "opportunity_sha256",
+    "state_reference",
+    "base_asset",
+    "funding",
+    "funding_sha256",
+    "steps",
+    "step_sha256",
+    "gross_profit",
+    "residual_before_external_costs",
+    "calldata_authority",
+    "signing_authority",
+    "execution_eligible",
+    "created_at_unix_ms"
+  ],
+  "title": "Aladdin MEV Atomic Execution Plan v1",
+  "type": "object"
+}

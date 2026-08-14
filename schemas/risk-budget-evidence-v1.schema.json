@@ -1,0 +1,146 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/risk-budget-evidence-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allowed": {
+      "type": "boolean"
+    },
+    "authority": {
+      "const": "recorded-risk-budget-snapshot-shadow-only"
+    },
+    "concurrent_candidates": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "evidence_id": {
+      "pattern": "^risk-budget-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "execution_plan_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "limits": {
+      "additionalProperties": false,
+      "properties": {
+        "maximum_concurrent_candidates": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "maximum_daily_loss": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "maximum_notional": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "maximum_pending_execution_cost": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "maximum_single_execution_cost": {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "maximum_daily_loss",
+        "maximum_single_execution_cost",
+        "maximum_pending_execution_cost",
+        "maximum_concurrent_candidates",
+        "maximum_notional"
+      ],
+      "type": "object"
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "realized_loss": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "realized_net_profit": {
+      "maxLength": 79,
+      "pattern": "^(0|[1-9][0-9]*|-[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "reasons": {
+      "items": {
+        "enum": [
+          "single-execution-cost-limit",
+          "pending-execution-cost-limit",
+          "daily-loss-limit",
+          "concurrent-candidate-limit",
+          "notional-limit"
+        ]
+      },
+      "maxItems": 5,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "requested_execution_cost": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "requested_notional": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "reserved_execution_cost": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "risk_policy_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-risk-budget-evidence/v1"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "evidence_id",
+    "risk_policy_id",
+    "execution_plan_sha256",
+    "limits",
+    "realized_net_profit",
+    "realized_loss",
+    "reserved_execution_cost",
+    "concurrent_candidates",
+    "requested_execution_cost",
+    "requested_notional",
+    "allowed",
+    "reasons",
+    "observed_at_unix_ms",
+    "valid_until_unix_ms",
+    "source_sha256",
+    "authority"
+  ],
+  "title": "Aladdin MEV Risk Budget Evidence v1",
+  "type": "object"
+}

@@ -1,0 +1,97 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/route-simulation-result-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "engine_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "engine_implementation_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "environment_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "error_code": {
+      "maxLength": 128,
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "execution_plan_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "gas_units": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "opportunity_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "output_amount": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "post_state_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "result_source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-route-simulation-result/v1"
+    },
+    "state_reference_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "success": {
+      "type": "boolean"
+    },
+    "token_deltas_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "engine_id",
+    "engine_implementation_sha256",
+    "environment_sha256",
+    "result_source_sha256",
+    "state_reference_sha256",
+    "success",
+    "opportunity_sha256",
+    "execution_plan_sha256",
+    "gas_units",
+    "output_amount",
+    "token_deltas_sha256",
+    "post_state_sha256",
+    "observed_at_unix_ms",
+    "valid_until_unix_ms",
+    "error_code"
+  ],
+  "title": "Aladdin MEV Route Simulation Result v1",
+  "type": "object"
+}

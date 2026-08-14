@@ -1,0 +1,44 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/asset-id-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "address": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^0x[0-9a-f]{40}$",
+          "type": "string"
+        }
+      ]
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base",
+        "arbitrum",
+        "bnb-smart-chain",
+        "solana"
+      ]
+    },
+    "kind": {
+      "enum": [
+        "native",
+        "erc20"
+      ]
+    },
+    "schema": {
+      "const": "aladdin-mev-asset-id/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "chain",
+    "kind",
+    "address"
+  ],
+  "title": "Aladdin MEV Asset ID v1",
+  "type": "object"
+}
