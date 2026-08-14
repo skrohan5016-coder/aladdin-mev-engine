@@ -18,9 +18,9 @@ F5 remains offline and recorded-input-only. It does not connect to an RPC endpoi
 - bounded Ethereum ABI encoding for the governed executor call with an independently validated exact route frame, uint64 deadline, and non-expanding exact millisecond validity ceiling;
 - exact route-command payload derived from the accepted F4 execution plan;
 - F2-proof-bound sender nonce and native balance evidence;
-- deterministic unsigned EIP-1559 typed-transaction signing payload, intrinsic-gas gate, and hash;
+- deterministic unsigned EIP-1559 typed-transaction signing payload, intrinsic-gas gate, hash, and authenticated sender-balance coverage for explicit L1-data/operator-fee/direct-payment bounds;
 - target-block/time-bounded private bundle intent beginning at the authenticated nonce, with contiguous nonce rules and aggregate balance coverage;
-- independent transaction simulation agreement bound to transaction/bundle identities, explicit block/timestamp/base-fee context, and complete base-token residual delivery to the authenticated sender;
+- independent transaction simulation agreement bound to transaction/bundle identities, explicit block/timestamp/base-fee and operator-fee context, and complete base-token residual delivery to the authenticated sender;
 - final single-transaction package-v1 evidence that requires approved F4 economics, binds simulations after bundle creation, inherits deadline validity, and keeps `signing_eligible = false` and `execution_eligible = false`.
 
 ## Non-goals

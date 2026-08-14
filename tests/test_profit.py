@@ -11,6 +11,7 @@ def costs(**overrides: int) -> CostBreakdown:
         "gross_profit": 10_000,
         "execution_gas_cost": 1_000,
         "l1_data_fee": 200,
+        "operator_fee": 0,
         "flash_loan_fee": 300,
         "inclusion_bid": 1_000,
         "slippage_reserve": 400,

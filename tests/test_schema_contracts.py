@@ -19,7 +19,7 @@ class SchemaContractTests(unittest.TestCase):
             strategy=Strategy.ATOMIC_DEX_ARBITRAGE,
             state_reference=StateReference(Chain.ETHEREUM, 1, "0x01", 10, "a" * 64),
             capital_at_risk=0,
-            costs=CostBreakdown(100, 10, 0, 0, 0, 10, 10, 10, 10, 0),
+            costs=CostBreakdown(100, 10, 0, 0, 0, 0, 10, 10, 10, 10, 0),
             simulations=(
                 SimulationResult("a", True, 1, 1, "b" * 64),
                 SimulationResult("b", True, 1, 1, "b" * 64),

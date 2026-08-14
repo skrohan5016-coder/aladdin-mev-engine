@@ -79,6 +79,11 @@
       "pattern": "^(0|[1-9][0-9]*)$",
       "type": "string"
     },
+    "operator_fee_paid": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
     "output_amount": {
       "maxLength": 78,
       "pattern": "^(0|[1-9][0-9]*)$",
@@ -150,6 +155,7 @@
     "simulated_base_fee_per_gas",
     "success",
     "gas_used",
+    "operator_fee_paid",
     "output_amount",
     "base_token",
     "flash_loan_principal_repaid",

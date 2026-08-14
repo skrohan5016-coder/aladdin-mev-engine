@@ -86,7 +86,9 @@ class F5GovernanceTests(unittest.TestCase):
             "transaction-simulations-bind-an-explicit-block-number-timestamp-and-base-fee",
             "simulated-block-lies-within-the-bundle-range-and-before-the-executor-deadline",
             "simulated-base-fee-does-not-exceed-the-unsigned-transaction-max-fee",
-            "public-governed-abi-encoder-rejects-noncanonical-route-frames-zero-identities-and-non-uint64-deadlines",
+            "transaction-simulation-operator-fee-does-not-exceed-the-recorded-upper-bound",
+            "transaction-simulation-gas-is-bounded-by-canonical-intrinsic-gas-and-the-unsigned-transaction-gas-limit",
+            "public-governed-abi-encoder-enforces-simple-cycle-unique-pool-base-token-principal-amount-flow-final-minimum-and-bounded-frame-semantics",
             "simulated-block-timestamp-strictly-follows-the-authenticated-anchor-block-timestamp",
             "executor-call-validity-preserves-the-exact-millisecond-policy-and-f4-evidence-ceiling",
         }

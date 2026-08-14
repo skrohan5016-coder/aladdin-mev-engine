@@ -24,7 +24,12 @@ from aladdin_mev_engine.cost_evidence import (
 )
 from aladdin_mev_engine.domain import Chain, ChainHealth
 from aladdin_mev_engine.profit import ProfitPolicy
+from aladdin_mev_engine.execution_plan import AtomicExecutionPlan, FundingKind, FundingPlan
+from aladdin_mev_engine.opportunity import OpportunitySearchReport
+from aladdin_mev_engine.optimizer import OptimizationLimits
 from aladdin_mev_engine.risk import RiskLedger, RiskLimits
+
+from f3_helpers import TOKEN_A, TOKEN_B, authenticated_universe, pool_fixture
 
 from f4_helpers import (
     CHAIN_HEALTH_SOURCE,
@@ -55,6 +60,7 @@ class CostAndNetEvidenceF4Tests(unittest.TestCase):
             20,
             19,
             0,
+            0,
             7,
             100,
             200,
@@ -77,12 +83,87 @@ class CostAndNetEvidenceF4Tests(unittest.TestCase):
             2,
             1,
             50,
+            11,
             3,
             100,
             200,
             "22" * 32,
         )
-        self.assertEqual(envelope.total_native_upper_bound, 253)
+        self.assertEqual(envelope.total_native_upper_bound, 264)
+        self.assertEqual(envelope.operator_fee_upper_bound, 11)
+        self.assertIn("protocol-fee", envelope.to_json_value()["operator_fee_semantics"])
+
+        ethereum = Eip1559CostEnvelope(
+            Chain.ETHEREUM,
+            AssetId.native(Chain.ETHEREUM),
+            100,
+            2,
+            1,
+            0,
+            0,
+            3,
+            100,
+            200,
+            "23" * 32,
+        )
+        with self.assertRaisesRegex(ValueError, "operator fee"):
+            replace(ethereum, operator_fee_upper_bound=1)
+
+    def test_base_operator_fee_is_included_in_the_native_upper_bound(self) -> None:
+        envelope = Eip1559CostEnvelope(
+            Chain.BASE,
+            AssetId.native(Chain.BASE),
+            5,
+            7,
+            1,
+            13,
+            17,
+            19,
+            100,
+            200,
+            "24" * 32,
+        )
+        self.assertEqual(envelope.execution_gas_cost_upper_bound, 35)
+        self.assertEqual(envelope.total_native_upper_bound, 84)
+
+    def test_base_operator_fee_is_conservatively_converted_into_profit_costs(self) -> None:
+        state = authenticated_universe(
+            (
+                pool_fixture(address_byte=1, token0=TOKEN_A, token1=TOKEN_B, reserve0=1_000_000, reserve1=2_000_000),
+                pool_fixture(address_byte=2, token0=TOKEN_A, token1=TOKEN_B, reserve0=1_500_000, reserve1=1_000_000),
+            ),
+            source_id="base-json-rpc",
+        )
+        opportunity = OpportunitySearchReport(
+            state, TOKEN_A, 4, OptimizationLimits(50_000), state.observed_at_unix_ms + 1
+        ).opportunities()[0]
+        base = AssetId.erc20(Chain.BASE, TOKEN_A)
+        funding = FundingPlan(
+            FundingKind.FLASH_LOAN,
+            base,
+            opportunity.capital_at_risk,
+            25,
+            "recorded-base-lender",
+            opportunity.created_at_unix_ms,
+            opportunity.created_at_unix_ms + 10_000,
+            SOURCE_B,
+        )
+        plan = AtomicExecutionPlan(opportunity, funding, opportunity.created_at_unix_ms + 1)
+        envelope = cost_envelope(
+            plan,
+            native_to_base_numerator=3,
+            native_to_base_denominator=2,
+            gas_units_upper_bound=5,
+            max_fee_per_gas=1,
+            l1_data_fee_upper_bound=7,
+            operator_fee_upper_bound=11,
+            direct_inclusion_payment_upper_bound=1,
+            reserve_amount=0,
+        )
+        self.assertEqual(envelope.costs.execution_gas_cost, 8)
+        self.assertEqual(envelope.costs.l1_data_fee, 11)
+        self.assertEqual(envelope.costs.operator_fee, 17)
+        self.assertEqual(dict(envelope.converted_components)["operator_fee"], 17)
 
     def test_cost_envelope_derives_every_category_and_uses_ceiling_conversion(self) -> None:
         envelope = cost_envelope(
@@ -96,6 +177,7 @@ class CostAndNetEvidenceF4Tests(unittest.TestCase):
         costs = envelope.costs
         self.assertEqual(costs.gross_profit, envelope.plan.opportunity.gross_profit)
         self.assertEqual(costs.execution_gas_cost, 8)
+        self.assertEqual(costs.operator_fee, 0)
         self.assertEqual(costs.inclusion_bid, 2)
         self.assertEqual(costs.flash_loan_fee, envelope.plan.funding.fee)
         self.assertEqual(costs.slippage_reserve, 2)

@@ -58,6 +58,7 @@ class TransactionSimulationResult:
     simulated_base_fee_per_gas: int
     success: bool
     gas_used: int
+    operator_fee_paid: int
     output_amount: int
     base_token: bytes
     flash_loan_principal_repaid: int
@@ -104,6 +105,7 @@ class TransactionSimulationResult:
         if type(self.success) is not bool:
             raise TypeError("success must be an exact bool")
         _uint256("gas_used", self.gas_used)
+        _uint256("operator_fee_paid", self.operator_fee_paid)
         _uint256("output_amount", self.output_amount)
         _address("base_token", self.base_token)
         _uint256("flash_loan_principal_repaid", self.flash_loan_principal_repaid)
@@ -144,6 +146,7 @@ class TransactionSimulationResult:
                 raise ValueError("failed transaction simulation requires an error code")
             if any((
                 self.gas_used,
+                self.operator_fee_paid,
                 self.output_amount,
                 self.flash_loan_principal_repaid,
                 self.flash_loan_fee_paid,
@@ -176,6 +179,7 @@ class TransactionSimulationResult:
             "simulated_base_fee_per_gas": str(self.simulated_base_fee_per_gas),
             "success": self.success,
             "gas_used": str(self.gas_used),
+            "operator_fee_paid": str(self.operator_fee_paid),
             "output_amount": str(self.output_amount),
             "base_token": to_hex_data(self.base_token),
             "flash_loan_principal_repaid": str(self.flash_loan_principal_repaid),
@@ -230,6 +234,7 @@ def transaction_simulations_agree(
         )
         and item.simulated_base_fee_per_gas == reference.simulated_base_fee_per_gas
         and item.gas_used == reference.gas_used
+        and item.operator_fee_paid == reference.operator_fee_paid
         and item.output_amount == reference.output_amount
         and item.base_token == reference.base_token
         and item.flash_loan_principal_repaid == reference.flash_loan_principal_repaid
@@ -335,8 +340,13 @@ class UnsignedExecutionPackageEvidence:
             raise ValueError("transaction simulation block timestamp exceeds the executor deadline")
         if reference.simulated_base_fee_per_gas > self.transaction.max_fee_per_gas:
             raise ValueError("transaction simulation base fee exceeds the transaction max fee")
+        if reference.gas_used < self.transaction.intrinsic_gas:
+            raise ValueError("transaction simulation gas is below the canonical intrinsic gas floor")
         if reference.gas_used > self.transaction.gas_limit:
             raise ValueError("transaction simulation gas exceeds unsigned transaction gas limit")
+        operator_fee_upper_bound = evidence.cost_envelope.fee_envelope.operator_fee_upper_bound
+        if reference.operator_fee_paid > operator_fee_upper_bound:
+            raise ValueError("transaction simulation operator fee exceeds the recorded upper bound")
         expected_output = evidence.plan.opportunity.route_quote.amount_out
         if reference.output_amount != expected_output:
             raise ValueError("transaction simulation output disagrees with exact F4 route output")

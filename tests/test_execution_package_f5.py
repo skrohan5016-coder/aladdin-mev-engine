@@ -40,6 +40,23 @@ class ExecutionPackageF5Tests(unittest.TestCase):
             ),
         )
 
+    def test_operator_fee_simulation_is_explicit_and_bounded(self) -> None:
+        transaction = f5_transaction()
+        self.assertEqual(transaction.operator_fee_upper_bound, 0)
+        self.assertEqual(transaction.to_json_value()["operator_fee_upper_bound"], "0")
+        rows = transaction_simulations()
+        self.assertEqual(rows[0].operator_fee_paid, 0)
+        excessive = tuple(replace(item, operator_fee_paid=1) for item in rows)
+        with self.assertRaisesRegex(ValueError, "operator fee"):
+            UnsignedExecutionPackageEvidence(
+                f5_net_evidence(),
+                f5_call(),
+                transaction,
+                f5_bundle(),
+                excessive,
+                f5_bundle().created_at_unix_ms + 2,
+            )
+
     def test_transaction_simulation_independence_and_exact_agreement(self) -> None:
         rows = transaction_simulations()
         self.assertTrue(transaction_simulations_agree(rows))
@@ -298,6 +315,24 @@ class ExecutionPackageF5Tests(unittest.TestCase):
             replace(row, error_code="unexpected")
         with self.assertRaisesRegex(ValueError, "validity"):
             replace(row, valid_until_unix_ms=row.observed_at_unix_ms - 1)
+
+
+    def test_transaction_simulation_gas_cannot_fall_below_intrinsic_floor(self) -> None:
+        package = f5_package()
+        impossible = tuple(
+            replace(item, gas_used=package.transaction.intrinsic_gas - 1)
+            for item in package.simulations
+        )
+        with self.assertRaisesRegex(ValueError, "intrinsic gas floor"):
+            UnsignedExecutionPackageEvidence(
+                package.net_profit_evidence,
+                package.call,
+                package.transaction,
+                package.bundle,
+                impossible,
+                package.created_at_unix_ms,
+            )
+
 
 
 if __name__ == "__main__":

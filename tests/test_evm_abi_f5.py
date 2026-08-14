@@ -294,25 +294,156 @@ class EvmAbiF5Tests(unittest.TestCase):
                 with self.assertRaisesRegex((ValueError, TypeError), message):
                     encode_governed_execute_call(**values)
 
+    def test_public_encoder_rejects_disconnected_or_noncanonical_route_semantics(self) -> None:
+        call = f5_call()
+        common = {
+            "selector": call.deployment.spec.interface.function_selector,
+            "plan_sha256": bytes.fromhex(call.net_profit_evidence.plan.digest),
+            "base_token": call.net_profit_evidence.plan.base_asset.address,
+            "principal": call.net_profit_evidence.plan.opportunity.capital_at_risk,
+            "minimum_final_output": call.minimum_final_output,
+            "deadline_unix_s": call.deadline_unix_s,
+            "route_payload": call.route_payload,
+        }
+
+        def mutate(start: int, end: int, replacement: bytes) -> bytes:
+            payload = bytearray(call.route_payload)
+            payload[start:end] = replacement
+            return bytes(payload)
+
+        second_start = 10 + 189
+        previous_expected = int.from_bytes(call.route_payload[103:135], "big")
+        final_minimum = call.minimum_final_output
+        cases = (
+            ({"base_token": bytes.fromhex("aa" * 20)}, "first input token"),
+            ({"principal": common["principal"] + 1}, "first input amount"),
+            (
+                {"route_payload": mutate(second_start + 1, second_start + 21, call.route_payload[11:31])},
+                "reuse a pool",
+            ),
+            (
+                {"route_payload": mutate(second_start + 21, second_start + 41, bytes.fromhex("bb" * 20))},
+                "token flow",
+            ),
+            (
+                {"route_payload": mutate(second_start + 61, second_start + 93, (previous_expected + 1).to_bytes(32, "big"))},
+                "amount flow",
+            ),
+            (
+                {"route_payload": mutate(second_start + 41, second_start + 61, bytes.fromhex("cc" * 20))},
+                "final output token",
+            ),
+            (
+                {
+                    "route_payload": mutate(
+                        second_start + 93,
+                        second_start + 157,
+                        (final_minimum - 1).to_bytes(32, "big") * 2,
+                    )
+                },
+                "final expected output",
+            ),
+            (
+                {
+                    "route_payload": mutate(
+                        second_start + 125,
+                        second_start + 157,
+                        (final_minimum - 1).to_bytes(32, "big"),
+                    )
+                },
+                "final command minimum",
+            ),
+        )
+        for replacement, message in cases:
+            with self.subTest(message=message):
+                values = dict(common)
+                values.update(replacement)
+                with self.assertRaisesRegex(ValueError, message):
+                    encode_governed_execute_call(**values)
+
+        base = bytes.fromhex("11" * 20)
+        token_b = bytes.fromhex("22" * 20)
+        token_c = bytes.fromhex("33" * 20)
+        commands = (
+            RouteCommand(0, bytes.fromhex("41" * 20), base, token_b, 100, 200, 150, hashlib.sha256(b"early-0").hexdigest()),
+            RouteCommand(1, bytes.fromhex("42" * 20), token_b, base, 200, 300, 250, hashlib.sha256(b"early-1").hexdigest()),
+            RouteCommand(2, bytes.fromhex("43" * 20), base, token_c, 300, 400, 350, hashlib.sha256(b"early-2").hexdigest()),
+            RouteCommand(3, bytes.fromhex("44" * 20), token_c, base, 400, 500, 450, hashlib.sha256(b"early-3").hexdigest()),
+        )
+        payload = ROUTE_PAYLOAD_HEADER + bytes((ROUTE_PAYLOAD_VERSION, 4)) + b"".join(
+            item.binary for item in commands
+        )
+        with self.assertRaisesRegex(ValueError, "before the final command"):
+            encode_governed_execute_call(
+                selector=b"\x12\x34\x56\x78",
+                plan_sha256=hashlib.sha256(b"early-plan").digest(),
+                base_token=base,
+                principal=100,
+                minimum_final_output=450,
+                deadline_unix_s=1,
+                route_payload=payload,
+            )
+
+    def test_route_command_rejects_zero_economic_fields_and_zero_quote_identity(self) -> None:
+        common = {
+            "index": 0,
+            "pool_address": bytes.fromhex("41" * 20),
+            "token_in": bytes.fromhex("11" * 20),
+            "token_out": bytes.fromhex("22" * 20),
+            "amount_in": 1,
+            "expected_amount_out": 1,
+            "minimum_amount_out": 0,
+            "quote_sha256": hashlib.sha256(b"route-command").hexdigest(),
+        }
+        for replacement, message in (
+            ({"index": 4}, "0 through 3"),
+            ({"amount_in": 0}, "amount_in.*positive"),
+            ({"expected_amount_out": 0}, "expected_amount_out.*positive"),
+            ({"quote_sha256": "0" * 64}, "quote_sha256 cannot be zero"),
+        ):
+            with self.subTest(message=message):
+                values = dict(common)
+                values.update(replacement)
+                with self.assertRaisesRegex(ValueError, message):
+                    RouteCommand(**values)
+
     def test_randomized_public_abi_encoding_independently_decodes(self) -> None:
         rng = random.Random(0xF5AB1)
         for case in range(250):
             command_count = rng.randint(2, 4)
+            base_token = bytes(((case + 41) % 250 + 1,)) * 20
+            intermediate_tokens = [
+                bytes(((case + 70 + index * 31) % 250 + 1,)) * 20
+                for index in range(command_count - 1)
+            ]
+            while base_token in intermediate_tokens or len(set(intermediate_tokens)) != len(intermediate_tokens):
+                intermediate_tokens = [
+                    bytes(((token[0] % 250) + 1,)) * 20
+                    for token in intermediate_tokens
+                ]
+            principal = rng.randint(1, 10**18)
+            final_expected = principal + rng.randint(0, 10**12)
+            minimum_final = rng.randint(principal, final_expected)
+            path = [base_token, *intermediate_tokens, base_token]
             commands = []
+            amount_in = principal
             for index in range(command_count):
-                token_in = bytes(((case + index) % 250 + 1,)) * 20
-                token_out = bytes(((case + index + 97) % 250 + 1,)) * 20
-                if token_out == token_in:
-                    token_out = bytes(((token_out[0] % 250) + 1,)) * 20
-                amount_in = rng.randint(1, 10**18)
-                expected = rng.randint(1, 10**18)
-                minimum = rng.randint(1, expected)
+                expected = (
+                    final_expected
+                    if index == command_count - 1
+                    else rng.randint(1, 10**18)
+                )
+                minimum = (
+                    minimum_final
+                    if index == command_count - 1
+                    else rng.randint(0, expected)
+                )
                 commands.append(
                     RouteCommand(
                         index=index,
                         pool_address=bytes(((case + index + 193) % 250 + 1,)) * 20,
-                        token_in=token_in,
-                        token_out=token_out,
+                        token_in=path[index],
+                        token_out=path[index + 1],
                         amount_in=amount_in,
                         expected_amount_out=expected,
                         minimum_amount_out=minimum,
@@ -321,18 +452,16 @@ class EvmAbiF5Tests(unittest.TestCase):
                         ).hexdigest(),
                     )
                 )
+                amount_in = expected
             payload = (
                 ROUTE_PAYLOAD_HEADER
                 + bytes((ROUTE_PAYLOAD_VERSION, command_count))
                 + b"".join(item.binary for item in commands)
             )
-            principal = rng.randint(1, 10**18)
-            minimum_final = principal + rng.randint(0, 10**12)
             plan_sha256 = hashlib.sha256(f"f5-plan-{case}".encode("ascii")).digest()
             selector = hashlib.sha256(f"f5-selector-{case}".encode("ascii")).digest()[:4]
             if selector == bytes(4):
                 selector = b"\x01\x00\x00\x00"
-            base_token = bytes(((case + 41) % 250 + 1,)) * 20
             deadline = rng.randint(1, MAX_UINT64)
             calldata = encode_governed_execute_call(
                 selector=selector,

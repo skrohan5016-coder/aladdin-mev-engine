@@ -11,9 +11,9 @@ Aladdin MEV Engine is a governed, safety-first foundation for authenticated EVM 
 - deterministic route-command bytes derived from the exact F4 plan;
 - canonical ABI calldata with ceiling-rounded route and final economic minimum-output floors;
 - F2-authenticated EOA sender nonce and native balance;
-- canonical unsigned EIP-1559 type-2 signing payload, intrinsic-gas floor, and legacy-Keccak hash;
+- canonical unsigned EIP-1559 type-2 signing payload, intrinsic-gas floor, legacy-Keccak hash, and sender-balance coverage for explicit L1-data and OP Stack operator-fee upper bounds;
 - authenticated-anchor-fresh, bounded, relay-neutral private bundle intent beginning at the authenticated nonce, with contiguous nonces and aggregate balance coverage;
-- independent transaction simulations bound to the exact state, transaction, signing hash, bundle, in-range block, pre-deadline timestamp, and max-fee-covered base fee, observed after bundle formation, and explicitly reconciling exact base-token identity, flash principal, fee, base-token residual, authenticated sender beneficiary, and complete beneficiary delta;
+- independent transaction simulations bound to the exact state, transaction, signing hash, bundle, in-range block, pre-deadline timestamp, and max-fee-covered base fee, observed after bundle formation, and explicitly reconciling exact base-token identity, flash principal, fee, OP Stack operator fee, base-token residual, authenticated sender beneficiary, and complete beneficiary delta;
 - a final single-transaction package-v1 that recomputes all identities and deadline-transitive validity.
 
 Every F5 output remains:

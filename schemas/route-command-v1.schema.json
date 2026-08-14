@@ -5,7 +5,7 @@
   "properties": {
     "amount_in": {
       "maxLength": 78,
-      "pattern": "^(0|[1-9][0-9]*)$",
+      "pattern": "^[1-9][0-9]*$",
       "type": "string"
     },
     "binary": {
@@ -14,12 +14,12 @@
     },
     "expected_amount_out": {
       "maxLength": 78,
-      "pattern": "^(0|[1-9][0-9]*)$",
+      "pattern": "^[1-9][0-9]*$",
       "type": "string"
     },
     "index": {
-      "maxLength": 3,
-      "pattern": "^(0|[1-9][0-9]{0,2})$",
+      "maxLength": 1,
+      "pattern": "^[0-3]$",
       "type": "string"
     },
     "minimum_amount_out": {
@@ -32,7 +32,7 @@
       "type": "string"
     },
     "quote_sha256": {
-      "pattern": "^[0-9a-f]{64}$",
+      "pattern": "^(?!0{64}$)[0-9a-f]{64}$",
       "type": "string"
     },
     "schema": {

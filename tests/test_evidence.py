@@ -35,6 +35,7 @@ class EvidenceTests(unittest.TestCase):
             gross_profit=1_000,
             execution_gas_cost=100,
             l1_data_fee=0,
+            operator_fee=0,
             flash_loan_fee=0,
             inclusion_bid=0,
             slippage_reserve=100,

@@ -98,7 +98,13 @@ def _abi_dynamic_bytes(payload: bytes) -> bytes:
     return _abi_word_uint(len(payload)) + payload + bytes(padding)
 
 
-def _validate_governed_route_payload(route_payload: object) -> bytes:
+def _validate_governed_route_payload(
+    route_payload: object,
+    *,
+    base_token: bytes,
+    principal: int,
+    minimum_final_output: int,
+) -> bytes:
     if type(route_payload) is not bytes:
         raise TypeError("route_payload must be exact immutable bytes")
     if len(route_payload) > MAX_ROUTE_PAYLOAD_BYTES:
@@ -117,6 +123,9 @@ def _validate_governed_route_payload(route_payload: object) -> bytes:
     expected_length = header_length + command_count * ROUTE_COMMAND_BINARY_BYTES
     if len(route_payload) != expected_length:
         raise ValueError("route_payload length does not match its command count")
+
+    parsed: list[tuple[bytes, bytes, bytes, int, int, int]] = []
+    used_pools: set[bytes] = set()
     for index in range(command_count):
         start = header_length + index * ROUTE_COMMAND_BINARY_BYTES
         command = route_payload[start : start + ROUTE_COMMAND_BINARY_BYTES]
@@ -128,6 +137,9 @@ def _validate_governed_route_payload(route_payload: object) -> bytes:
         _address("route payload pool_address", pool_address)
         _address("route payload token_in", token_in)
         _address("route payload token_out", token_out)
+        if pool_address in used_pools:
+            raise ValueError("route_payload cannot reuse a pool")
+        used_pools.add(pool_address)
         if token_in == token_out:
             raise ValueError("route_payload command tokens must be distinct")
         amount_in = int.from_bytes(command[61:93], "big")
@@ -140,6 +152,45 @@ def _validate_governed_route_payload(route_payload: object) -> bytes:
             raise ValueError("route_payload minimum output exceeds expected output")
         if command[157:189] == bytes(32):
             raise ValueError("route_payload quote digest cannot be zero")
+        parsed.append(
+            (
+                pool_address,
+                token_in,
+                token_out,
+                amount_in,
+                expected_amount_out,
+                minimum_amount_out,
+            )
+        )
+
+    first = parsed[0]
+    if first[1] != base_token:
+        raise ValueError("route_payload first input token must equal the governed base token")
+    if first[3] != principal:
+        raise ValueError("route_payload first input amount must equal the governed principal")
+
+    intermediate_tokens: set[bytes] = set()
+    for index, current in enumerate(parsed):
+        _pool, _token_in, token_out, _amount_in, expected_out, minimum_out = current
+        if index:
+            previous = parsed[index - 1]
+            if previous[2] != current[1]:
+                raise ValueError("route_payload token flow is disconnected")
+            if previous[4] != current[3]:
+                raise ValueError("route_payload amount flow is disconnected")
+        if index < command_count - 1:
+            if token_out == base_token:
+                raise ValueError("route_payload returns to the base token before the final command")
+            if token_out in intermediate_tokens:
+                raise ValueError("route_payload repeats an intermediate token")
+            intermediate_tokens.add(token_out)
+        else:
+            if token_out != base_token:
+                raise ValueError("route_payload final output token must equal the governed base token")
+            if expected_out < minimum_final_output:
+                raise ValueError("route_payload final expected output is below the governed minimum")
+            if minimum_out != minimum_final_output:
+                raise ValueError("route_payload final command minimum must equal the governed final minimum")
     return route_payload
 
 
@@ -166,7 +217,12 @@ def encode_governed_execute_call(
     _uint64("deadline_unix_s", deadline_unix_s)
     if deadline_unix_s == 0:
         raise ValueError("deadline_unix_s must be positive")
-    payload = _validate_governed_route_payload(route_payload)
+    payload = _validate_governed_route_payload(
+        route_payload,
+        base_token=base_token,
+        principal=principal,
+        minimum_final_output=minimum_final_output,
+    )
     dynamic_offset = 32 * 6
     head = b"".join(
         (
@@ -229,19 +285,21 @@ class RouteCommand:
     def __post_init__(self) -> None:
         if self.schema != ROUTE_COMMAND_SCHEMA_JSON:
             raise ValueError("unsupported route-command schema")
-        if type(self.index) is not int or not 0 <= self.index <= 255:
-            raise ValueError("route-command index must be an unsigned 8-bit exact integer")
+        if type(self.index) is not int or not 0 <= self.index < 4:
+            raise ValueError("route-command index must be an exact integer from 0 through 3")
         _address("pool_address", self.pool_address)
         _address("token_in", self.token_in)
         _address("token_out", self.token_out)
         if self.token_in == self.token_out:
             raise ValueError("route-command tokens must be distinct")
-        _uint256("amount_in", self.amount_in)
-        _uint256("expected_amount_out", self.expected_amount_out)
+        _uint256("amount_in", self.amount_in, positive=True)
+        _uint256("expected_amount_out", self.expected_amount_out, positive=True)
         _uint256("minimum_amount_out", self.minimum_amount_out)
         if self.minimum_amount_out > self.expected_amount_out:
             raise ValueError("route-command minimum output exceeds expected output")
         require_sha256("quote_sha256", self.quote_sha256)
+        if self.quote_sha256 == "0" * 64:
+            raise ValueError("route-command quote_sha256 cannot be zero")
         canonical_json_bytes(self.to_json_value())
 
     @property

@@ -9,7 +9,7 @@ F3 opportunity
   -> exact structural execution plan
   -> explicit funding plan
   -> independently identified route simulations
-  -> EIP-1559/Base fee upper bound
+  -> EIP-1559, L1-data, and OP Stack operator-fee upper bounds
   -> exact directional valuation set
   -> complete cost-category reconciliation
   -> source-bound chain-health and recomputed risk-budget context
@@ -31,9 +31,9 @@ The plan recomputes every step from the exact F3 route quote and binds the oppor
 
 ## Fee and cost authority
 
-The EIP-1559 envelope records gas units, `max_fee_per_gas`, and `max_priority_fee_per_gas`. Priority fee is contained inside the max-fee cap and is never added again. A separate direct inclusion-payment upper bound remains a distinct category. Ethereum requires zero separate L1-data fee; Base may record a separate L1 security/data-fee upper bound.
+The EIP-1559 envelope records gas units, `max_fee_per_gas`, and `max_priority_fee_per_gas`. Priority fee is contained inside the max-fee cap and is never added again. L1-data cost, OP Stack operator fee, and direct inclusion payment are three separate recorded upper-bound categories. Ethereum requires both the separate L1-data and operator-fee fields to be zero. Base must record each category explicitly; a zero operator-fee configuration is evidence, not an implicit assumption.
 
-Every cost envelope contains exactly one of each reserve category: slippage, stale state, failure risk, infrastructure, and inventory hedge. Gas, L1 data, funding, direct inclusion, and reserve amounts are converted into the base token before profit assessment.
+Every cost envelope contains exactly one of each reserve category: slippage, stale state, failure risk, infrastructure, and inventory hedge. Gas, L1 data, operator fee, funding, direct inclusion, and reserve amounts are independently converted into the base token before profit assessment.
 
 Funding, fee, reserve, and every required valuation rate must be valid when the cost envelope is formed and again at the final net-evidence timestamp. The envelope publishes its earliest transitive expiry.
 

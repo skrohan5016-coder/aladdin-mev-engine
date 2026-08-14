@@ -85,6 +85,9 @@ class F4GovernanceRetentionTests(unittest.TestCase):
             "route-simulation-agreement-requires-one-exact-environment-digest",
             "risk-budget-pending-daily-and-concurrency-aggregation-is-checked-uint256",
             "risk-budget-snapshot-cannot-precede-the-bound-execution-cost-envelope",
+            "op-stack-operator-fee-is-explicit-separate-from-eip1559-gas-l1-data-and-direct-payment",
+            "ethereum-operator-fee-upper-bound-and-paid-amount-are-zero",
+            "base-operator-fee-upper-bound-is-recorded-converted-and-included-in-authenticated-sender-balance",
             "f4-profit-policy-integer-fields-are-closed-to-uint256",
         }
         self.assertTrue(required.issubset(invariants))

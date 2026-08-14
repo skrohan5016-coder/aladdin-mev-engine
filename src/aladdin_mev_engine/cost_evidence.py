@@ -77,6 +77,7 @@ class Eip1559CostEnvelope:
     max_fee_per_gas: int
     max_priority_fee_per_gas: int
     l1_data_fee_upper_bound: int
+    operator_fee_upper_bound: int
     direct_inclusion_payment_upper_bound: int
     observed_at_unix_ms: int
     valid_until_unix_ms: int
@@ -99,6 +100,7 @@ class Eip1559CostEnvelope:
         _uint("max_fee_per_gas", self.max_fee_per_gas, positive=True)
         _uint("max_priority_fee_per_gas", self.max_priority_fee_per_gas)
         _uint("l1_data_fee_upper_bound", self.l1_data_fee_upper_bound)
+        _uint("operator_fee_upper_bound", self.operator_fee_upper_bound)
         _uint(
             "direct_inclusion_payment_upper_bound",
             self.direct_inclusion_payment_upper_bound,
@@ -107,6 +109,8 @@ class Eip1559CostEnvelope:
             raise ValueError("max priority fee cannot exceed max fee per gas")
         if self.chain is Chain.ETHEREUM and self.l1_data_fee_upper_bound != 0:
             raise ValueError("Ethereum envelope cannot double-count an L1 data fee")
+        if self.chain is Chain.ETHEREUM and self.operator_fee_upper_bound != 0:
+            raise ValueError("Ethereum envelope cannot record an OP Stack operator fee")
         _time("observed_at_unix_ms", self.observed_at_unix_ms)
         _time("valid_until_unix_ms", self.valid_until_unix_ms)
         if self.valid_until_unix_ms < self.observed_at_unix_ms:
@@ -133,6 +137,7 @@ class Eip1559CostEnvelope:
             (
                 self.execution_gas_cost_upper_bound,
                 self.l1_data_fee_upper_bound,
+                self.operator_fee_upper_bound,
                 self.direct_inclusion_payment_upper_bound,
             ),
             "total native fee upper bound",
@@ -150,11 +155,13 @@ class Eip1559CostEnvelope:
                 self.execution_gas_cost_upper_bound
             ),
             "l1_data_fee_upper_bound": str(self.l1_data_fee_upper_bound),
+            "operator_fee_upper_bound": str(self.operator_fee_upper_bound),
             "direct_inclusion_payment_upper_bound": str(
                 self.direct_inclusion_payment_upper_bound
             ),
             "total_native_upper_bound": str(self.total_native_upper_bound),
             "priority_fee_semantics": "included-inside-max-fee-per-gas-not-added-again",
+            "operator_fee_semantics": "separate-recorded-protocol-fee-upper-bound-not-in-eip1559-gas",
             "direct_payment_semantics": "separate-conditional-payment-not-priority-fee",
             "observed_at_unix_ms": str(self.observed_at_unix_ms),
             "valid_until_unix_ms": str(self.valid_until_unix_ms),
@@ -407,6 +414,7 @@ class ExecutionCostEnvelope:
                 self.fee_envelope.execution_gas_cost_upper_bound,
             ),
             "l1_data_fee": convert(native, self.fee_envelope.l1_data_fee_upper_bound),
+            "operator_fee": convert(native, self.fee_envelope.operator_fee_upper_bound),
             "flash_loan_fee": convert(self.plan.funding.asset, self.plan.funding.fee),
             "inclusion_bid": convert(
                 native,
@@ -423,6 +431,7 @@ class ExecutionCostEnvelope:
             gross_profit=self.plan.gross_profit,
             execution_gas_cost=values["execution_gas_cost"],
             l1_data_fee=values["l1_data_fee"],
+            operator_fee=values["operator_fee"],
             flash_loan_fee=values["flash_loan_fee"],
             inclusion_bid=values["inclusion_bid"],
             slippage_reserve=values["slippage_reserve"],

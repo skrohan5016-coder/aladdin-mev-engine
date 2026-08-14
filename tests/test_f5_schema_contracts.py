@@ -148,6 +148,16 @@ class F5SchemaContractTests(unittest.TestCase):
             )
         )
         self.assertEqual(command["properties"]["binary"]["pattern"], "^0x[0-9a-f]{378}$")
+        self.assertEqual(command["properties"]["index"]["pattern"], "^[0-3]$")
+        self.assertEqual(command["properties"]["amount_in"]["pattern"], "^[1-9][0-9]*$")
+        self.assertEqual(
+            command["properties"]["expected_amount_out"]["pattern"],
+            "^[1-9][0-9]*$",
+        )
+        self.assertEqual(
+            command["properties"]["quote_sha256"]["pattern"],
+            "^(?!0{64}$)[0-9a-f]{64}$",
+        )
 
 
 if __name__ == "__main__":

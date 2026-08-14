@@ -203,9 +203,14 @@ class UnsignedEip1559Transaction:
         maximum_with_l1 = _checked_add(
             maximum_upfront,
             fee.l1_data_fee_upper_bound,
+            "maximum funded native amount before operator fee",
+        )
+        maximum_funded = _checked_add(
+            maximum_with_l1,
+            fee.operator_fee_upper_bound,
             "maximum funded native amount",
         )
-        if self.sender_state.balance < maximum_with_l1:
+        if self.sender_state.balance < maximum_funded:
             raise ValueError("authenticated sender balance cannot cover the recorded native upper bound")
         chain_id = CHAIN_IDS[chain]
         access_list: tuple[object, ...] = ()
@@ -235,7 +240,7 @@ class UnsignedEip1559Transaction:
         object.__setattr__(self, "_signing_payload", payload)
         object.__setattr__(self, "_signing_hash", signing_hash)
         object.__setattr__(self, "_intrinsic_gas", intrinsic)
-        object.__setattr__(self, "_maximum_upfront_native", maximum_with_l1)
+        object.__setattr__(self, "_maximum_upfront_native", maximum_funded)
         object.__setattr__(self, "_inputs_valid_until_unix_ms", inputs_valid_until)
         object.__setattr__(self, "_transaction_id", "unsigned-tx-" + canonical_sha256(identity))
         canonical_json_bytes(self.to_json_value())
@@ -275,6 +280,10 @@ class UnsignedEip1559Transaction:
     @property
     def max_priority_fee_per_gas(self) -> int:
         return self.call.net_profit_evidence.cost_envelope.fee_envelope.max_priority_fee_per_gas
+
+    @property
+    def operator_fee_upper_bound(self) -> int:
+        return self.call.net_profit_evidence.cost_envelope.fee_envelope.operator_fee_upper_bound
 
     @property
     def data(self) -> bytes:
@@ -330,6 +339,7 @@ class UnsignedEip1559Transaction:
             "value": str(self.value),
             "data": to_hex_data(self.data),
             "access_list": [],
+            "operator_fee_upper_bound": str(self.operator_fee_upper_bound),
             "maximum_upfront_native": str(self.maximum_upfront_native),
             "signing_payload": to_hex_data(self.signing_payload),
             "signing_hash": self.signing_hash_hex,

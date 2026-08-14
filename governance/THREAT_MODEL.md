@@ -12,21 +12,21 @@ F5 does not replace earlier controls. Canonical-JSON ambiguity, ledger truncatio
 
 - an unproved, unregistered, wrong-chain, wrong-address, proxy, empty-code, non-empty-storage, expired, or conflicting executor deployment;
 - one runtime code hash assigned conflicting interfaces;
-- caller-supplied arbitrary calldata, route bytes, funding kind/provider/source, or transaction-value semantics that do not reconcile with F4 and the executor interface;
+- caller-supplied arbitrary calldata, disconnected/reused route bytes, base-token or principal drift, broken amount flow, funding kind/provider/source, or transaction-value semantics that do not reconcile with F4 and the executor interface;
 - floor-rounded minimum output, a deadline, or proof-observation ordering that weakens accepted F4 economics;
 - sender nonce, account type, balance, or anchor spoofing;
 - non-canonical type-2 transaction encoding, a gas limit below intrinsic gas, fee-field drift, hidden access-list data, or a signature smuggled into evidence;
-- underfunding one transaction or the aggregate complete bundle for gas, direct payment, or Base L1 cost;
+- underfunding one transaction or the aggregate complete bundle for gas, direct payment, Base L1 cost, or configurable OP Stack operator fee;
 - stale-anchor, duplicate, cross-chain, cross-sender, cross-anchor, non-contiguous, or unbounded bundle entries;
 - relay endpoints or credentials entering evidence;
 - simulations agreeing only by display name while sharing implementation/source authority;
-- simulations bound to the wrong anchor, transaction, signing hash, bundle, simulated block/timestamp/base fee, gas, route output asset/amount, principal repayment, flash fee, residual, base-token beneficiary or beneficiary delta, logs, deltas, post-state, payment, validity interval, or created before the bundle intent;
+- simulations bound to the wrong anchor, transaction, signing hash, bundle, simulated block/timestamp/base fee, sub-intrinsic or over-limit gas, operator fee, route output asset/amount, principal repayment, flash fee, residual, base-token beneficiary or beneficiary delta, logs, deltas, post-state, payment, validity interval, or created before the bundle intent;
 - an unsigned package presented as permission to sign, submit, deploy, or trade;
 - CI command, action, runner, shell, environment, permission, condition, timeout, or error-handling bypass.
 
 ## Controls
 
-Exact runtime types; closed schemas; constructor-time recomputation; F2 deployment and EOA proofs with proof-time causality; exact registry membership, one-code-hash/one-interface authority, canonical empty executor storage, runtime-bound flash-loan provider/source identity, and fixed `msg.value` direct-payment semantics; fixed selector and ABI layout; plan-derived binary commands; ceiling-rounded F4-preserving output floors; checked integer arithmetic; canonical intrinsic gas, RLP, and legacy Keccak; empty access list; authenticated-start contiguous nonce, block-distance, and one-second anchor-freshness gates; aggregate bundle balance coverage; no endpoint/credential fields; distinct implementation/source simulation agreement with explicit block/timestamp/base-fee context, flash-loan repayment, authenticated-sender beneficiary, and complete residual-delta reconciliation; transitive validity checks; immutable locks; hardened read-only CI.
+Exact runtime types; closed schemas; constructor-time recomputation; F2 deployment and EOA proofs with proof-time causality; exact registry membership, one-code-hash/one-interface authority, canonical empty executor storage, runtime-bound flash-loan provider/source identity, and fixed `msg.value` direct-payment semantics; fixed selector and ABI layout; plan-derived binary commands; public raw-frame validation for unique pools, exact base-token endpoints, principal/amount continuity, and exact final minimum; ceiling-rounded F4-preserving output floors; checked integer arithmetic; explicit separate L1-data, operator-fee, and direct-payment bounds; canonical intrinsic gas, RLP, and legacy Keccak; empty access list; authenticated-start contiguous nonce, block-distance, and one-second anchor-freshness gates; aggregate bundle balance coverage including the operator-fee upper bound; no endpoint/credential fields; distinct implementation/source simulation agreement with explicit block/timestamp/base-fee and operator-fee context, flash-loan repayment, authenticated-sender beneficiary, and complete residual-delta reconciliation; transitive validity checks; immutable locks; hardened read-only CI.
 
 ## Residual risks
 
