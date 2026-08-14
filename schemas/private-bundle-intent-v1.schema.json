@@ -1,0 +1,134 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/private-bundle-intent-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "anchor_fresh_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "bundle_id": {
+      "pattern": "^bundle-intent-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base"
+      ]
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "delivery_class": {
+      "enum": [
+        "private-builder",
+        "private-sequencer"
+      ]
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "inputs_valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "maximum_block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "maximum_bundle_upfront_native": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "relay_credentials": {
+      "type": "null"
+    },
+    "relay_url": {
+      "type": "null"
+    },
+    "schema": {
+      "const": "aladdin-mev-private-bundle-intent/v1"
+    },
+    "sender": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "signed_transaction_count": {
+      "const": "0"
+    },
+    "signing_eligible": {
+      "const": false
+    },
+    "submission_authority": {
+      "const": "none"
+    },
+    "submission_eligible": {
+      "const": false
+    },
+    "target_block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "transaction_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "transaction_signing_hash": {
+      "items": {
+        "pattern": "^0x[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "transactions": {
+      "items": {
+        "$ref": "unsigned-eip1559-transaction-v1.schema.json"
+      },
+      "maxItems": 8,
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "bundle_id",
+    "chain",
+    "sender",
+    "transactions",
+    "transaction_sha256",
+    "transaction_signing_hash",
+    "target_block_number",
+    "maximum_block_number",
+    "delivery_class",
+    "relay_url",
+    "relay_credentials",
+    "signed_transaction_count",
+    "maximum_bundle_upfront_native",
+    "anchor_fresh_until_unix_ms",
+    "created_at_unix_ms",
+    "inputs_valid_until_unix_ms",
+    "submission_authority",
+    "signing_eligible",
+    "submission_eligible",
+    "execution_eligible"
+  ],
+  "title": "Aladdin MEV Private Bundle Intent v1",
+  "type": "object"
+}

@@ -1,0 +1,45 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/executor-deployment-registry-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "deployment_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "deployments": {
+      "items": {
+        "$ref": "executor-deployment-spec-v1.schema.json"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "type": "array"
+    },
+    "production_approval": {
+      "const": false
+    },
+    "registry_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-executor-deployment-registry/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "registry_id",
+    "deployments",
+    "deployment_sha256",
+    "production_approval"
+  ],
+  "title": "Aladdin MEV Executor Deployment Registry v1",
+  "type": "object"
+}

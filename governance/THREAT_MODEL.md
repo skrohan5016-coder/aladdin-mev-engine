@@ -2,30 +2,32 @@
 
 ## Protected assets
 
-Authenticated state/opportunity identity; exact token and amount flow; funding and fee identity; simulation independence; valuation and cost correctness; chain-health/risk context integrity; honest separation between shadow approval and execution authority; future keys and funds.
+Inherited F0-F4 evidence and economics; executor interface/deployment identity; calldata and route-command integrity; authenticated sender nonce and balance; EIP-1559 signing-preimage integrity; bundle ordering and target bounds; simulation independence; honest separation of an unsigned package from signing, submission, execution, and inclusion authority; future keys and funds.
 
 ## Inherited failure modes remain active
 
-F4 does not replace F0-F3 controls. Canonical-JSON ambiguity, ledger truncation or reordering, source-contract drift, reorg misclassification, malformed RLP/MPT proofs, state-anchor mismatch, code-hash/model ambiguity, packed-reserve overflow, unsafe optimizer pruning, and gross-opportunity authority escalation remain governed by their accepted milestone contracts and regression suites.
+F5 does not replace earlier controls. Canonical-JSON ambiguity, ledger truncation, source drift, reorg errors, malformed RLP/MPT proofs, state-anchor mismatch, pool code-hash/model ambiguity, optimizer errors, valuation/cost errors, stale simulations/context, and false F4 profit approval remain governed by accepted milestone contracts and regression tests.
 
-## F4 failure modes
+## F5 failure modes
 
-- treating different assets as one unit or using implicit/inverse/extra/stale valuation;
-- floor-rounding a cost or overflowing a governed integer intermediate;
-- caller-injected gross profit, funding, route, output, gas, health, or risk approval;
-- priority-fee, L1-fee, or direct-payment double counting;
-- duplicate simulator implementations or result sources hidden behind different names, or agreement claimed across different environments;
-- simulation bound to the wrong state, plan, source, or validity interval;
-- missing, duplicate, wrong-chain, or expired reserve categories;
-- cost inputs valid at envelope creation but expired at final evidence time;
-- risk snapshot not binding the exact plan, total cost, or notional; risk arithmetic overflow; or a risk snapshot observed before its cost envelope;
-- positive shadow assessment presented as inclusion, signing, or execution approval;
-- CI shell, environment, runner, container, condition, timeout, action-input, or error-handling bypass.
+- an unproved, unregistered, wrong-chain, wrong-address, proxy, empty-code, non-empty-storage, expired, or conflicting executor deployment;
+- one runtime code hash assigned conflicting interfaces;
+- caller-supplied arbitrary calldata, route bytes, funding kind/provider/source, or transaction-value semantics that do not reconcile with F4 and the executor interface;
+- floor-rounded minimum output, a deadline, or proof-observation ordering that weakens accepted F4 economics;
+- sender nonce, account type, balance, or anchor spoofing;
+- non-canonical type-2 transaction encoding, a gas limit below intrinsic gas, fee-field drift, hidden access-list data, or a signature smuggled into evidence;
+- underfunding one transaction or the aggregate complete bundle for gas, direct payment, or Base L1 cost;
+- stale-anchor, duplicate, cross-chain, cross-sender, cross-anchor, non-contiguous, or unbounded bundle entries;
+- relay endpoints or credentials entering evidence;
+- simulations agreeing only by display name while sharing implementation/source authority;
+- simulations bound to the wrong anchor, transaction, signing hash, bundle, simulated block/timestamp/base fee, gas, route output asset/amount, principal repayment, flash fee, residual, base-token beneficiary or beneficiary delta, logs, deltas, post-state, payment, validity interval, or created before the bundle intent;
+- an unsigned package presented as permission to sign, submit, deploy, or trade;
+- CI command, action, runner, shell, environment, permission, condition, timeout, or error-handling bypass.
 
 ## Controls
 
-Exact runtime types; closed schemas; constructor-time recomputation; exact required valuation pairs; checked integer products/sums; exact route-step derivation; EIP-1559 semantic separation; distinct implementation/source simulation evidence with one exact environment; source-bound chain health; recomputed risk-budget snapshot with checked aggregation and observation ordering; transitive final-time validity checks; inherited F0 profit policy; immutable locks; hardened read-only CI.
+Exact runtime types; closed schemas; constructor-time recomputation; F2 deployment and EOA proofs with proof-time causality; exact registry membership, one-code-hash/one-interface authority, canonical empty executor storage, runtime-bound flash-loan provider/source identity, and fixed `msg.value` direct-payment semantics; fixed selector and ABI layout; plan-derived binary commands; ceiling-rounded F4-preserving output floors; checked integer arithmetic; canonical intrinsic gas, RLP, and legacy Keccak; empty access list; authenticated-start contiguous nonce, block-distance, and one-second anchor-freshness gates; aggregate bundle balance coverage; no endpoint/credential fields; distinct implementation/source simulation agreement with explicit block/timestamp/base-fee context, flash-loan repayment, authenticated-sender beneficiary, and complete residual-delta reconciliation; transitive validity checks; immutable locks; hardened read-only CI.
 
 ## Residual risks
 
-F4 uses recorded bounds, simulations, health, and risk snapshots. It does not prove live state freshness, production token behavior, builder/sequencer inclusion, available capital at submission time, signer correctness, or transaction landing. Those require later governed milestones.
+F5 uses recorded state, deployment specifications, registry-declared direct-runtime semantics, fee bounds, bundle targets, and simulation results. It does not independently classify arbitrary runtime bytecode as non-proxy or non-upgradeable, prove live lender availability or fee stability, or govern own-inventory ERC-20 balances and allowances. It does not prove a live RPC or relay view, production token behavior, mempool competition, builder/sequencer acceptance, available funds at submission time, key custody, signature correctness, transaction inclusion, or realized profit. Those require later explicitly governed milestones and separate human approval.

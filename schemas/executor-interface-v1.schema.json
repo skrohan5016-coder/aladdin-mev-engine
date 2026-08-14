@@ -1,0 +1,92 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/executor-interface-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority": {
+      "const": "recorded-interface-identity-only"
+    },
+    "beneficiary_semantics": {
+      "const": "msg-sender-receives-complete-base-token-residual"
+    },
+    "flash_loan_provider_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "not": {
+        "const": "self"
+      },
+      "type": "string"
+    },
+    "flash_loan_source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "function_selector": {
+      "pattern": "^0x[0-9a-f]{8}$",
+      "type": "string"
+    },
+    "function_signature": {
+      "const": "execute(bytes32,address,uint256,uint256,uint64,bytes)"
+    },
+    "funding_kind": {
+      "const": "flash-loan"
+    },
+    "funding_semantics": {
+      "const": "runtime-bound-recorded-flash-loan-provider-only"
+    },
+    "interface_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "interface_source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "maximum_calldata_bytes": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "proxy_semantics": {
+      "const": "direct-runtime-only"
+    },
+    "route_command_schema": {
+      "const": "aladdin-mev-route-command-binary/v1"
+    },
+    "route_command_schema_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-executor-interface/v1"
+    },
+    "storage_semantics": {
+      "const": "empty-storage-root-stateless-runtime"
+    },
+    "value_semantics": {
+      "const": "msg-value-conditional-coinbase-payment-upper-bound"
+    }
+  },
+  "required": [
+    "schema",
+    "interface_id",
+    "function_signature",
+    "function_selector",
+    "route_command_schema",
+    "route_command_schema_sha256",
+    "maximum_calldata_bytes",
+    "interface_source_sha256",
+    "funding_kind",
+    "flash_loan_provider_id",
+    "flash_loan_source_sha256",
+    "funding_semantics",
+    "value_semantics",
+    "beneficiary_semantics",
+    "storage_semantics",
+    "proxy_semantics",
+    "authority"
+  ],
+  "title": "Aladdin MEV Executor Interface v1",
+  "type": "object"
+}

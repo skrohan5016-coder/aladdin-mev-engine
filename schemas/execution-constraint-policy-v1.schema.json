@@ -1,0 +1,37 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/execution-constraint-policy-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "maximum_deadline_horizon_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "maximum_slippage_bps": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "minimum_output_semantics": {
+      "const": "max-economic-policy-floor-slippage-floor"
+    },
+    "policy_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-execution-constraint-policy/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "policy_id",
+    "maximum_slippage_bps",
+    "maximum_deadline_horizon_ms",
+    "minimum_output_semantics"
+  ],
+  "title": "Aladdin MEV Execution Constraint Policy v1",
+  "type": "object"
+}

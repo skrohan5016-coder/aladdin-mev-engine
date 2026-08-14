@@ -1,6 +1,6 @@
 {
-  "architecture_id": "AMEV-F4-ARCH-v1-36ee2dc379f7",
+  "architecture_id": "AMEV-F5-ARCH-v1-f13e0f4c2226",
   "manifest_path": "governance/architecture.json",
-  "manifest_sha256": "36ee2dc379f742e50469d65af5a27c3941e8e6fb2a745b817018659b695af2f5",
+  "manifest_sha256": "f13e0f4c2226a88dfe50305b99ccd8cdfc0640a20dc65d90ce727d4eed803af9",
   "schema": "aladdin-mev-architecture-lock/v1"
 }

@@ -12,16 +12,16 @@ F5 converts an approved F4 shadow economics result into a deterministic, fully r
 
 F5 remains offline and recorded-input-only. It does not connect to an RPC endpoint or relay, hold credentials, access keys, sign, broadcast, submit a bundle, deploy a contract, reserve funds, or move assets.
 
-## Planned authority
+## Implemented authority
 
-- authenticated executor deployment and interface registry;
-- bounded Ethereum ABI encoding for the governed executor call;
+- authenticated stateless executor deployment and interface registry, including exact flash-loan provider, direct-payment, authenticated-sender residual-beneficiary, and canonical empty-storage-root semantics;
+- bounded Ethereum ABI encoding for the governed executor call with an independently validated exact route frame, uint64 deadline, and non-expanding exact millisecond validity ceiling;
 - exact route-command payload derived from the accepted F4 execution plan;
 - F2-proof-bound sender nonce and native balance evidence;
-- deterministic unsigned EIP-1559 typed-transaction signing payload and hash;
-- target-block/time-bounded private bundle intent with contiguous nonce rules;
-- independent transaction simulation agreement bound to transaction and bundle identities;
-- final unsigned execution-package evidence that requires approved F4 economics but keeps `signing_eligible = false` and `execution_eligible = false`.
+- deterministic unsigned EIP-1559 typed-transaction signing payload, intrinsic-gas gate, and hash;
+- target-block/time-bounded private bundle intent beginning at the authenticated nonce, with contiguous nonce rules and aggregate balance coverage;
+- independent transaction simulation agreement bound to transaction/bundle identities, explicit block/timestamp/base-fee context, and complete base-token residual delivery to the authenticated sender;
+- final single-transaction package-v1 evidence that requires approved F4 economics, binds simulations after bundle creation, inherits deadline validity, and keeps `signing_eligible = false` and `execution_eligible = false`.
 
 ## Non-goals
 
@@ -33,6 +33,6 @@ F5 remains offline and recorded-input-only. It does not connect to an RPC endpoi
 - wallet funding or flash-loan execution;
 - inclusion or profit guarantees.
 
-## Acceptance direction
+## Acceptance contract
 
-Every new runtime object will be constructor-recomputed, canonical-JSON digest-addressed, closed by JSON Schema, locked by a canonical F5 schema manifest, adversarially tested, and validated independently on the exact source head and GitHub synthetic merge.
+Every F5 runtime object is constructor-recomputed, canonical-JSON digest-addressed, closed by JSON Schema, locked by the canonical F5 schema manifest, adversarially tested, and independently validated on the exact source head and GitHub synthetic merge.

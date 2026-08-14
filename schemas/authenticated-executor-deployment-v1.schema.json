@@ -1,0 +1,61 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/authenticated-executor-deployment-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authenticated_anchor_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "authenticated_block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "deployment_authority": {
+      "const": "authenticated-recorded-shadow-only"
+    },
+    "evidence": {
+      "$ref": "evm-state-proof-evidence-v1.schema.json"
+    },
+    "evidence_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "production_approval": {
+      "const": false
+    },
+    "registry": {
+      "$ref": "executor-deployment-registry-v1.schema.json"
+    },
+    "registry_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-authenticated-executor-deployment/v1"
+    },
+    "spec": {
+      "$ref": "executor-deployment-spec-v1.schema.json"
+    },
+    "spec_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "registry",
+    "registry_sha256",
+    "spec",
+    "spec_sha256",
+    "evidence",
+    "evidence_sha256",
+    "authenticated_block_number",
+    "authenticated_anchor_sha256",
+    "production_approval",
+    "deployment_authority"
+  ],
+  "title": "Aladdin MEV Authenticated Executor Deployment v1",
+  "type": "object"
+}

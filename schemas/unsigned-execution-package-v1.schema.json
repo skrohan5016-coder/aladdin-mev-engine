@@ -1,0 +1,128 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/unsigned-execution-package-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "bundle": {
+      "$ref": "private-bundle-intent-v1.schema.json"
+    },
+    "bundle_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "call": {
+      "$ref": "governed-executor-call-v1.schema.json"
+    },
+    "call_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "inclusion_guarantee": {
+      "const": false
+    },
+    "net_profit_evidence": {
+      "$ref": "conservative-net-profit-evidence-v1.schema.json"
+    },
+    "net_profit_evidence_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "package_authority": {
+      "const": "offline-unsigned-transaction-bound-shadow-only"
+    },
+    "package_id": {
+      "pattern": "^unsigned-package-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "private_delivery_intent": {
+      "const": true
+    },
+    "relay_credentials_present": {
+      "const": false
+    },
+    "schema": {
+      "const": "aladdin-mev-unsigned-execution-package/v1"
+    },
+    "signature_present": {
+      "const": false
+    },
+    "signing_authority": {
+      "const": "none"
+    },
+    "signing_eligible": {
+      "const": false
+    },
+    "simulation_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 8,
+      "minItems": 2,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "simulations": {
+      "items": {
+        "$ref": "transaction-simulation-result-v1.schema.json"
+      },
+      "maxItems": 8,
+      "minItems": 2,
+      "type": "array"
+    },
+    "submission_authority": {
+      "const": "none"
+    },
+    "submission_eligible": {
+      "const": false
+    },
+    "transaction": {
+      "$ref": "unsigned-eip1559-transaction-v1.schema.json"
+    },
+    "transaction_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "package_id",
+    "net_profit_evidence",
+    "net_profit_evidence_sha256",
+    "call",
+    "call_sha256",
+    "transaction",
+    "transaction_sha256",
+    "bundle",
+    "bundle_sha256",
+    "simulations",
+    "simulation_sha256",
+    "created_at_unix_ms",
+    "valid_until_unix_ms",
+    "package_authority",
+    "private_delivery_intent",
+    "signature_present",
+    "relay_credentials_present",
+    "signing_authority",
+    "submission_authority",
+    "signing_eligible",
+    "submission_eligible",
+    "execution_eligible",
+    "inclusion_guarantee"
+  ],
+  "title": "Aladdin MEV Unsigned Execution Package v1",
+  "type": "object"
+}

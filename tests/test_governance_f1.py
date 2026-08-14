@@ -14,22 +14,22 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class InheritedGovernanceRetentionTests(unittest.TestCase):
-    def test_architecture_binds_accepted_f3_parent_and_disabled_live_authorities(self) -> None:
+    def test_architecture_binds_accepted_f4_parent_and_disabled_live_authorities(self) -> None:
         architecture = json.loads(
             (ROOT / "governance" / "architecture.json").read_text(encoding="utf-8")
         )
-        self.assertEqual(architecture["milestone"], "F4")
+        self.assertEqual(architecture["milestone"], "F5")
         self.assertEqual(
             architecture["accepted_parent_head"],
-            "046b6b2e39c06feba8eb77da2f2139663e84e50e",
+            "5e9497695c08ec4bd1ef724b39fb941f100c3e73",
         )
         self.assertEqual(
             architecture["accepted_parent_tree"],
-            "1c94f705477863b62906f5ec6e5a37ad7a850580",
+            "d909eb7d378a5c188e71a5c475cb36b8c61099a3",
         )
         self.assertEqual(
             architecture["accepted_parent_architecture_id"],
-            "AMEV-F3-ARCH-v1-d2caf73e6121",
+            "AMEV-F4-ARCH-v1-36ee2dc379f7",
         )
         self.assertEqual(architecture["source_contract_ids"], sorted(SOURCE_CONTRACTS))
         self.assertEqual(
@@ -54,11 +54,11 @@ class InheritedGovernanceRetentionTests(unittest.TestCase):
         for key in ("network_access", "signing_authority", "execution_authority"):
             self.assertEqual(architecture[key], "none")
 
-    def test_architecture_retains_f2_and_f3_schema_locks(self) -> None:
+    def test_architecture_retains_f2_through_f4_schema_locks(self) -> None:
         architecture = json.loads(
             (ROOT / "governance" / "architecture.json").read_text(encoding="utf-8")
         )
-        for milestone in ("f2", "f3"):
+        for milestone in ("f2", "f3", "f4"):
             lock = json.loads(
                 (ROOT / "governance" / f"{milestone}-schemas.lock.json").read_text(
                     encoding="utf-8"
@@ -69,7 +69,7 @@ class InheritedGovernanceRetentionTests(unittest.TestCase):
                 canonical_sha256(lock),
             )
 
-    def test_architecture_lock_matches_canonical_f4_manifest(self) -> None:
+    def test_architecture_lock_matches_canonical_f5_manifest(self) -> None:
         architecture = json.loads(
             (ROOT / "governance" / "architecture.json").read_text(encoding="utf-8")
         )
@@ -80,7 +80,7 @@ class InheritedGovernanceRetentionTests(unittest.TestCase):
         )
         digest = canonical_sha256(architecture)
         self.assertEqual(lock["manifest_sha256"], digest)
-        self.assertEqual(lock["architecture_id"], f"AMEV-F4-ARCH-v1-{digest[:12]}")
+        self.assertEqual(lock["architecture_id"], f"AMEV-F5-ARCH-v1-{digest[:12]}")
         self.assertEqual(lock["manifest_path"], "governance/architecture.json")
         self.assertEqual(lock["schema"], "aladdin-mev-architecture-lock/v1")
 

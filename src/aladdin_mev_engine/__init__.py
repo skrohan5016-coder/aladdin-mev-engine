@@ -1,4 +1,4 @@
-"""Governed offline cost-complete shadow economics core for F4."""
+"""Governed offline unsigned execution-package evidence core for F5."""
 
 from .assets import (
     AssetAmount,
@@ -32,6 +32,29 @@ from .constant_product import (
     PackedStorageField,
     PoolSwapQuote,
     PoolUniverse,
+)
+from .deployments import (
+    AuthenticatedExecutorDeployment,
+    ExecutorDeploymentRegistry,
+    ExecutorDeploymentSpec,
+    ExecutorInterfaceSpec,
+)
+from .evm_abi import (
+    ExecutionConstraintPolicy,
+    GovernedExecutorCall,
+    RouteCommand,
+    encode_governed_execute_call,
+)
+from .evm_transaction import (
+    PrivateBundleIntent,
+    PrivateDeliveryClass,
+    SenderStateEvidence,
+    UnsignedEip1559Transaction,
+)
+from .execution_package import (
+    TransactionSimulationResult,
+    UnsignedExecutionPackageEvidence,
+    transaction_simulations_agree,
 )
 from .domain import Chain, ChainHealth, OperatingMode, StateReference, Strategy
 from .evidence import EvidenceRecord, SimulationResult, dual_simulations_agree
@@ -87,6 +110,21 @@ from .state_proof import (
 )
 
 __all__ = [
+    "AuthenticatedExecutorDeployment",
+    "ExecutorDeploymentRegistry",
+    "ExecutorDeploymentSpec",
+    "ExecutorInterfaceSpec",
+    "ExecutionConstraintPolicy",
+    "GovernedExecutorCall",
+    "RouteCommand",
+    "encode_governed_execute_call",
+    "PrivateBundleIntent",
+    "PrivateDeliveryClass",
+    "SenderStateEvidence",
+    "UnsignedEip1559Transaction",
+    "TransactionSimulationResult",
+    "UnsignedExecutionPackageEvidence",
+    "transaction_simulations_agree",
     "AssetAmount",
     "AssetId",
     "AssetKind",
@@ -179,4 +217,4 @@ __all__ = [
     "write_segment_once",
 ]
 
-__version__ = "0.5.0"
+__version__ = "0.6.0"

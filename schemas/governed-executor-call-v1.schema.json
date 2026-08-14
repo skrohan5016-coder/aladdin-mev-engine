@@ -1,0 +1,136 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/governed-executor-call-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "call_id": {
+      "pattern": "^executor-call-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "calldata": {
+      "maxLength": 131074,
+      "pattern": "^0x(?:[0-9a-f]{2})*$",
+      "type": "string"
+    },
+    "calldata_authority": {
+      "const": "deterministic-governed-unsigned-only"
+    },
+    "calldata_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "commands": {
+      "items": {
+        "$ref": "route-command-v1.schema.json"
+      },
+      "maxItems": 4,
+      "minItems": 2,
+      "type": "array"
+    },
+    "constraint_policy": {
+      "$ref": "execution-constraint-policy-v1.schema.json"
+    },
+    "constraint_policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "deadline_unix_s": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "deployment": {
+      "$ref": "authenticated-executor-deployment-v1.schema.json"
+    },
+    "deployment_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "execution_plan_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "function_selector": {
+      "pattern": "^0x[0-9a-f]{8}$",
+      "type": "string"
+    },
+    "inputs_valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "minimum_final_output": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "net_profit_evidence_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "principal": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "route_command_schema": {
+      "const": "aladdin-mev-route-command-binary/v1"
+    },
+    "route_command_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 4,
+      "minItems": 2,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "route_payload": {
+      "maxLength": 131074,
+      "pattern": "^0x(?:[0-9a-f]{2})*$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-governed-executor-call/v1"
+    },
+    "signing_eligible": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema",
+    "call_id",
+    "net_profit_evidence_sha256",
+    "execution_plan_sha256",
+    "deployment",
+    "deployment_sha256",
+    "constraint_policy",
+    "constraint_policy_sha256",
+    "route_command_schema",
+    "commands",
+    "route_command_sha256",
+    "route_payload",
+    "principal",
+    "minimum_final_output",
+    "deadline_unix_s",
+    "inputs_valid_until_unix_ms",
+    "function_selector",
+    "calldata",
+    "calldata_sha256",
+    "created_at_unix_ms",
+    "calldata_authority",
+    "signing_eligible",
+    "execution_eligible"
+  ],
+  "title": "Aladdin MEV Governed Executor Call v1",
+  "type": "object"
+}

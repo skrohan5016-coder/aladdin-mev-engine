@@ -1,0 +1,170 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/transaction-simulation-result-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "base_token": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "base_token_beneficiary": {
+      "pattern": "^0x[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "base_token_beneficiary_delta": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "base_token_residual_before_external_costs": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "bundle_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "coinbase_payment": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "engine_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "engine_implementation_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "environment_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "error_code": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        }
+      ]
+    },
+    "flash_loan_fee_paid": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "flash_loan_principal_repaid": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "gas_used": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "logs_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "output_amount": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "post_state_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "result_source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-transaction-simulation-result/v1"
+    },
+    "simulated_base_fee_per_gas": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "simulated_block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "simulated_block_timestamp_unix_s": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "state_anchor_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "success": {
+      "type": "boolean"
+    },
+    "token_deltas_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "transaction_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "transaction_signing_hash": {
+      "pattern": "^0x[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "engine_id",
+    "engine_implementation_sha256",
+    "environment_sha256",
+    "result_source_sha256",
+    "state_anchor_sha256",
+    "transaction_sha256",
+    "transaction_signing_hash",
+    "bundle_sha256",
+    "simulated_block_number",
+    "simulated_block_timestamp_unix_s",
+    "simulated_base_fee_per_gas",
+    "success",
+    "gas_used",
+    "output_amount",
+    "base_token",
+    "flash_loan_principal_repaid",
+    "flash_loan_fee_paid",
+    "base_token_residual_before_external_costs",
+    "base_token_beneficiary",
+    "base_token_beneficiary_delta",
+    "token_deltas_sha256",
+    "logs_sha256",
+    "post_state_sha256",
+    "coinbase_payment",
+    "observed_at_unix_ms",
+    "valid_until_unix_ms",
+    "error_code"
+  ],
+  "title": "Aladdin MEV Transaction Simulation Result v1",
+  "type": "object"
+}
