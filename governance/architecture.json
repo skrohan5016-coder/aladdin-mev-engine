@@ -40,7 +40,8 @@
     "gross-only-opportunity-evidence-recomputation",
     "f3-schema-lock",
     "pinned-ci-action-allowlist",
-    "aggregate-opportunity-search-work-gate"
+    "aggregate-opportunity-search-work-gate",
+    "fixed-hosted-runner-shell-and-environment-ci-contract"
   ],
   "constant_product_opportunity_scope": [
     "ethereum",
@@ -85,7 +86,9 @@
     "state-proof-evidence-is-always-recomputed-from-its-exact-anchor-and-proof-observation",
     "state-snapshots-require-unique-sorted-account-evidence-bound-to-one-exact-anchor",
     "unknown-input-fails-closed",
-    "intermediate-route-quote-and-optimization-values-grant-no-standalone-opportunity-authority"
+    "intermediate-route-quote-and-optimization-values-grant-no-standalone-opportunity-authority",
+    "ci-forbids-custom-shell-defaults-containers-services-job-environments-and-continue-on-error",
+    "ci-requires-the-exact-hosted-runner-top-level-environment-condition-and-timeout"
   ],
   "milestone": "F3",
   "model_registry_authority": "explicit-evidence-model-set-not-production-approval",

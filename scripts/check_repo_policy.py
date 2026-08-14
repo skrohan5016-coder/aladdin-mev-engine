@@ -57,6 +57,7 @@ REQUIRED_COMPONENTS = {
     "deterministic-smaller-input-tie-break",
     "gross-only-opportunity-evidence-recomputation",
     "f3-schema-lock",
+    "fixed-hosted-runner-shell-and-environment-ci-contract",
 }
 REQUIRED_INVARIANTS = {
     "explicit-model-registry-is-evidence-identity-not-production-approval",
@@ -83,6 +84,8 @@ REQUIRED_INVARIANTS = {
     "intermediate-route-quote-and-optimization-values-grant-no-standalone-opportunity-authority",
     "f3-opportunities-are-gross-only-cost-incomplete-and-never-execution-eligible",
     "f3-schema-lock-binds-all-new-schemas-and-the-transitive-opportunity-schema-dependency",
+    "ci-forbids-custom-shell-defaults-containers-services-job-environments-and-continue-on-error",
+    "ci-requires-the-exact-hosted-runner-top-level-environment-condition-and-timeout",
 }
 F3_SCHEMA_FILES = {
     "authenticated-constant-product-pool-v1.schema.json",
@@ -162,6 +165,15 @@ FORBIDDEN_SOURCE_TERMS = re.compile(
     re.IGNORECASE,
 )
 FORBIDDEN_DYNAMIC_EXECUTION = re.compile(r"\b(?:eval|exec)\s*\(")
+UNSAFE_WORKFLOW_KEY = re.compile(
+    r"^[ \t]+(?:defaults|shell|container|services|continue-on-error|"
+    r"working-directory|environment|strategy|needs|permissions):\s*",
+    re.MULTILINE,
+)
+INDENTED_WORKFLOW_ENV = re.compile(r"^[ \t]+env:[ \t]*$", re.MULTILINE)
+RUNNER_LINE = re.compile(r"^[ \t]+runs-on:[ \t]*([^#\s]+)[ \t]*(?:#.*)?$", re.MULTILINE)
+IF_LINE = re.compile(r"^[ \t]+if:[ \t]*(.*?)[ \t]*$", re.MULTILINE)
+TIMEOUT_LINE = re.compile(r"^[ \t]+timeout-minutes:[ \t]*([0-9]+)[ \t]*$", re.MULTILINE)
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
 
 
@@ -174,6 +186,29 @@ def _canonical_sha256(value: object) -> str:
         separators=(",", ":"),
     ).encode("utf-8")
     return hashlib.sha256(payload).hexdigest()
+
+
+def _mapping_blocks(text: str, key: str) -> list[tuple[str, ...]]:
+    """Return exact direct-child lines for simple YAML mapping blocks."""
+
+    lines = text.splitlines()
+    blocks: list[tuple[str, ...]] = []
+    for index, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped != f"{key}:":
+            continue
+        indent = len(line) - len(line.lstrip(" "))
+        children: list[str] = []
+        for child in lines[index + 1 :]:
+            if not child.strip():
+                break
+            child_indent = len(child) - len(child.lstrip(" "))
+            if child_indent <= indent:
+                break
+            if child_indent == indent + 2:
+                children.append(child.strip())
+        blocks.append(tuple(children))
+    return blocks
 
 
 def workflow_policy_errors(text: str) -> list[str]:
@@ -192,6 +227,28 @@ def workflow_policy_errors(text: str) -> list[str]:
         errors.append("workflow write permissions are forbidden")
     if text.count("persist-credentials: false") != 2:
         errors.append("both governed checkout paths must disable persisted credentials")
+    if _mapping_blocks(text, "env") != [
+        ("PYTHONPATH: src", 'PYTHONDONTWRITEBYTECODE: "1"')
+    ] or INDENTED_WORKFLOW_ENV.search(text):
+        errors.append("workflow environment must be the exact governed top-level block")
+    if _mapping_blocks(text, "with") != [
+        (
+            "ref: ${{ github.event.pull_request.head.sha || github.sha }}",
+            "persist-credentials: false",
+        ),
+        ('python-version: "3.13"',),
+        ("persist-credentials: false",),
+        ('python-version: "3.13"',),
+    ]:
+        errors.append("workflow action inputs must equal the exact governed with blocks")
+    if UNSAFE_WORKFLOW_KEY.search(text):
+        errors.append("workflow contains an unsafe execution-control key")
+    if RUNNER_LINE.findall(text) != ["ubuntu-latest", "ubuntu-latest"]:
+        errors.append("both governed jobs must use the exact ubuntu-latest hosted runner")
+    if IF_LINE.findall(text) != ["github.event_name == 'pull_request'"]:
+        errors.append("workflow conditions must equal the single governed merge-job condition")
+    if TIMEOUT_LINE.findall(text) != ["10", "10"]:
+        errors.append("both governed jobs must use the exact ten-minute timeout")
 
     required_contracts = {
         "validate-head:": "missing exact-head validation job",

@@ -38,3 +38,4 @@ F3 acceptance does not authorize production models, networking, credentials, EVM
 - Route and optimizer input ceilings are closed to exact uint256 values.
 - A budget-exhausted result is incomplete and cannot carry a winning input, output, or profit.
 - Continuous pruning bounds are themselves bounded to uint256 and remain non-authoritative.
+- CI cannot substitute a custom shell, `BASH_ENV`, runner, container, service, environment, strategy, dependency, working directory, condition, timeout, or `continue-on-error` around allowlisted commands.

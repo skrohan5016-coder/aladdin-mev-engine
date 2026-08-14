@@ -70,6 +70,50 @@ class RepositoryWorkflowPolicyF3Tests(unittest.TestCase):
             any("forbidden network" in error for error in workflow_policy_errors(network))
         )
 
+    def test_shell_environment_runner_and_continue_on_error_bypasses_are_rejected(self) -> None:
+        custom_shell = self.workflow.replace(
+            "jobs:\n",
+            "defaults:\n  run:\n    shell: python -c \"__import__('urllib.request').urlopen('https://example.invalid')\" {0}\n\njobs:\n",
+            1,
+        )
+        injected_env = self.workflow.replace(
+            "    timeout-minutes: 10",
+            "    timeout-minutes: 10\n    env:\n      BASH_ENV: tests/attacker.sh",
+            1,
+        )
+        self_hosted = self.workflow.replace("runs-on: ubuntu-latest", "runs-on: self-hosted", 1)
+        ignored_failure = self.workflow.replace(
+            "      - name: Unit and adversarial tests",
+            "      - name: Unit and adversarial tests\n        continue-on-error: true",
+            1,
+        )
+        extra_condition = self.workflow.replace(
+            "      - name: Repository policy",
+            "      - name: Repository policy\n        if: false",
+            1,
+        )
+        extra_top_level_env = self.workflow.replace(
+            '  PYTHONDONTWRITEBYTECODE: "1"',
+            '  PYTHONDONTWRITEBYTECODE: "1"\n  BASH_ENV: tests/attacker.sh',
+            1,
+        )
+        checkout_side_effect = self.workflow.replace(
+            "          persist-credentials: false",
+            "          persist-credentials: false\n          submodules: recursive",
+            1,
+        )
+        for mutation in (
+            custom_shell,
+            injected_env,
+            extra_top_level_env,
+            checkout_side_effect,
+            self_hosted,
+            ignored_failure,
+            extra_condition,
+        ):
+            with self.subTest(mutation=mutation):
+                self.assertTrue(workflow_policy_errors(mutation))
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -51,7 +51,7 @@ execution_eligible = false
 12. Bounded exact optimizer with smaller-input tie-breaking.
 13. Opportunity and search-report evidence that recompute authoritative results.
 14. Ten-file F3 schema lock including the inherited opportunity schema dependency.
-15. Separate exact-head and synthetic-merge CI.
+15. Separate exact-head and synthetic-merge CI, locked to the hosted `ubuntu-latest` runner, exact action inputs, one exact top-level environment, default shell semantics, one merge-job condition, and ten-minute timeouts. Custom shells, defaults, containers, services, job/step environments, strategies, dependencies, working directories, job permissions, and `continue-on-error` are forbidden.
 
 ## Authority limits
 
