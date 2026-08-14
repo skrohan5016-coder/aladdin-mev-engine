@@ -1,48 +1,33 @@
 # Aladdin MEV Engine
 
-Aladdin MEV Engine is a governed, safety-first foundation for multi-chain opportunity discovery, deterministic replay, authenticated EVM state analysis, conservative profit accounting, and evidence-backed strategy development.
+Aladdin MEV Engine is a governed, safety-first foundation for multi-chain opportunity discovery, deterministic replay, authenticated EVM state analysis, exact integer market mathematics, conservative profit accounting, and evidence-backed strategy development.
 
 ## Current status
 
-**F2 is an offline, recorded-input, authenticated-state foundation.** It retains the accepted F0 safety contracts and F1 observation ledger, then adds:
+**F3 is an offline, recorded-input, authenticated constant-product opportunity foundation.** It retains the accepted F0 safety contracts, F1 observation ledger, and F2 account/storage proof authority, then adds:
 
-- Ethereum legacy Keccak-256 implemented without a runtime dependency and locked by known vectors;
-- canonical bounded Recursive Length Prefix encoding and decoding;
-- canonical Merkle Patricia Trie inclusion and non-inclusion proof verification;
-- exact block-number, block-hash, finality, source, sequence, timestamp, and state-root anchors;
-- EIP-1186-shaped account and storage proof verification for governed Ethereum and Base sources;
-- proof evidence that is always recomputed from the exact bound anchor and proof observation;
-- deterministic, digest-addressed multi-account state snapshots;
-- explicit fail-closed capability gating for unsupported chains;
-- separate exact-source-head and GitHub merge-integration CI.
+- explicit constant-product implementation models bound to runtime code hash, storage layout, static fee multiplier, checked `uint256` arithmetic, and declared transfer assumptions;
+- a registry that forbids one runtime code hash from authorizing conflicting mathematics;
+- authenticated token identity and packed reserve extraction from F2 storage-proof evidence;
+- deterministic two-to-four-hop simple-cycle enumeration without pool reuse;
+- exact integer route quoting with floor at every hop;
+- a continuous rational upper bound used only to prune an exact bounded search;
+- deterministic tie-breaking, bounded aggregate search work, and explicit no-trade or budget-exhausted outcomes;
+- gross-only shadow opportunity evidence that recomputes its route and optimization;
+- closed F3 schemas, a canonical transitive schema lock, and separate exact-source-head and merge-integration CI.
 
-F2 records block state roots for Ethereum, Base, Arbitrum, and BNB Smart Chain. Authenticated account/storage proofs are enabled only for the governed Ethereum and Base JSON-RPC sources. Arbitrum and BNB proof verification remain disabled until their official proof capability and semantics are governed in a later milestone. Solana remains a separate non-EVM adapter.
+F3 authenticated opportunity construction is limited to the F2 proof-enabled Ethereum and Base sources. Arbitrum and BNB Smart Chain remain disabled for authenticated pool universes until their proof semantics are governed. Solana remains a separate non-EVM adapter.
 
-This repository still contains no live RPC client, endpoint credential, transaction signer, private-key handler, bundle submitter, contract deployer, or mainnet execution path.
+F3 does **not** claim executable or net profit. It does not verify token transfer behavior, acquire live state, estimate gas, model builder or sequencer inclusion, source funding, construct transactions or bundles, sign, deploy, or execute. Every F3 opportunity is marked `execution_eligible = false` and `gross-only-no-gas-no-inclusion-no-funding`.
 
-The system does not promise hourly income or guaranteed market opportunities. Its enforceable objective is to reject observations, state claims, simulations, and candidate trades that fail integrity, freshness, source, proof, profitability, or risk gates.
-
-## Repository boundaries
-
-`aladdin-mev-engine` is independent from `aladdin-auction-solver`. No wallet, signer, deployment authority, treasury authority, or execution state is shared between the projects.
+This repository contains no live RPC client, endpoint credential, transaction signer, private-key handler, bundle submitter, contract deployer, or mainnet execution path.
 
 ## Local validation
 
-Python 3.13 is the governed conformance runtime. F2 has no third-party runtime dependencies.
+Python 3.13 is the governed conformance runtime. F3 has no third-party runtime dependencies.
 
 ```bash
 make all
-```
-
-Equivalent commands:
-
-```bash
-PYTHONPATH=src python3 -m compileall -q src tests scripts
-PYTHONPATH=src python3 -m unittest discover -s tests -v
-python3 scripts/check_repo_policy.py
-PYTHONPATH=src python3 scripts/verify_architecture_lock.py
-PYTHONPATH=src python3 scripts/verify_source_contracts.py
-python3 scripts/verify_f2_schemas.py
 ```
 
 ## Architecture
@@ -50,11 +35,9 @@ python3 scripts/verify_f2_schemas.py
 Start with:
 
 - [`governance/ARCHITECTURE.md`](governance/ARCHITECTURE.md)
+- [`governance/F3_AUTHENTICATED_OPPORTUNITY_GRAPH.md`](governance/F3_AUTHENTICATED_OPPORTUNITY_GRAPH.md)
+- [`governance/F3_ACCEPTANCE.md`](governance/F3_ACCEPTANCE.md)
 - [`governance/F2_AUTHENTICATED_STATE.md`](governance/F2_AUTHENTICATED_STATE.md)
-- [`governance/F2_ACCEPTANCE.md`](governance/F2_ACCEPTANCE.md)
-- [`governance/F1_SOURCE_CONTRACTS.md`](governance/F1_SOURCE_CONTRACTS.md)
-- [`governance/F1_OBSERVATION_LEDGER.md`](governance/F1_OBSERVATION_LEDGER.md)
-- [`governance/PROFIT_SAFETY.md`](governance/PROFIT_SAFETY.md)
 - [`governance/THREAT_MODEL.md`](governance/THREAT_MODEL.md)
 - [`governance/STRATEGY_POLICY.md`](governance/STRATEGY_POLICY.md)
 

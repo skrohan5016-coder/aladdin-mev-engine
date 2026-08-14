@@ -1,85 +1,90 @@
-# F2 Governed Authenticated-State Architecture
+# F3 Governed Authenticated Opportunity Architecture
 
 ## Mission
 
-F2 extends accepted F0 policy/profit/risk authority and accepted F1 observation/replay authority with deterministic offline verification of EVM account and storage state. All inputs are recorded observations. F2 does not connect to a chain, sign a message, submit a bundle, deploy a contract, or execute a trade.
+F3 extends accepted F0 policy/profit/risk authority, accepted F1 observation/replay authority, and accepted F2 authenticated EVM state with deterministic offline construction of model-bound constant-product pool universes, simple arbitrage routes, exact integer route optimization, and gross-only shadow opportunities.
+
+All chain inputs remain recorded observations. F3 does not connect to a chain, establish token semantics, estimate gas or inclusion, sign, submit a bundle, deploy a contract, or execute a trade.
 
 ## Trust boundaries
 
 ```text
-Recorded full block-head observation
+F2 authenticated account + storage evidence
         │
-        ├── exact source + finality + sequence + block identity
+        ├── exact address + runtime code hash
+        ├── authenticated token identities
+        └── authenticated packed reserves
         ▼
-Recorded block-state observation
-        │
-        ├── exact block number + block hash + non-zero state root
-        ▼
-Authenticated block-state anchor
+Explicit one-code-hash/one-model registry
         │
         ▼
-Recorded EIP-1186-shaped proof observation
-        │
-        ├── strict canonical JSON + bounded node arrays
-        ├── legacy Ethereum Keccak-256
-        ├── canonical bounded RLP
-        └── canonical MPT inclusion/non-inclusion traversal
-        ▼
-Recomputed account/storage evidence
+Exact snapshot-bound pool universe
         │
         ▼
-Unique sorted multi-account state snapshot
+Deterministic simple-cycle graph (2..4 hops, no pool reuse)
         │
         ▼
-F0 simulation + profit + risk gates
+Exact per-hop integer floor quotes
+        │
+        ├── continuous upper bound for pruning only
+        └── bounded deterministic exact optimizer
+        ▼
+Complete positive gross-only shadow opportunity
         │
         ▼
-No executor in F2
+execution_eligible = false
 ```
 
 ## Components
 
-1. **Inherited F0 authority** — exact-integer profit accounting, simulation agreement, strategy policy, risk governor, canonical JSON, and repository/CI controls.
-2. **Inherited F1 authority** — governed source contracts, immutable observation envelopes, source sequencing, tamper-evident ledgers, deterministic replay, stable storage, and reorg-aware heads.
-3. **Legacy Keccak-256 authority** — a dependency-free implementation of the Ethereum hash function, explicitly distinct from NIST SHA3-256 and locked by known vectors.
-4. **Canonical RLP authority** — strict minimal encoding/decoding with byte, depth, item, integer-width, and framing ceilings.
-5. **Canonical MPT authority** — exact root-to-terminal verification for branch, extension, and leaf nodes; both inclusion and non-inclusion are authenticated.
-6. **Block-state anchor** — a full confirmed/finalized block head and a later full state-root observation must share one exact chain/source/finality stream and the same block identity.
-7. **Account proof authority** — the account path is Keccak-256 of the exact 20-byte address, and the authenticated leaf must decode to exactly nonce, balance, storage root, and code hash.
-8. **Storage proof authority** — each storage path is Keccak-256 of the normalized exact 32-byte slot; zero values require authenticated non-inclusion.
-9. **Evidence recomputation** — callers cannot inject derived approval fields. Evidence stores the exact anchor and proof observation, then re-runs verification during construction.
-10. **Snapshot authority** — account evidence is unique, sorted by address, bound to one exact anchor, and digest-addressed.
-11. **Capability gating** — block-state observations are governed for all four EVM chains; authenticated account/storage proofs are enabled only for Ethereum and Base in F2.
-12. **Exact-head CI** — source-head and synthetic-merge revisions independently run the inherited and F2 conformance suites under read-only permissions.
+1. Inherited F0 canonical, profit, evidence, policy, risk, and CI authority.
+2. Inherited F1 source-contract, ledger, replay, and head authority.
+3. Inherited F2 legacy Keccak, canonical RLP/MPT, proof, anchor, and snapshot authority.
+4. Runtime-code-hash-bound constant-product implementation models.
+5. One-code-hash/one-model registry with exact fee and storage-layout identity.
+6. Authenticated token and packed-reserve decoding from exact F2 evidence.
+7. Checked `uint256` and packed-reserve input-domain gates.
+8. Exact-snapshot pool universe with no missing or extra accounts.
+9. Deterministic two-to-four-hop simple-cycle enumeration with bounded traversal work.
+10. Exact per-hop floor route quoting.
+11. Concave `A*x/(B+C*x)` upper bounds used only for pruning.
+12. Bounded exact optimizer with smaller-input tie-breaking.
+13. Opportunity and search-report evidence that recompute authoritative results.
+14. Ten-file F3 schema lock including the inherited opportunity schema dependency.
+15. Separate exact-head and synthetic-merge CI, locked to the hosted `ubuntu-latest` runner, exact action inputs, one exact top-level environment, default shell semantics, one merge-job condition, and ten-minute timeouts. Custom shells, defaults, containers, services, job/step environments, strategies, dependencies, working directories, job permissions, and `continue-on-error` are forbidden.
 
 ## Authority limits
 
 ```text
-network_access        = none
-signing_authority     = none
-execution_authority   = none
-observation_authority = recorded-input-only
-state_proof_authority = offline-recorded-input-only
+network_access         = none
+signing_authority      = none
+execution_authority    = none
+observation_authority  = recorded-input-only
+state_proof_authority  = offline-recorded-input-only
+opportunity_authority  = offline-authenticated-model-bound-gross-shadow-only
+production_model_lock  = none
 ```
 
-F2 proves only that supplied proof material authenticates the supplied state root under the governed algorithms. It does not independently acquire a canonical state root from a network. That provenance remains bound to the recorded source contract and observation ledger.
+An explicit model registry is evidence identity, not production approval. A later milestone must govern deployed model identities, token behavior, EVM simulation, gas, inclusion, funding, signing, and execution before any F3 result can influence a transaction.
 
 ## Chain scope
 
-| Chain | Block-state anchor | Account/storage proof |
-|---|---:|---:|
-| Ethereum | Enabled | Enabled |
-| Base | Enabled | Enabled |
-| Arbitrum | Enabled | Disabled |
-| BNB Smart Chain | Enabled | Disabled |
-| Solana | Not an EVM scope | Not an EVM scope |
+| Chain | F2 authenticated proof | F3 pool opportunity | Execution |
+|---|---:|---:|---:|
+| Ethereum | Enabled | Model-bound shadow only | Disabled |
+| Base | Enabled | Model-bound shadow only | Disabled |
+| Arbitrum | Disabled | Disabled | Disabled |
+| BNB Smart Chain | Disabled | Disabled | Disabled |
+| Solana | Separate scope | Disabled | Disabled |
 
-## External specification anchors
+## Exact mathematics
 
-- EIP-1186 account and storage proof response contract.
-- Ethereum Merkle Patricia Trie path and node semantics.
-- Ethereum Recursive Length Prefix encoding.
-- Go-ethereum proof generation and verification behavior.
-- Base official `eth_getProof` and historical-proof node documentation.
+```text
+amount_in_with_fee = amount_in * fee_numerator
+amount_out = floor(
+    amount_in_with_fee * reserve_out
+    / (reserve_in * fee_denominator + amount_in_with_fee)
+)
+```
 
-These references constrain the offline verifier. They do not grant network authority.
+Every modeled multiplication and addition must fit checked `uint256`; the post-input reserve must fit its authenticated packed field. Floating-point values never enter authoritative money math.

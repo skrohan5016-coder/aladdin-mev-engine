@@ -1,47 +1,37 @@
-# F2 Threat Model
+# F3 Threat Model
 
 ## Protected assets
 
-- inherited strategy, profit, risk, evidence, ledger, and CI integrity;
-- exact block/state-root provenance;
-- account and storage proof correctness;
-- proof/non-proof capability separation by chain;
-- deterministic evidence and snapshot identity;
-- future signer, executor, and treasury separation.
+Inherited F0–F2 integrity; model-registry identity; authenticated token/reserve correctness; exact arithmetic and route math; optimizer completeness and upper-bound safety; honest separation of gross shadow evidence from executable profit; future signer/executor/treasury separation.
 
-## Adversaries and failure modes
+## Failure modes
 
-1. Malformed, oversized, deeply nested, duplicate-key, non-UTF-8, floating-point, or noncanonical JSON.
-2. A state root attached to the wrong block, source, chain, finality, sequence, or observation time.
-3. NIST SHA3-256 substituted for Ethereum legacy Keccak-256.
-4. Nonminimal or malformed RLP, integer leading zeroes, declared-size abuse, excess nesting, or excess item counts.
-5. A missing, reordered, duplicate, extraneous, cyclic, oversized, or hash-mismatched trie proof node.
-6. A malformed embedded trie child hidden outside the queried path.
-7. Account fields that do not match the authenticated account leaf.
-8. Storage keys hashed with the wrong width or storage values that do not match their authenticated leaf.
-9. A zero storage value falsely represented as an included trie scalar.
-10. An absent account carrying non-empty nonce, balance, storage root, or code hash claims.
-11. Caller-injected derived evidence that bypasses cryptographic recomputation.
-12. Mixed-anchor or duplicate-account snapshot assembly.
-13. Accidental proof enablement for a chain whose official proof semantics are not governed.
-14. CI supply-chain drift, unapproved shell/Python network commands, write permissions, secrets, or credential material.
-15. Future code silently introducing a network client, signer, broadcaster, deployment path, or execution authority.
+- wrong code hash, token pair, storage layout, fee, or reserve interpretation;
+- conflicting models for one runtime code hash;
+- proxy, dynamic-fee, fee-on-transfer, rebasing, hook, or callback behavior misrepresented as a direct static model;
+- overlapping or malformed packed fields;
+- checked arithmetic or packed-reserve overflow;
+- route reuse, disconnection, repeated token, early base return, unbounded enumeration, or multiplicative report-work exhaustion;
+- continuous approximation treated as exact or an unsafe bound pruning the optimum;
+- budget exhaustion treated as complete;
+- caller-injected optimization, quote, identity, or timestamp;
+- gross profit mislabeled as net, funded, included, or executable;
+- networking, credential, signing, deployment, or execution capability introduced silently.
 
 ## Controls
 
-- strict canonical JSON and stable recorded-input handling inherited from F0/F1;
-- exact source-contract event-shape gating;
-- known-vector legacy Keccak-256 implementation;
-- strict bounded canonical RLP;
-- exact hashed-node MPT traversal with recursive embedded-node shape validation;
-- inclusion and non-inclusion terminal evidence;
-- immutable exact observations retained inside block-state anchors and proof evidence;
-- constructor-time cryptographic recomputation;
-- unique sorted snapshot accounts bound to one exact anchor;
-- explicit Ethereum/Base proof allowlist and fail-closed Arbitrum/BNB/Solana exclusions;
-- zero third-party runtime dependencies;
-- read-only, exact-command, exact-action, exact-head CI policy.
+Exact F2 types at every state boundary; one-code-hash/one-model invariant; exact slot/token/reserve binding; checked arithmetic and capacity gates; simple-cycle constraints; exact per-hop floor; tested optimistic bounds; bounded per-route and aggregate exact search; constructor-time recomputation; hardcoded gross-only execution-disabled labels; zero runtime dependencies; read-only exact-head CI.
 
 ## Residual risks
 
-F2 does not independently contact a chain, establish network consensus, evaluate provider honesty, or decide whether a recorded state root is economically current. It does not simulate EVM execution, normalize token prices, estimate gas or inclusion, construct bundles, manage nonces, protect a live signer, or execute a trade. Those require later governed milestones and separate acceptance evidence.
+F3 does not prove that an explicit model describes a production deployment, that a token has standard transfer behavior, or that authenticated reserves are economically current. It does not execute EVM bytecode, model pending ordering, estimate costs/inclusion, source capital, or construct/sign/submit transactions.
+
+## Final authority hardening
+
+
+- The canonical empty-code hash cannot be registered as a pool runtime model.
+- Optimization result counters, bounds, and status-specific winner fields are cross-validated.
+- Route and optimizer input ceilings are closed to exact uint256 values.
+- A budget-exhausted result is incomplete and cannot carry a winning input, output, or profit.
+- Continuous pruning bounds are themselves bounded to uint256 and remain non-authoritative.
+- CI cannot substitute a custom shell, `BASH_ENV`, runner, container, service, environment, strategy, dependency, working directory, condition, timeout, or `continue-on-error` around allowlisted commands.

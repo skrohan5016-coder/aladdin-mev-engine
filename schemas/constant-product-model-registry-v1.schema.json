@@ -1,0 +1,42 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/constant-product-model-registry-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "implementation_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "implementations": {
+      "items": {
+        "$ref": "constant-product-implementation-v1.schema.json"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "registry_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-constant-product-model-registry/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "registry_id",
+    "implementations",
+    "implementation_sha256"
+  ],
+  "title": "Aladdin MEV Constant Product Model Registry v1",
+  "type": "object"
+}

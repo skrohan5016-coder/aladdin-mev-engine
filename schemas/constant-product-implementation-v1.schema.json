@@ -1,0 +1,162 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/constant-product-implementation-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "arithmetic_semantics": {
+      "const": "checked-uint256"
+    },
+    "code_hash": {
+      "pattern": "^0x[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "code_identity_semantics": {
+      "const": "direct-runtime-code-hash-model-bound"
+    },
+    "fee_denominator": {
+      "maxLength": 10,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "fee_numerator": {
+      "maxLength": 10,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "fee_semantics": {
+      "const": "static-exact-input-multiplier"
+    },
+    "implementation_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "model_authority": {
+      "const": "explicit-model-bound-shadow-only"
+    },
+    "reserve0_field": {
+      "additionalProperties": false,
+      "properties": {
+        "bit_offset": {
+          "maxLength": 3,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "bit_width": {
+          "maxLength": 3,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        },
+        "slot": {
+          "pattern": "^0x[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slot",
+        "bit_offset",
+        "bit_width"
+      ],
+      "type": "object"
+    },
+    "reserve1_field": {
+      "additionalProperties": false,
+      "properties": {
+        "bit_offset": {
+          "maxLength": 3,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "bit_width": {
+          "maxLength": 3,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        },
+        "slot": {
+          "pattern": "^0x[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slot",
+        "bit_offset",
+        "bit_width"
+      ],
+      "type": "object"
+    },
+    "schema": {
+      "const": "aladdin-mev-constant-product-implementation/v1"
+    },
+    "token0_field": {
+      "additionalProperties": false,
+      "properties": {
+        "bit_offset": {
+          "maxLength": 3,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "bit_width": {
+          "maxLength": 3,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        },
+        "slot": {
+          "pattern": "^0x[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slot",
+        "bit_offset",
+        "bit_width"
+      ],
+      "type": "object"
+    },
+    "token1_field": {
+      "additionalProperties": false,
+      "properties": {
+        "bit_offset": {
+          "maxLength": 3,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        },
+        "bit_width": {
+          "maxLength": 3,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        },
+        "slot": {
+          "pattern": "^0x[0-9a-f]{64}$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "slot",
+        "bit_offset",
+        "bit_width"
+      ],
+      "type": "object"
+    },
+    "transfer_semantics": {
+      "const": "standard-no-transfer-tax-no-rebase-assumption"
+    }
+  },
+  "required": [
+    "schema",
+    "implementation_id",
+    "code_hash",
+    "token0_field",
+    "token1_field",
+    "reserve0_field",
+    "reserve1_field",
+    "fee_numerator",
+    "fee_denominator",
+    "arithmetic_semantics",
+    "code_identity_semantics",
+    "fee_semantics",
+    "transfer_semantics",
+    "model_authority"
+  ],
+  "title": "Aladdin MEV Constant Product Implementation v1",
+  "type": "object"
+}

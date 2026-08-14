@@ -1,5 +1,15 @@
-"""Governed offline safety, observation, replay, and state-proof core for F2."""
+"""Governed offline authenticated-state and gross-opportunity core for F3."""
 
+from .constant_product import (
+    AuthenticatedConstantProductPool,
+    ConstantProductArithmeticError,
+    ConstantProductImplementationSpec,
+    ConstantProductModelRegistry,
+    ConstantProductPoolSpec,
+    PackedStorageField,
+    PoolSwapQuote,
+    PoolUniverse,
+)
 from .domain import Chain, ChainHealth, OperatingMode, StateReference, Strategy
 from .evidence import EvidenceRecord, SimulationResult, dual_simulations_agree
 from .head_tracker import EvmHead, HeadTracker, HeadTransition, HeadTransitionKind
@@ -17,6 +27,19 @@ from .ledger import (
 from .ledger_io import read_segment_stable, write_segment_once
 from .mpt import EMPTY_TRIE_ROOT, MptProofResult, MptTerminal, verify_mpt_proof
 from .observation import ObservationEnvelope
+from .opportunity import AtomicDexOpportunityEvidence, OpportunitySearchReport
+from .opportunity_graph import (
+    ConstantProductRoute,
+    RouteLeg,
+    RouteQuote,
+    enumerate_simple_cycles,
+)
+from .optimizer import (
+    OptimizationLimits,
+    OptimizationResult,
+    OptimizationStatus,
+    optimize_route,
+)
 from .policy import StrategyPolicy
 from .profit import CostBreakdown, ProfitAssessment, ProfitPolicy, assess_profit
 from .risk import RiskGovernor, RiskLedger, RiskLimits
@@ -41,8 +64,15 @@ from .state_proof import (
 )
 
 __all__ = [
+    "AtomicDexOpportunityEvidence",
+    "AuthenticatedConstantProductPool",
     "Chain",
     "ChainHealth",
+    "ConstantProductArithmeticError",
+    "ConstantProductImplementationSpec",
+    "ConstantProductModelRegistry",
+    "ConstantProductPoolSpec",
+    "ConstantProductRoute",
     "CostBreakdown",
     "EMPTY_CODE_HASH",
     "EMPTY_TRIE_ROOT",
@@ -64,12 +94,21 @@ __all__ = [
     "ObservationLedgerBuilder",
     "ObservationSegment",
     "OperatingMode",
+    "OpportunitySearchReport",
+    "OptimizationLimits",
+    "OptimizationResult",
+    "OptimizationStatus",
+    "PackedStorageField",
+    "PoolSwapQuote",
+    "PoolUniverse",
     "ProfitAssessment",
     "ProfitPolicy",
     "RiskGovernor",
     "RiskLedger",
     "RiskLimits",
     "RlpError",
+    "RouteLeg",
+    "RouteQuote",
     "SegmentManifest",
     "SimulationResult",
     "SourceCheckpoint",
@@ -83,9 +122,11 @@ __all__ = [
     "Visibility",
     "assess_profit",
     "dual_simulations_agree",
+    "enumerate_simple_cycles",
     "get_source_contract",
     "keccak256",
     "keccak256_hex",
+    "optimize_route",
     "parse_segment",
     "read_segment_stable",
     "rlp_decode",
@@ -97,4 +138,4 @@ __all__ = [
     "write_segment_once",
 ]
 
-__version__ = "0.3.0"
+__version__ = "0.4.0"

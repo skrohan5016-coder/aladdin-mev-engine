@@ -1,0 +1,109 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/route-optimization-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "amount_in": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "amount_out": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "complete": {
+      "type": "boolean"
+    },
+    "continuous_upper_bound": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "effective_maximum_input": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "evaluated_inputs": {
+      "maxLength": 7,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "explored_intervals": {
+      "maxLength": 7,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "gross_profit": {
+      "maxLength": 79,
+      "pattern": "^(0|[1-9][0-9]*|-[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "limits": {
+      "additionalProperties": false,
+      "properties": {
+        "exhaustive_threshold": {
+          "maxLength": 4,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        },
+        "maximum_input": {
+          "maxLength": 78,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        },
+        "maximum_intervals": {
+          "maxLength": 7,
+          "pattern": "^[1-9][0-9]*$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "maximum_input",
+        "maximum_intervals",
+        "exhaustive_threshold"
+      ],
+      "type": "object"
+    },
+    "pruned_intervals": {
+      "maxLength": 7,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "route_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-route-optimization/v1"
+    },
+    "status": {
+      "enum": [
+        "complete",
+        "no-valid-input",
+        "no-positive-continuous-edge",
+        "no-positive-exact-profit",
+        "budget-exhausted"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "route_sha256",
+    "status",
+    "complete",
+    "effective_maximum_input",
+    "amount_in",
+    "amount_out",
+    "gross_profit",
+    "evaluated_inputs",
+    "explored_intervals",
+    "pruned_intervals",
+    "continuous_upper_bound",
+    "limits"
+  ],
+  "title": "Aladdin MEV Route Optimization v1",
+  "type": "object"
+}
