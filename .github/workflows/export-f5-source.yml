@@ -18,11 +18,11 @@ jobs:
         with:
           persist-credentials: false
       - name: Create exact source archive outside worktree
-        run: tar --exclude=.git --exclude=.github/workflows/export-f5-source.yml -czf ../aladdin-mev-engine-f4-parent.tar.gz .
+        run: tar --exclude=.git --exclude=.github/workflows/export-f5-source.yml -czf /tmp/aladdin-mev-engine-f4-parent.tar.gz .
       - name: Upload exact source archive
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
         with:
           name: aladdin-mev-engine-f4-parent
-          path: ../aladdin-mev-engine-f4-parent.tar.gz
+          path: /tmp/aladdin-mev-engine-f4-parent.tar.gz
           if-no-files-found: error
           retention-days: 1
