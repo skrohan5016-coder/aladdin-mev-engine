@@ -1,0 +1,72 @@
+name: Publish verified F5 fresh-review remediation
+
+on:
+  push:
+    branches:
+      - agent/f5-publication-helper
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout remediation transport
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: helper
+          persist-credentials: false
+      - name: Reconstruct and authenticate patch
+        run: |
+          test "$(find helper/.staging -maxdepth 1 -name 'f5-patch-??.txt' | wc -l)" = "10"
+          test "$(find helper/.staging -maxdepth 1 -name 'f5-patch-tail-??.txt' | wc -l)" = "17"
+          cat helper/.staging/f5-patch-??.txt helper/.staging/f5-patch-tail-??.txt | tr -d '\r\n' > /tmp/f5.patch.gz.b64
+          echo 'c80b1654e530d5a94891d1ec428f84c9d22a2a41af6df84d8765ff33b72876b4  /tmp/f5.patch.gz.b64' | sha256sum -c -
+          base64 -d /tmp/f5.patch.gz.b64 > /tmp/f5.patch.gz
+          echo '25719b6c40444699bfce687a5c28b34ee6efbe6a237d2c97b54710aaabbedc2a  /tmp/f5.patch.gz' | sha256sum -c -
+          gzip -dc /tmp/f5.patch.gz > /tmp/f5.patch
+          echo '38980ea10889aefdd3e38434936857ecec92309286de8a2c5416ecd1df55c6ae  /tmp/f5.patch' | sha256sum -c -
+      - name: Checkout exact F5 source head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: agent/f5-unsigned-bundle-simulation-v1
+          path: target
+          persist-credentials: true
+      - name: Verify old head and apply exact patch
+        run: |
+          test "$(git -C target rev-parse HEAD)" = "a527bd6b328e25e3314f5c012a89b9627b058c13"
+          git -C target apply --check /tmp/f5.patch
+          git -C target apply /tmp/f5.patch
+          test "$(git -C target diff --name-only | wc -l)" = "36"
+          git -C target diff --check
+      - name: Set up governed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Run complete validation contract
+        working-directory: target
+        env:
+          PYTHONPATH: src
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python -m compileall -q src tests scripts
+          python -m unittest discover -s tests -v
+          python scripts/check_repo_policy.py
+          python scripts/verify_architecture_lock.py
+          python scripts/verify_source_contracts.py
+          python scripts/verify_f2_schemas.py
+          python scripts/verify_f3_schemas.py
+          python scripts/verify_f4_schemas.py
+          python scripts/verify_f5_schemas.py
+      - name: Commit exact verified tree and push normally
+        working-directory: target
+        run: |
+          git add -A
+          test "$(git diff --cached --name-only | wc -l)" = "36"
+          test "$(git write-tree)" = "89df1b1bf5d665c1ea1b2abb80320d824b6e7bb4"
+          git config user.name "ROHAN"
+          git config user.email "skrohan5016@gmail.com"
+          git commit -m "Harden F5 route, gas, and operator-fee authority"
+          git push origin HEAD:refs/heads/agent/f5-unsigned-bundle-simulation-v1
