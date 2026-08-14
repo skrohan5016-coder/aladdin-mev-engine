@@ -56,29 +56,20 @@ jobs:
             helper/.f6-publication/chunk-09-01.b64 \
             helper/.f6-publication/chunk-09-02.b64 \
             > /tmp/f6.patch.gz.b64
-          wc -c /tmp/f6.patch.gz.b64
-          sha256sum /tmp/f6.patch.gz.b64
           test "$(wc -c < /tmp/f6.patch.gz.b64 | tr -d ' ')" = "56474"
           test "$(sha256sum /tmp/f6.patch.gz.b64 | cut -d' ' -f1)" = "dbdb9473584991ead7deeb74a6c3b7fc28cb982b99d61cf1b2d1e2b53c060094"
           base64 --decode /tmp/f6.patch.gz.b64 > /tmp/f6.patch.gz
-          sha256sum /tmp/f6.patch.gz
           test "$(sha256sum /tmp/f6.patch.gz | cut -d' ' -f1)" = "ff8b06e7a3579ed9ba485b16d9dd500cc10eea6ca910368597f0dcd456607df4"
           gzip --decompress --stdout /tmp/f6.patch.gz > /tmp/f6.patch
-          wc -c /tmp/f6.patch
-          sha256sum /tmp/f6.patch
           test "$(sha256sum /tmp/f6.patch | cut -d' ' -f1)" = "986eeadcc2278cb9fe4f85db5a403b5df64396b1c0e61bb0823c1a470248716a"
           test "$(grep -c '^diff --git a/' /tmp/f6.patch)" = "45"
           ! grep -q '^diff --git a/.github/workflows/ci.yml' /tmp/f6.patch
           cd source
-          git rev-parse HEAD
-          git rev-parse 'HEAD^{tree}'
           test "$(git rev-parse HEAD)" = "f068d1f1ffad9d4c2439dd6f0fa36e333d73817f"
           test "$(git rev-parse 'HEAD^{tree}')" = "89df1b1bf5d665c1ea1b2abb80320d824b6e7bb4"
           git apply --check /tmp/f6.patch
-          echo "git apply check: PASS"
           git apply /tmp/f6.patch
-          git diff --name-only | tee /tmp/f6-files.txt
-          wc -l /tmp/f6-files.txt
+          git status --porcelain=v1 | tee /tmp/f6-files.txt
           test "$(wc -l < /tmp/f6-files.txt | tr -d ' ')" = "45"
           git diff --check
       - name: Validate focused F6 authority
@@ -101,8 +92,8 @@ jobs:
           set -euo pipefail
           git switch -c agent/f6-signed-relay-evidence-v1
           git add -A
-          git write-tree
           test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = "45"
+          git diff --cached --check
           test "$(git write-tree)" = "4e20f56bed008c5499652b23d06770fb4ed83b50"
           git config user.name "ROHAN"
           git config user.email "skrohan5016@gmail.com"
