@@ -1,0 +1,76 @@
+name: Publish exact F6 review remediation v3
+
+on:
+  push:
+    branches:
+      - agent/f6-remediation-helper
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      PYTHONPATH: src:tests
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - name: Checkout exact remediation material
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: helper
+          persist-credentials: false
+      - name: Checkout exact pre-remediation F6 head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 24cb3dbd743457f99fbf13e430952ef87613202e
+          path: source
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Set up governed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Apply and validate exact remediation
+        shell: bash
+        run: |
+          set -euo pipefail
+          patch_b64=helper/.f6-remediation/review-remediation.patch.gz.b64
+          test "$(wc -c < "$patch_b64" | tr -d ' ')" = "5638"
+          test "$(sha256sum "$patch_b64" | cut -d' ' -f1)" = "83bfe11d51d8a4bbdec69a3ffe7db81c4bf04015f6e85be516d58cc53ccfcf75"
+          base64 --decode "$patch_b64" > /tmp/f6-remediation.patch.gz
+          test "$(sha256sum /tmp/f6-remediation.patch.gz | cut -d' ' -f1)" = "f20ac2a65a991b61bf693a707d138ab15e0e8c78d9fdd1c7ffc2903872341d8f"
+          gzip --decompress --stdout /tmp/f6-remediation.patch.gz > /tmp/f6-remediation.patch
+          test "$(sha256sum /tmp/f6-remediation.patch | cut -d' ' -f1)" = "108292997c3405270f985ee878c7be5b4520cd9ea3855165a9cdf820bf690ce8"
+          cd source
+          test "$(git rev-parse HEAD)" = "24cb3dbd743457f99fbf13e430952ef87613202e"
+          test "$(git rev-parse 'HEAD^{tree}')" = "639fa568e8a5e03fdf66ab1cc2e86686fcfb1645"
+          git apply --check /tmp/f6-remediation.patch
+          git apply /tmp/f6-remediation.patch
+          test "$(git diff --name-only | wc -l | tr -d ' ')" = "10"
+          git diff --check
+          python -m compileall -q src tests scripts
+          python -m unittest -v test_secp256k1_f6 test_governance_f5 test_governance_f6
+          python scripts/check_repo_policy.py
+          python scripts/verify_architecture_lock.py
+          python scripts/verify_source_contracts.py
+          python scripts/verify_f2_schemas.py
+          python scripts/verify_f3_schemas.py
+          python scripts/verify_f4_schemas.py
+          python scripts/verify_f5_schemas.py
+          python scripts/verify_f6_schemas.py
+          git add -A
+          test "$(git diff --cached --name-only | wc -l | tr -d ' ')" = "10"
+          test "$(git write-tree)" = "1115dccd7952225dfa1d58238aa550bf9e0aa995"
+      - name: Publish normal fast-forward remediation commit
+        working-directory: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git ls-remote origin refs/heads/agent/f6-signed-relay-evidence-v1 | cut -f1)" = "24cb3dbd743457f99fbf13e430952ef87613202e"
+          git config user.name "ROHAN"
+          git config user.email "skrohan5016@gmail.com"
+          git commit -m "Harden F6 scalar bounds and inherited governance"
+          git push origin HEAD:refs/heads/agent/f6-signed-relay-evidence-v1
