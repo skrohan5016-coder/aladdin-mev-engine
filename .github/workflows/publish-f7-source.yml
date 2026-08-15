@@ -1,0 +1,88 @@
+name: Publish exact F7 authenticated outcome source
+
+on:
+  push:
+    branches:
+      - agent/f7-source-export
+
+permissions:
+  contents: write
+
+env:
+  PYTHONPATH: src
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact publication material
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: material
+          persist-credentials: false
+      - name: Checkout exact accepted F6 parent
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 6481e17b2345c54261865125b61523610b7f87af
+          path: work
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Set up governed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Reconstruct and verify exact F7 patch
+        run: |
+          set -euo pipefail
+          test "$(git -C work rev-parse HEAD)" = "6481e17b2345c54261865125b61523610b7f87af"
+          test "$(git -C work rev-parse 'HEAD^{tree}')" = "1115dccd7952225dfa1d58238aa550bf9e0aa995"
+          cat material/.staging/f7-gz-part-00.bin material/.staging/f7-gz-part-01.bin material/.staging/f7-gz-part-02.bin material/.staging/f7-gz-part-03.bin material/.staging/f7-gz-part-04.bin material/.staging/f7-gz-part-05.bin material/.staging/f7-gz-part-06.bin material/.staging/f7-gz-part-07.bin > /tmp/f7.patch.gz
+          echo "336db6c3b4a4c4e7b86c656b9aa240888288fd46f8837c014154184bb7792ca9  /tmp/f7.patch.gz" | sha256sum -c -
+          gzip -dc /tmp/f7.patch.gz > /tmp/f7.patch
+          echo "49c454979b5e6caa5135aaa54189d0117a4d9eab3d24a9c32d54ccfcc12f9f6e  /tmp/f7.patch" | sha256sum -c -
+          git -C work diff --exit-code
+          git -C work apply --index --whitespace=error /tmp/f7.patch
+          test "$(git -C work diff --cached --name-only | wc -l | tr -d ' ')" = "49"
+          test "$(git -C work write-tree)" = "fd4dbd1b4aeb5d08ed7f66bc86ac0d20e3c32cb9"
+      - name: Validate exact F7 source
+        working-directory: work
+        run: |
+          set -euo pipefail
+          python -m compileall -q src tests scripts
+          python -m unittest discover -s tests -v
+          python scripts/check_repo_policy.py
+          python scripts/verify_architecture_lock.py
+          python scripts/verify_source_contracts.py
+          python scripts/verify_f2_schemas.py
+          python scripts/verify_f3_schemas.py
+          python scripts/verify_f4_schemas.py
+          python scripts/verify_f5_schemas.py
+          python scripts/verify_f6_schemas.py
+          python scripts/verify_f7_schemas.py
+          git diff --exit-code
+          test "$(git write-tree)" = "fd4dbd1b4aeb5d08ed7f66bc86ac0d20e3c32cb9"
+      - name: Publish normal non-force F7 feature commit
+        working-directory: work
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --heads origin refs/heads/agent/f7-authenticated-outcome-evidence-v1; then
+            echo "target F7 branch already exists" >&2
+            exit 1
+          fi
+          git config user.name "ROHAN"
+          git config user.email "skrohan5016@gmail.com"
+          git commit -m "F7 — Authenticated Inclusion, Settlement, and Historical Outcome Evidence"
+          test "$(git rev-parse 'HEAD^{tree}')" = "fd4dbd1b4aeb5d08ed7f66bc86ac0d20e3c32cb9"
+          git push origin HEAD:refs/heads/agent/f7-authenticated-outcome-evidence-v1
+      - name: Package exact published F7 source
+        run: tar --exclude=.git -C work -czf /tmp/aladdin-mev-engine-f7-source.tar.gz .
+      - name: Upload exact published F7 source
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: aladdin-mev-engine-f7-source
+          path: /tmp/aladdin-mev-engine-f7-source.tar.gz
+          if-no-files-found: error
+          retention-days: 1
