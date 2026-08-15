@@ -10,7 +10,7 @@ import tomllib
 
 ROOT = Path(__file__).resolve().parents[1]
 
-EXPECTED_WORKFLOW_SHA256 = "0e1ecfd7c5a4cdce24f2ad2d245c00c44a051551efebf655a3b9cd8c4e42c9ff"
+EXPECTED_WORKFLOW_SHA256 = "058001bfaef8779592b5a51491c33afbbabc65395c34e92bbe702661f1e9f1c9"
 
 PINNED_ACTIONS = {
     "actions/checkout": "3d3c42e5aac5ba805825da76410c181273ba90b1",
@@ -30,6 +30,7 @@ EXPECTED_RUN_COMMANDS = {
     "python scripts/verify_f5_schemas.py": 2,
     "python scripts/verify_f6_schemas.py": 2,
     "python scripts/verify_f7_schemas.py": 2,
+    "python scripts/verify_f8_schemas.py": 2,
     "git diff --exit-code": 2,
 }
 EXPECTED_SOURCE_IDS = (
@@ -44,9 +45,9 @@ EXPECTED_SOURCE_IDS = (
     "ethereum-mev-share",
 )
 EXPECTED_PARENT = {
-    "accepted_parent_architecture_id": "AMEV-F6-ARCH-v1-c91039d7d800",
-    "accepted_parent_head": "6481e17b2345c54261865125b61523610b7f87af",
-    "accepted_parent_tree": "1115dccd7952225dfa1d58238aa550bf9e0aa995",
+    "accepted_parent_architecture_id": "AMEV-F7-ARCH-v1-c611202acf40",
+    "accepted_parent_head": "ec4d9a211c204e3363e8a77d8de4ab2199a89be0",
+    "accepted_parent_tree": "42592ed5ce7dc8d87755ff95af4824dc20c9e6fa",
 }
 REQUIRED_COMPONENTS = {
     "explicit-code-hash-bound-constant-product-models",
@@ -135,6 +136,20 @@ REQUIRED_COMPONENTS = {
     "consensus-exact-evm-log-address-domain",
     "empty-code-settlement-model-gate",
     "standard-resolvable-f7-schema-graph",
+    "authenticated-inclusion-conditioned-historical-corpus",
+    "explicit-scoreability-and-unscoreable-record-retention",
+    "explicit-historical-valuation-policy",
+    "exact-policy-relay-funding-model-and-simulation-cohort-identity",
+    "exact-integer-historical-economic-scoreboard",
+    "exact-integer-predicted-return-calibration-buckets",
+    "conditional-historical-expected-value-evidence",
+    "minimum-scoreable-coverage-promotion-gate",
+    "unique-inclusion-block-diversity-promotion-gate",
+    "fail-closed-offline-research-promotion-decision",
+    "f8-schema-lock",
+    "exact-declared-source-window-manifest",
+    "source-reference-set-consumption-gate",
+    "downstream-source-completeness-disclosure",
 }
 REQUIRED_INVARIANTS = {
     "explicit-model-registry-is-evidence-identity-not-production-approval",
@@ -264,6 +279,30 @@ REQUIRED_INVARIANTS = {
     "f7-schema-references-resolve-by-their-declared-canonical-identifiers",
     "settlement-event-model-cannot-bind-the-canonical-empty-code-hash",
     "settlement-event-model-explicitly-binds-unused-msg-value-refund-to-the-authenticated-sender",
+    "all-declared-source-attempts-remain-in-the-corpus-with-explicit-scoreability",
+    "reverted-settlement-missing-and-settlement-evidence-incomplete-records-remain-in-attempt-denominators-and-cannot-carry-economic-score-authority",
+    "a-successful-receipt-with-a-governed-settlement-event-cannot-be-downgraded-to-settlement-missing-by-omitting-outcome-evidence",
+    "settlement-event-presence-is-derived-from-the-authenticated-receipt-and-exact-registry-resolved-event-spec",
+    "scoreable-economic-aggregates-use-only-authenticated-successful-settlements-with-exact-inclusion-time-valuations",
+    "historical-cohort-identity-binds-sender-signature-source-policy-relay-endpoint-relay-response-sources-funding-executor-settlement-model-rollup-fee-source-historical-valuation-policy-pool-model-and-simulation-engines",
+    "unscoreable-records-carry-the-same-explicit-historical-valuation-policy-as-scoreable-records-without-carrying-unused-rate-values",
+    "scoreable-historical-valuation-rates-must-match-the-exact-policy-assets-direction-source-and-inclusion-time-validity",
+    "historical-conservative-surplus-is-a-ceiling-costed-research-estimate-and-never-realized-profit",
+    "historical-scoreboard-calibration-and-expected-value-math-use-only-exact-integers",
+    "zero-scoreable-sample-expected-value-evidence-is-explicitly-unavailable-and-cannot-pass-research-promotion",
+    "research-promotion-policies-require-positive-attempt-scoreable-block-and-nonempty-bucket-minima",
+    "calibration-upper-bounds-are-strictly-positive-and-increasing",
+    "absolute-error-means-use-the-governed-signed-aggregate-domain-and-error-rates-saturate-at-uint256",
+    "calibration-buckets-partition-all-cohort-attempts-and-retain-unscoreable-attempt-counts",
+    "conditional-expected-value-evidence-explicitly-grants-no-confidence-guarantee",
+    "research-promotion-requires-minimum-scoreable-coverage-and-unique-inclusion-block-diversity",
+    "research-promotion-decisions-collect-all-confirmed-failures-without-short-circuiting",
+    "research-promotion-never-grants-production-signing-submission-deployment-or-execution-authority",
+    "f8-schema-lock-binds-all-historical-scoreboard-calibration-expected-value-and-promotion-schemas",
+    "historical-corpus-consumes-the-exact-declared-source-manifest-reference-set",
+    "historical-source-completeness-is-limited-to-the-declared-source-window",
+    "historical-corpus-grants-no-global-source-completeness-guarantee",
+    "scoreboard-calibration-expected-value-and-promotion-evidence-propagate-the-source-completeness-boundary",
 }
 F3_SCHEMA_FILES = {
     "authenticated-constant-product-pool-v1.schema.json",
@@ -330,6 +369,21 @@ F7_SCHEMA_FILES = {
     "recorded-execution-block-v1.schema.json",
     "recorded-rollup-fee-v1.schema.json",
     "transaction-receipt-v1.schema.json",
+}
+F8_SCHEMA_FILES = {
+    "calibration-bucket-v1.schema.json",
+    "calibration-policy-v1.schema.json",
+    "historical-attempt-reference-v1.schema.json",
+    "historical-calibration-report-v1.schema.json",
+    "historical-cohort-key-v1.schema.json",
+    "historical-corpus-source-manifest-v1.schema.json",
+    "historical-economic-scoreboard-v1.schema.json",
+    "historical-execution-record-v1.schema.json",
+    "historical-expected-value-v1.schema.json",
+    "historical-outcome-corpus-v1.schema.json",
+    "historical-valuation-policy-v1.schema.json",
+    "research-promotion-decision-v1.schema.json",
+    "research-promotion-policy-v1.schema.json",
 }
 REQUIRED_FILES = {
     # Inherited F1/F2 authority.
@@ -428,6 +482,19 @@ REQUIRED_FILES = {
     "tests/test_f7_schema_contracts.py",
     "tests/test_governance_f7.py",
     "tests/test_repository_policy_f7.py",
+    # F8 authority.
+    "governance/F8_SCOPE.md",
+    "governance/F8_ACCEPTANCE.md",
+    "governance/F8_HISTORICAL_SCOREBOARD.md",
+    "governance/f8-schemas.lock.json",
+    "scripts/verify_f8_schemas.py",
+    "src/aladdin_mev_engine/historical_scoreboard.py",
+    "tests/f8_helpers.py",
+    "tests/test_historical_scoreboard_f8.py",
+    "tests/test_calibration_promotion_f8.py",
+    "tests/test_f8_schema_contracts.py",
+    "tests/test_governance_f8.py",
+    "tests/test_repository_policy_f8.py",
 }
 
 ACTION_REF = re.compile(
@@ -480,11 +547,11 @@ def workflow_policy_errors(text: str) -> list[str]:
     if type(text) is not str:
         return ["workflow source must be an exact string"]
     if hashlib.sha256(text.encode("utf-8")).hexdigest() != EXPECTED_WORKFLOW_SHA256:
-        errors.append("workflow source does not match the exact governed F7 template")
+        errors.append("workflow source does not match the exact governed F8 template")
     if "pull_request_target:" in text:
         errors.append("pull_request_target is forbidden")
     if SECRET_PATTERN.search(text):
-        errors.append("workflow secret references are forbidden in F7")
+        errors.append("workflow secret references are forbidden in F8")
     if len(re.findall(r"^permissions:\s*$", text, flags=re.MULTILINE)) != 1:
         errors.append("workflow must have exactly one top-level permissions block")
     if "permissions:\n  contents: read" not in text:
@@ -496,12 +563,12 @@ def workflow_policy_errors(text: str) -> list[str]:
 
     required_contracts = {
         "validate-head:": "missing exact-head validation job",
-        "name: F7 exact-head conformance": "missing F7 exact-head job identity",
+        "name: F8 exact-head conformance": "missing F8 exact-head job identity",
         "ref: ${{ github.event.pull_request.head.sha || github.sha }}": (
             "exact-head checkout is not bound to the source SHA"
         ),
         "validate-merge:": "missing merge-integration validation job",
-        "name: F7 merge integration": "missing F7 merge-integration job identity",
+        "name: F8 merge integration": "missing F8 merge-integration job identity",
         "if: github.event_name == 'pull_request'": (
             "merge-integration job must be pull-request-only"
         ),
@@ -578,9 +645,9 @@ def _check_project_metadata(errors: list[str]) -> None:
         return
     project = document.get("project", {})
     if project.get("dependencies") != []:
-        errors.append("F7 runtime dependencies must be exactly empty")
-    if project.get("version") != "0.8.0":
-        errors.append("F7 project version must be 0.8.0")
+        errors.append("F8 runtime dependencies must be exactly empty")
+    if project.get("version") != "0.9.0":
+        errors.append("F8 project version must be 0.9.0")
     aladdin = document.get("tool", {}).get("aladdin", {})
     expected = {
         "architecture_manifest": "governance/architecture.json",
@@ -592,6 +659,7 @@ def _check_project_metadata(errors: list[str]) -> None:
         "f5_schema_lock": "governance/f5-schemas.lock.json",
         "f6_schema_lock": "governance/f6-schemas.lock.json",
         "f7_schema_lock": "governance/f7-schemas.lock.json",
+        "f8_schema_lock": "governance/f8-schemas.lock.json",
         "observation_authority": "recorded-input-only",
         "state_proof_authority": "offline-recorded-input-only",
         "opportunity_authority": (
@@ -638,6 +706,13 @@ def _check_project_metadata(errors: list[str]) -> None:
         "settlement_authority": "offline-code-hash-bound-executor-event-reconciliation-only",
         "realized_outcome_authority": "authenticated-inclusion-receipt-code-hash-bound-settlement-and-recorded-rollup-fees-only",
         "realized_profit_authority": "none",
+        "historical_corpus_authority": "offline-exact-declared-source-window-inclusion-conditioned-history-only",
+        "historical_source_manifest_authority": "offline-declared-source-window-reference-set-only",
+        "historical_scoreboard_authority": "offline-exact-cohort-scoreboard-only",
+        "calibration_authority": "offline-empirical-no-confidence-guarantee",
+        "conditional_expected_value_authority": "offline-historical-conditional-estimate-only",
+        "research_promotion_authority": "offline-research-evidence-only",
+        "production_promotion_authority": "none",
     }
     for key, value in expected.items():
         if aladdin.get(key) != value:
@@ -730,7 +805,7 @@ def _check_repository_hygiene(errors: list[str]) -> None:
 def _check_required_files(errors: list[str]) -> None:
     for relative in sorted(REQUIRED_FILES):
         if not (ROOT / relative).is_file():
-            errors.append(f"missing governed F7 file: {relative}")
+            errors.append(f"missing governed F8 file: {relative}")
 
 
 def _check_schemas(errors: list[str]) -> None:
@@ -765,6 +840,9 @@ def _check_schemas(errors: list[str]) -> None:
     missing_f7 = F7_SCHEMA_FILES - found
     if missing_f7:
         errors.append("missing F7 schemas: " + ", ".join(sorted(missing_f7)))
+    missing_f8 = F8_SCHEMA_FILES - found
+    if missing_f8:
+        errors.append("missing F8 schemas: " + ", ".join(sorted(missing_f8)))
 
 
 def _load_json(relative: str, errors: list[str]) -> dict[str, object] | None:
@@ -788,14 +866,15 @@ def _check_architecture(errors: list[str]) -> None:
     f5_lock = _load_json("governance/f5-schemas.lock.json", errors)
     f6_lock = _load_json("governance/f6-schemas.lock.json", errors)
     f7_lock = _load_json("governance/f7-schemas.lock.json", errors)
+    f8_lock = _load_json("governance/f8-schemas.lock.json", errors)
     source_contracts = _load_json("governance/source-contracts.json", errors)
     if architecture is None:
         return
-    if architecture.get("milestone") != "F7":
-        errors.append("architecture milestone must be F7")
+    if architecture.get("milestone") != "F8":
+        errors.append("architecture milestone must be F8")
     for key, expected in EXPECTED_PARENT.items():
         if architecture.get(key) != expected:
-            errors.append(f"architecture {key} does not bind the accepted F6 parent")
+            errors.append(f"architecture {key} does not bind the accepted F7 parent")
     expected_authority = {
         "network_access": "none",
         "relay_access": "none",
@@ -808,6 +887,13 @@ def _check_architecture(errors: list[str]) -> None:
         "settlement_authority": "offline-code-hash-bound-executor-event-reconciliation-only",
         "realized_outcome_authority": "authenticated-inclusion-receipt-code-hash-bound-settlement-and-recorded-rollup-fees-only",
         "realized_profit_authority": "none",
+        "historical_corpus_authority": "offline-exact-declared-source-window-inclusion-conditioned-history-only",
+        "historical_source_manifest_authority": "offline-declared-source-window-reference-set-only",
+        "historical_scoreboard_authority": "offline-exact-cohort-scoreboard-only",
+        "calibration_authority": "offline-empirical-no-confidence-guarantee",
+        "conditional_expected_value_authority": "offline-historical-conditional-estimate-only",
+        "research_promotion_authority": "offline-research-evidence-only",
+        "production_promotion_authority": "none",
         "signature_verification_authority": "offline-secp256k1-recovery-only",
         "signed_transaction_authority": "offline-external-signature-evidence-only",
         "signed_bundle_authority": "offline-externally-signed-private-intent-only",
@@ -861,16 +947,18 @@ def _check_architecture(errors: list[str]) -> None:
         errors.append("architecture constant-product opportunity scope is not governed")
     if architecture.get("historical_outcome_scope") != ["ethereum", "base"]:
         errors.append("architecture historical outcome scope is not governed")
+    if architecture.get("historical_scoreboard_scope") != ["ethereum", "base"]:
+        errors.append("architecture historical scoreboard scope is not governed")
     if architecture.get("runtime_dependencies") != []:
         errors.append("architecture runtime dependencies must be empty")
     if tuple(architecture.get("source_contract_ids", ())) != EXPECTED_SOURCE_IDS:
         errors.append("architecture source-contract identifiers are not governed")
     components = architecture.get("components")
     if type(components) is not list or not REQUIRED_COMPONENTS.issubset(set(components)):
-        errors.append("architecture is missing required F7 components")
+        errors.append("architecture is missing required F8 components")
     invariants = architecture.get("invariants")
     if type(invariants) is not list or not REQUIRED_INVARIANTS.issubset(set(invariants)):
-        errors.append("architecture is missing required F7 invariants")
+        errors.append("architecture is missing required F8 invariants")
     if f2_lock is not None and architecture.get("f2_schema_lock_sha256") != _canonical_sha256(f2_lock):
         errors.append("architecture F2 schema-lock digest does not match")
     if f3_lock is not None and architecture.get("f3_schema_lock_sha256") != _canonical_sha256(f3_lock):
@@ -883,6 +971,8 @@ def _check_architecture(errors: list[str]) -> None:
         errors.append("architecture F6 schema-lock digest does not match")
     if f7_lock is not None and architecture.get("f7_schema_lock_sha256") != _canonical_sha256(f7_lock):
         errors.append("architecture F7 schema-lock digest does not match")
+    if f8_lock is not None and architecture.get("f8_schema_lock_sha256") != _canonical_sha256(f8_lock):
+        errors.append("architecture F8 schema-lock digest does not match")
     if source_contracts is not None and architecture.get("source_contract_set_sha256") != source_contracts.get("contracts_sha256"):
         errors.append("architecture source-contract digest does not match")
 
@@ -902,7 +992,7 @@ def _check_architecture(errors: list[str]) -> None:
         errors.append("architecture lock path is not governed")
     if lock.get("manifest_sha256") != digest:
         errors.append("architecture lock does not bind the canonical manifest")
-    if lock.get("architecture_id") != f"AMEV-F7-ARCH-v1-{digest[:12]}":
+    if lock.get("architecture_id") != f"AMEV-F8-ARCH-v1-{digest[:12]}":
         errors.append("architecture id does not bind the canonical manifest")
 
 

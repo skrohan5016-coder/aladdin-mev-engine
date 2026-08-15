@@ -1,0 +1,93 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/research-promotion-policy-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "maximum_mean_absolute_error_bps_of_capital": {
+      "maxLength": 5,
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
+      "type": "string"
+    },
+    "maximum_native_cost_overrun_rate_bps": {
+      "maxLength": 5,
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
+      "type": "string"
+    },
+    "minimum_attempts": {
+      "maxLength": 3,
+      "pattern": "^(?:[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "minimum_cost_upper_bound_respect_rate_bps": {
+      "maxLength": 5,
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
+      "type": "string"
+    },
+    "minimum_execution_success_rate_bps": {
+      "maxLength": 5,
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
+      "type": "string"
+    },
+    "minimum_floor_preservation_rate_bps": {
+      "maxLength": 5,
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
+      "type": "string"
+    },
+    "minimum_guarded_mean_surplus": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "minimum_positive_surplus_rate_bps": {
+      "maxLength": 5,
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
+      "type": "string"
+    },
+    "minimum_scoreable_rate_bps": {
+      "maxLength": 5,
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
+      "type": "string"
+    },
+    "minimum_scoreable_records": {
+      "maxLength": 3,
+      "pattern": "^(?:[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "minimum_scoreable_records_per_nonempty_bucket": {
+      "maxLength": 3,
+      "pattern": "^(?:[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "minimum_unique_inclusion_blocks": {
+      "maxLength": 3,
+      "pattern": "^(?:[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "policy_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-research-promotion-policy/v1"
+    }
+  },
+  "required": [
+    "maximum_mean_absolute_error_bps_of_capital",
+    "maximum_native_cost_overrun_rate_bps",
+    "minimum_attempts",
+    "minimum_cost_upper_bound_respect_rate_bps",
+    "minimum_execution_success_rate_bps",
+    "minimum_floor_preservation_rate_bps",
+    "minimum_guarded_mean_surplus",
+    "minimum_positive_surplus_rate_bps",
+    "minimum_scoreable_rate_bps",
+    "minimum_scoreable_records",
+    "minimum_scoreable_records_per_nonempty_bucket",
+    "minimum_unique_inclusion_blocks",
+    "policy_id",
+    "schema"
+  ],
+  "title": "Aladdin MEV Research Promotion Policy v1",
+  "type": "object"
+}

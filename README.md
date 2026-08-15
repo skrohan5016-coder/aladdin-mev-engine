@@ -1,41 +1,38 @@
 # Aladdin MEV Engine
 
-Aladdin MEV Engine is a governed, safety-first foundation for authenticated EVM state, exact market mathematics, conservative economics, replayable transaction evidence, external-signature verification, and offline historical execution-outcome reconciliation.
+Aladdin MEV Engine is a governed, safety-first foundation for authenticated EVM state, exact market mathematics, conservative economics, replayable transaction evidence, external-signature verification, authenticated historical outcomes, and bias-resistant offline performance evaluation.
 
 ## Current status
 
-**F7 is an offline, recorded-input authenticated inclusion and execution-outcome foundation.** It retains accepted F0–F6 authority and adds:
+**F8 is an offline authenticated historical-scoreboard and research-promotion foundation.** It retains F0–F7 and adds:
 
-- canonical typed/legacy Ethereum receipt decoding and exact raw-byte reconstruction;
-- exact receipt-log bloom and log-digest recomputation;
-- canonical block-header hash/root/base-fee verification against an F2 state anchor;
-- exact inclusion-block executor account proof preserving runtime code hash and canonical empty storage;
-- bounded indexed transactions-trie and receipts-trie inclusion proofs;
-- exact F6 signed-transaction inclusion and per-transaction gas attribution;
-- runtime-code-hash/time-bound executor settlement-event models;
-- exact plan, funding, beneficiary, asset, minimum-output, and transaction-value hard constraints;
-- successful output, residual, direct-payment, gas, log, and Ethereum/Base fee drift retained through explicit match, shortfall, overrun, upper-bound, and conservative-floor fields;
-- adverse historical outcomes remain recordable without claiming realized profit.
-
-Every F7 output remains within this boundary:
+- exact cohort identity across sender/signature source, policy, relay endpoint/response sources, funding, deployment, settlement model, fee/valuation sources, pool model, finality, environment, and simulator sources;
+- settled, reverted, settlement-missing, and settlement-evidence-incomplete historical records with explicit scoreability and outcome completeness;
+- receipt-derived settlement-event presence so outcome omission cannot relabel an observed event as missing;
+- exact source-window manifests and manifest-consuming corpora that prevent declared incomplete/adverse attempts from silently disappearing;
+- explicit `global_completeness_guarantee = false` outside each declared source window, propagated through scoreboards, calibration, expected-value, and promotion evidence;
+- one shared historical-valuation policy plus inclusion-time policy-matching conservative rates for scoreable records;
+- exact historical-surplus/prediction-error evidence and integer scoreboards with explicit disposition/completeness counts;
+- positive-bound calibration buckets, guarded empirical means, and conditional historical expected value with explicit zero-sample unavailability;
+- scoreable-coverage, unique-block-diversity, error, cost-overrun, calibration-density, and guarded-surplus research gates;
+- explicit denial of confidence, realized-profit, production-promotion, signing, submission, and execution authority.
 
 ```text
-network_access = none
-relay_access = none
-credential_authority = none
-key_authority = none
-local_signing_authority = none
-submission_authority = none
-execution_authority = none
-realized_profit_authority = none
-inclusion_guarantee = none
+network_access                        = none
+credential_authority                  = none
+key_authority                         = none
+local_signing_authority               = none
+submission_authority                  = none
+execution_authority                   = none
+realized_profit_authority             = none
+production_promotion_authority        = none
 ```
 
-F7 supports Ethereum and Base recorded evidence. It does not poll a chain, contact a relay, sign or submit anything, deploy contracts, move funds, prove every token balance, or guarantee inclusion or profit.
+F8 supports offline Ethereum and Base evidence. It does not poll chains, contact relays, hold keys, sign or submit transactions, deploy contracts, move funds, claim realized profit, or guarantee future performance.
 
 ## Local validation
 
-Python 3.13 is the governed conformance runtime. F7 has no third-party runtime dependencies.
+Python 3.13 is the governed conformance runtime. F8 has no third-party runtime dependencies.
 
 ```bash
 make all
@@ -46,11 +43,11 @@ make all
 Start with:
 
 - [`governance/ARCHITECTURE.md`](governance/ARCHITECTURE.md)
-- [`governance/F7_AUTHENTICATED_EXECUTION_OUTCOME.md`](governance/F7_AUTHENTICATED_EXECUTION_OUTCOME.md)
-- [`governance/F7_ACCEPTANCE.md`](governance/F7_ACCEPTANCE.md)
-- [`governance/F6_SIGNED_RELAY_EVIDENCE.md`](governance/F6_SIGNED_RELAY_EVIDENCE.md)
+- [`governance/F8_SCOPE.md`](governance/F8_SCOPE.md)
+- [`governance/F8_HISTORICAL_SCOREBOARD.md`](governance/F8_HISTORICAL_SCOREBOARD.md)
+- [`governance/F8_ACCEPTANCE.md`](governance/F8_ACCEPTANCE.md)
 - [`governance/THREAT_MODEL.md`](governance/THREAT_MODEL.md)
 
 ## Security
 
-Never commit credentials, wallet material, private keys, RPC/relay endpoints or tokens, signing authority, deployment authority, or production configuration. See [`SECURITY.md`](SECURITY.md).
+Never commit credentials, wallet material, private keys, RPC/relay endpoints or tokens, signing authority, deployment authority, funded-account secrets, or production configuration. See [`SECURITY.md`](SECURITY.md).

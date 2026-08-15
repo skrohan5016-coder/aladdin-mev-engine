@@ -1,0 +1,113 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/historical-expected-value-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "aggregate_return_bps_floor": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "availability_semantics": {
+      "const": "available-only-when-scoreable-sample-count-is-positive"
+    },
+    "available": {
+      "type": "boolean"
+    },
+    "conditioning": {
+      "const": "authenticated-successful-settlement-with-scoreable-economics-only"
+    },
+    "confidence_guarantee": {
+      "const": false
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "global_completeness_guarantee": {
+      "const": false
+    },
+    "guarded_sample_mean_floor": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "historical_surplus_sum": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "mean_absolute_prediction_error_ceiling": {
+      "maxLength": 156,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "production_promotion_authority": {
+      "const": false
+    },
+    "realized_profit_claimed": {
+      "const": false
+    },
+    "sample_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "sample_mean_floor": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-historical-expected-value/v1"
+    },
+    "scoreboard_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "selection_bias_disclosure": {
+      "const": "unscoreable-declared-source-records-retained-but-excluded-from-economic-mean-no-global-completeness-guarantee"
+    },
+    "source_completeness_scope": {
+      "const": "exact-declared-source-window-reference-set-only"
+    },
+    "source_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "statistical_semantics": {
+      "const": "empirical-mean-minus-mean-absolute-prediction-error-screen"
+    },
+    "unscoreable_record_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "aggregate_return_bps_floor",
+    "conditioning",
+    "confidence_guarantee",
+    "created_at_unix_ms",
+    "guarded_sample_mean_floor",
+    "historical_surplus_sum",
+    "mean_absolute_prediction_error_ceiling",
+    "production_promotion_authority",
+    "realized_profit_claimed",
+    "sample_count",
+    "sample_mean_floor",
+    "schema",
+    "scoreboard_sha256",
+    "selection_bias_disclosure",
+    "statistical_semantics",
+    "unscoreable_record_count",
+    "available",
+    "availability_semantics",
+    "source_manifest_sha256",
+    "source_completeness_scope",
+    "global_completeness_guarantee"
+  ],
+  "title": "Aladdin MEV Historical Expected Value Evidence v1",
+  "type": "object"
+}
