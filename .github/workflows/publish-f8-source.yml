@@ -1,0 +1,89 @@
+name: Publish exact F8 historical scoreboard source
+
+on:
+  push:
+    branches:
+      - agent/f8-publication-helper
+
+permissions:
+  contents: write
+
+env:
+  PYTHONPATH: src
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout exact publication material
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: material
+          persist-credentials: false
+      - name: Checkout exact accepted F7 parent
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ec4d9a211c204e3363e8a77d8de4ab2199a89be0
+          path: work
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Set up governed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Reconstruct and verify exact F8 source
+        run: |
+          set -euo pipefail
+          test "$(git -C work rev-parse HEAD)" = "ec4d9a211c204e3363e8a77d8de4ab2199a89be0"
+          test "$(git -C work rev-parse 'HEAD^{tree}')" = "42592ed5ce7dc8d87755ff95af4824dc20c9e6fa"
+          test "$(find material/.staging/f8 -maxdepth 1 -type f -name 'chunk-*' | wc -l | tr -d ' ')" = "9"
+          cat material/.staging/f8/chunk-* > /tmp/f8-source.patch.gz.b64
+          echo "035d2a7bf3023fc38adbd277a880d6fbcfde170b84cfa7ab189695c42ea61297  /tmp/f8-source.patch.gz.b64" | sha256sum -c -
+          base64 -d /tmp/f8-source.patch.gz.b64 > /tmp/f8-source.patch.gz
+          echo "d22c8558675033b59e171156ac2035bb9318abff822c5fc217a92ce33ebdbaf4  /tmp/f8-source.patch.gz" | sha256sum -c -
+          gzip -dc /tmp/f8-source.patch.gz > /tmp/f8-source.patch
+          echo "c3825ed6a82aa4b77b71fc08b1dafe8fb25310f5213c2c936334157db5643667  /tmp/f8-source.patch" | sha256sum -c -
+          git -C work diff --exit-code
+          git -C work apply --index --whitespace=error /tmp/f8-source.patch
+          test "$(git -C work diff --cached --name-only | wc -l | tr -d ' ')" = "49"
+          git -C work diff --cached --check
+          test "$(git -C work write-tree)" = "3d7c1bcdf13d62c733e0f41abc70f9fa28eb1e48"
+          cp material/.staging/f8/ci.yml work/.github/workflows/ci.yml
+          git -C work add .github/workflows/ci.yml
+          git -C work diff --cached --check
+          test "$(git -C work write-tree)" = "04c819f76d9ac2205afe53a06e9c6d7a3060a5cb"
+      - name: Validate exact final F8 tree
+        working-directory: work
+        run: |
+          set -euo pipefail
+          python -m compileall -q src tests scripts
+          python -m unittest discover -s tests -v
+          python scripts/check_repo_policy.py
+          python scripts/verify_architecture_lock.py
+          python scripts/verify_source_contracts.py
+          python scripts/verify_f2_schemas.py
+          python scripts/verify_f3_schemas.py
+          python scripts/verify_f4_schemas.py
+          python scripts/verify_f5_schemas.py
+          python scripts/verify_f6_schemas.py
+          python scripts/verify_f7_schemas.py
+          python scripts/verify_f8_schemas.py
+          git diff --exit-code
+          git diff --cached --check
+          test "$(git write-tree)" = "04c819f76d9ac2205afe53a06e9c6d7a3060a5cb"
+      - name: Publish normal fast-forward source commit
+        working-directory: work
+        run: |
+          set -euo pipefail
+          remote_head="$(git ls-remote origin refs/heads/agent/f8-historical-scoreboard-v1 | cut -f1)"
+          test -z "${remote_head}"
+          git checkout HEAD -- .github/workflows/ci.yml
+          test "$(git write-tree)" = "3d7c1bcdf13d62c733e0f41abc70f9fa28eb1e48"
+          git config user.name "ROHAN"
+          git config user.email "skrohan5016@gmail.com"
+          git commit -m "F8 — Authenticated Historical Scoreboard and Offline Promotion Gates"
+          test "$(git rev-parse 'HEAD^{tree}')" = "3d7c1bcdf13d62c733e0f41abc70f9fa28eb1e48"
+          git push origin HEAD:refs/heads/agent/f8-historical-scoreboard-v1
