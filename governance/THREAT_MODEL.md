@@ -2,34 +2,37 @@
 
 ## Protected assets
 
-Inherited F0–F5 evidence, economics, authenticated sender/deployment state, unsigned transaction and bundle identity, secp256k1 verification correctness, signed transaction bytes, relay evidence identity, honest separation of recorded relay acceptance from inclusion, and future keys and funds.
+Inherited F0–F6 evidence and authority boundaries; authenticated block, transaction, receipt, gas, log, settlement, and fee identity; honest separation between historical execution evidence and live authority or realized-profit claims; future keys, accounts, and funds.
 
 ## Inherited failure modes remain active
 
-F6 does not replace earlier controls. Canonical-JSON ambiguity, ledger truncation, source drift, reorg errors, malformed proofs, state mismatch, market-model ambiguity, optimizer errors, valuation/cost errors, stale simulations, unsigned transaction drift, and false F5 package approval remain governed by accepted contracts and regression tests.
+Canonical-JSON ambiguity, ledger tampering, source drift, reorg errors, malformed state proofs, model ambiguity, optimizer errors, conservative-cost drift, unsigned/signed transaction drift, relay-evidence spoofing, and CI bypasses remain governed by inherited contracts and tests.
 
-## F6 failure modes
+## F7 failure modes
 
-- invalid curve points or signature scalars;
-- unbounded public scalar multiplication consuming CPU before domain validation;
-- high-s malleable signatures;
-- wrong hash, parity, key, or recovered sender;
-- changing an F5 unsigned field while presenting the result as the same signed transaction;
-- non-canonical signed RLP or wrong transaction hash;
-- signed bundle count, order, target, sender, or validity drift;
-- an endpoint ID assigned conflicting chain or protocol semantics;
-- URL, credential, token, production approval, or transport capability entering relay evidence;
-- request payload mutation after construction;
-- a relay response predating its request, arriving after validity, or carrying contradictory accepted/error fields;
-- duplicate response authorities hidden behind source aliases;
-- relay acceptance presented as inclusion, execution, or realized profit;
-- private keys or signing/submission helpers entering production source;
+- fabricated block header, hash, roots, base fee, timestamp, source, or finality;
+- executor disappearance, runtime-code replacement, or non-empty storage at the inclusion-block post-state;
+- malformed or oversized transaction/receipt trie proofs;
+- transaction and receipt index mismatch;
+- wrong signed transaction bytes under a valid unrelated proof;
+- missing or non-adjacent previous receipt causing false gas attribution;
+- conflating consensus `Bytes20` log addresses with nonzero governed deployment/token identity rules;
+- malformed or work-amplifying receipt, status, typed envelope, log/topic list, aggregate canonical log array, target/block bloom relation, or cumulative gas;
+- inclusion outside the signed bundle range or after the executor deadline;
+- ambiguous, empty-code, or expired settlement-event model for one runtime code hash;
+- event emitted by the wrong address or with wrong topic0/indexed topics/ABI data;
+- receipt address-domain narrowing that rejects a consensus-valid zero `Bytes20` log emitter;
+- a schema file that exists locally but whose relative `$ref` does not resolve to the target declared `$id`;
+- plan, beneficiary, token, output, funding, residual, direct-payment, decoded-log, or unused-`msg.value` refund-semantics drift;
+- recorded gas, L1-data, operator, or direct-payment cost above F4 bounds;
+- relay acceptance or a successful receipt presented as a realized-profit proof;
+- key, network, signing, submission, deployment, or execution capability entering production source;
 - CI command, action, runner, shell, environment, permission, condition, timeout, or error-handling bypass.
 
 ## Controls
 
-Exact runtime types; closed schemas; constructor-time recomputation; dependency-free curve arithmetic; bounded public scalar multiplication; known address vectors and randomized test-only signature round trips; bounded low-s scalars; unique authenticated-sender recovery; canonical type-2 RLP and legacy Keccak; exact F5 identity retention; deterministic endpoint registry; immutable canonical request bytes; detached request payload copies; independently unique response source IDs and digests; transitive time validity; explicit false eligibility/guarantee fields; static production-source denial of keys, signing, networking, and dispatch; immutable locks; hardened read-only CI.
+Exact runtime types; bounded canonical RLP; legacy-Keccak header verification; exact F2 anchor cross-check; authenticated inclusion-block executor account/code/empty-storage proof; bounded MPT proofs; previous-receipt gas attribution; pre-materialization receipt log/topic work gates; incremental globally byte-bounded canonical log-array hashing; canonical receipt/bloom/log reconstruction; checked integer fee math; exact F6 transaction identity; code-hash/time-bound event registry; constructor-time plan/simulation/cost reconciliation; explicit false profit and live-authority fields; closed schemas with standard URI-resolvable identities and immutable locks; hardened read-only exact-head and merge CI.
 
 ## Residual risks
 
-F6 verifies recorded signature and relay evidence. It does not prove who controlled an external signer, whether a signature source was trustworthy, whether a relay endpoint exists or is available, whether a response was authentic beyond its recorded source authority, whether the relay accepted the exact request live, whether a transaction was included, or whether profit was realized. Those require later separately governed live infrastructure, key custody, submission, inclusion, and settlement milestones with explicit human approval.
+F7 depends on recorded source authority and the governed executor-event model. The authenticated executor post-state proves persistent code/storage identity after the block but is not an intra-block execution trace; code semantics remain explicit model authority. It does not independently prove every ERC-20 balance change, external protocol internal accounting, relay authenticity, chain finality beyond the recorded authenticated anchor, treasury custody, fiat conversion, taxes, or realized profit. Live collection, production endpoint approval, key custody, submission, monitoring, and financial accounting require separate milestones and explicit approval.

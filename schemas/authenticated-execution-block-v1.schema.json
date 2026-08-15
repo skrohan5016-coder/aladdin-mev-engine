@@ -1,0 +1,36 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/authenticated-execution-block-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authentication_authority": {
+      "const": "state-root-and-recorded-header-cross-check-only"
+    },
+    "block": {
+      "$ref": "recorded-execution-block-v1.schema.json"
+    },
+    "block_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-authenticated-execution-block/v1"
+    },
+    "state_anchor": {
+      "$ref": "evm-block-state-anchor-v1.schema.json"
+    },
+    "state_anchor_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "state_anchor",
+    "state_anchor_sha256",
+    "block",
+    "block_sha256",
+    "authentication_authority"
+  ],
+  "type": "object"
+}

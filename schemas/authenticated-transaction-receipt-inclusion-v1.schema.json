@@ -1,0 +1,162 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/authenticated-transaction-receipt-inclusion-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "block": {
+      "$ref": "authenticated-execution-block-v1.schema.json"
+    },
+    "block_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "effective_gas_price": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "execution_authority": {
+      "const": "none"
+    },
+    "execution_gas_cost": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "execution_success": {
+      "type": "boolean"
+    },
+    "executor_state": {
+      "$ref": "evm-state-proof-evidence-v1.schema.json"
+    },
+    "executor_state_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "gas_used": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "inclusion_authority": {
+      "const": "authenticated-transaction-receipt-and-executor-post-state-inclusion"
+    },
+    "inclusion_observed": {
+      "const": true
+    },
+    "package_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "previous_receipt_proof": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "indexed-trie-proof-v1.schema.json",
+          "properties": {
+            "kind": {
+              "const": "previous-receipt"
+            }
+          }
+        }
+      ]
+    },
+    "previous_receipt_proof_sha256": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "receipt": {
+      "$ref": "transaction-receipt-v1.schema.json",
+      "properties": {
+        "transaction_type": {
+          "const": "2"
+        }
+      }
+    },
+    "receipt_proof": {
+      "$ref": "indexed-trie-proof-v1.schema.json",
+      "properties": {
+        "kind": {
+          "const": "receipt"
+        }
+      }
+    },
+    "receipt_proof_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "receipt_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-authenticated-transaction-receipt-inclusion/v1"
+    },
+    "submission_authority": {
+      "const": "none"
+    },
+    "transaction_hash": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "transaction_index": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "transaction_proof": {
+      "$ref": "indexed-trie-proof-v1.schema.json",
+      "properties": {
+        "kind": {
+          "const": "transaction"
+        }
+      }
+    },
+    "transaction_proof_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "package_sha256",
+    "block",
+    "block_sha256",
+    "executor_state",
+    "executor_state_sha256",
+    "transaction_proof",
+    "transaction_proof_sha256",
+    "receipt_proof",
+    "receipt_proof_sha256",
+    "previous_receipt_proof",
+    "previous_receipt_proof_sha256",
+    "transaction_hash",
+    "transaction_index",
+    "receipt",
+    "receipt_sha256",
+    "gas_used",
+    "effective_gas_price",
+    "execution_gas_cost",
+    "created_at_unix_ms",
+    "inclusion_authority",
+    "inclusion_observed",
+    "execution_success",
+    "submission_authority",
+    "execution_authority"
+  ],
+  "type": "object"
+}

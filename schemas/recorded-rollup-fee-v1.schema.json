@@ -1,0 +1,60 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/recorded-rollup-fee-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base"
+      ],
+      "type": "string"
+    },
+    "fee_authority": {
+      "const": "recorded-input-only"
+    },
+    "l1_data_fee_paid": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "operator_fee_paid": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-recorded-rollup-fee/v1"
+    },
+    "source_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "transaction_hash": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "chain",
+    "transaction_hash",
+    "l1_data_fee_paid",
+    "operator_fee_paid",
+    "observed_at_unix_ms",
+    "source_id",
+    "source_sha256",
+    "fee_authority"
+  ],
+  "type": "object"
+}

@@ -1,4 +1,4 @@
-.PHONY: compile test policy architecture source-contracts f2-schemas f3-schemas f4-schemas f5-schemas f6-schemas all
+.PHONY: compile test policy architecture source-contracts f2-schemas f3-schemas f4-schemas f5-schemas f6-schemas f7-schemas all
 PYTHON ?= python3
 export PYTHONPATH := src
 compile:
@@ -21,4 +21,6 @@ f5-schemas:
 	$(PYTHON) scripts/verify_f5_schemas.py
 f6-schemas:
 	$(PYTHON) scripts/verify_f6_schemas.py
-all: compile test policy architecture source-contracts f2-schemas f3-schemas f4-schemas f5-schemas f6-schemas
+f7-schemas:
+	$(PYTHON) scripts/verify_f7_schemas.py
+all: compile test policy architecture source-contracts f2-schemas f3-schemas f4-schemas f5-schemas f6-schemas f7-schemas

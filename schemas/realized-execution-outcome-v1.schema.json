@@ -1,0 +1,205 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/realized-execution-outcome-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "actual_native_cost": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "base_token": {
+      "pattern": "^0x(?!0{40}$)[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "conservative_shadow_floor_preserved": {
+      "const": true
+    },
+    "cost_completeness": {
+      "const": "authenticated-eip1559-gas-plus-recorded-rollup-and-direct-payment-only"
+    },
+    "cost_upper_bounds_respected": {
+      "const": true
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "direct_inclusion_payment": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "effective_gas_price": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "execution_authority": {
+      "const": "none"
+    },
+    "execution_gas_cost": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "execution_success": {
+      "const": true
+    },
+    "gas_used": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "inclusion": {
+      "$ref": "authenticated-transaction-receipt-inclusion-v1.schema.json"
+    },
+    "inclusion_guarantee": {
+      "const": false
+    },
+    "inclusion_observed": {
+      "const": true
+    },
+    "inclusion_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "key_authority": {
+      "const": "none"
+    },
+    "l1_data_fee_paid": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "operator_fee_paid": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "outcome_authority": {
+      "const": "authenticated-inclusion-receipt-code-hash-bound-settlement-and-recorded-rollup-fees-only"
+    },
+    "outcome_id": {
+      "pattern": "^realized-outcome-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "package_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "realized_base_token_residual_before_external_costs": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "realized_profit_claimed": {
+      "const": false
+    },
+    "rollup_fee": {
+      "$ref": "recorded-rollup-fee-v1.schema.json"
+    },
+    "rollup_fee_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-realized-execution-outcome/v1"
+    },
+    "settlement_event": {
+      "$ref": "executor-settlement-event-v1.schema.json"
+    },
+    "settlement_event_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "settlement_observed": {
+      "const": true
+    },
+    "settlement_registry": {
+      "$ref": "executor-settlement-event-registry-v1.schema.json"
+    },
+    "settlement_registry_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "settlement_spec": {
+      "$ref": "executor-settlement-event-spec-v1.schema.json"
+    },
+    "settlement_spec_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "simulation_exact_match": {
+      "type": "boolean"
+    },
+    "simulation_gas_match": {
+      "type": "boolean"
+    },
+    "simulation_logs_match": {
+      "type": "boolean"
+    },
+    "submission_authority": {
+      "const": "none"
+    },
+    "transaction_hash": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "transaction_index": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "outcome_id",
+    "package_sha256",
+    "inclusion",
+    "inclusion_sha256",
+    "settlement_registry",
+    "settlement_registry_sha256",
+    "settlement_spec",
+    "settlement_spec_sha256",
+    "settlement_event",
+    "settlement_event_sha256",
+    "rollup_fee",
+    "rollup_fee_sha256",
+    "transaction_hash",
+    "block_number",
+    "transaction_index",
+    "gas_used",
+    "effective_gas_price",
+    "execution_gas_cost",
+    "l1_data_fee_paid",
+    "operator_fee_paid",
+    "direct_inclusion_payment",
+    "actual_native_cost",
+    "base_token",
+    "realized_base_token_residual_before_external_costs",
+    "simulation_gas_match",
+    "simulation_logs_match",
+    "simulation_exact_match",
+    "cost_upper_bounds_respected",
+    "conservative_shadow_floor_preserved",
+    "created_at_unix_ms",
+    "outcome_authority",
+    "cost_completeness",
+    "inclusion_observed",
+    "execution_success",
+    "settlement_observed",
+    "realized_profit_claimed",
+    "key_authority",
+    "submission_authority",
+    "execution_authority",
+    "inclusion_guarantee"
+  ],
+  "type": "object"
+}

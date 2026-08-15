@@ -1,0 +1,118 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/transaction-receipt-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "0"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "success": {
+            "const": false
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {
+            "const": "1"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "then": {
+        "properties": {
+          "success": {
+            "const": true
+          }
+        }
+      }
+    }
+  ],
+  "properties": {
+    "cumulative_gas_used": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "log_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 1024,
+      "type": "array"
+    },
+    "logs": {
+      "items": {
+        "$ref": "evm-log-entry-v1.schema.json"
+      },
+      "maxItems": 1024,
+      "type": "array"
+    },
+    "logs_bloom": {
+      "pattern": "^0x[0-9a-f]{512}$",
+      "type": "string"
+    },
+    "logs_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "raw_receipt": {
+      "maxLength": 2097154,
+      "minLength": 4,
+      "pattern": "^0x(?:[0-9a-f]{2})*$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-transaction-receipt/v1"
+    },
+    "status": {
+      "enum": [
+        "0",
+        "1"
+      ],
+      "type": "string"
+    },
+    "success": {
+      "type": "boolean"
+    },
+    "transaction_type": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^(?:[1-9]|[1-9][0-9]|1[01][0-9]|12[0-7])$",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "transaction_type",
+    "status",
+    "success",
+    "cumulative_gas_used",
+    "logs_bloom",
+    "logs",
+    "log_sha256",
+    "logs_sha256",
+    "raw_receipt"
+  ],
+  "type": "object"
+}

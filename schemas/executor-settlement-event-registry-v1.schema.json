@@ -1,0 +1,44 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/executor-settlement-event-registry-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "production_approval": {
+      "const": false
+    },
+    "registry_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-executor-settlement-event-registry/v1"
+    },
+    "spec_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "specs": {
+      "items": {
+        "$ref": "executor-settlement-event-spec-v1.schema.json"
+      },
+      "maxItems": 32,
+      "minItems": 1,
+      "type": "array"
+    }
+  },
+  "required": [
+    "schema",
+    "registry_id",
+    "specs",
+    "spec_sha256",
+    "production_approval"
+  ],
+  "type": "object"
+}

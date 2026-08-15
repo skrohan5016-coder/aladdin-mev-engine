@@ -1,4 +1,4 @@
-"""Governed offline external-signature and recorded relay-evidence core for F6."""
+"""Governed offline inclusion, settlement, and realized-outcome evidence core for F7."""
 
 from .assets import (
     AssetAmount,
@@ -57,6 +57,24 @@ from .execution_package import (
     transaction_simulations_agree,
 )
 from .domain import Chain, ChainHealth, OperatingMode, StateReference, Strategy
+from .evm_receipt import (
+    EvmLogEntry,
+    EvmTransactionReceipt,
+    canonical_logs_sha256,
+    compute_logs_bloom,
+)
+from .execution_outcome import (
+    AuthenticatedExecutionBlockEvidence,
+    AuthenticatedTransactionReceiptInclusionEvidence,
+    ExecutionTrieKind,
+    ExecutorSettlementEvent,
+    ExecutorSettlementEventRegistry,
+    ExecutorSettlementEventSpec,
+    IndexedTrieProofEvidence,
+    RealizedExecutionOutcomeEvidence,
+    RecordedExecutionBlockEvidence,
+    RecordedRollupFeeEvidence,
+)
 from .evidence import EvidenceRecord, SimulationResult, dual_simulations_agree
 from .head_tracker import EvmHead, HeadTracker, HeadTransition, HeadTransitionKind
 from .keccak import keccak256, keccak256_hex
@@ -139,6 +157,20 @@ from .state_proof import (
 )
 
 __all__ = [
+    "EvmLogEntry",
+    "EvmTransactionReceipt",
+    "canonical_logs_sha256",
+    "compute_logs_bloom",
+    "RecordedExecutionBlockEvidence",
+    "AuthenticatedExecutionBlockEvidence",
+    "ExecutionTrieKind",
+    "IndexedTrieProofEvidence",
+    "AuthenticatedTransactionReceiptInclusionEvidence",
+    "ExecutorSettlementEventSpec",
+    "ExecutorSettlementEventRegistry",
+    "ExecutorSettlementEvent",
+    "RecordedRollupFeeEvidence",
+    "RealizedExecutionOutcomeEvidence",
     "FIELD_MODULUS",
     "GENERATOR",
     "GROUP_ORDER",
@@ -269,4 +301,4 @@ __all__ = [
     "write_segment_once",
 ]
 
-__version__ = "0.7.0"
+__version__ = "0.8.0"

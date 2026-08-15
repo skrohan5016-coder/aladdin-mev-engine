@@ -9,21 +9,17 @@ from aladdin_mev_engine.canonical import canonical_sha256
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class F6GovernanceTests(unittest.TestCase):
+class F6GovernanceRetentionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.architecture = json.loads((ROOT / "governance" / "architecture.json").read_text(encoding="utf-8"))
 
-    def test_architecture_binds_accepted_f5_and_disables_live_authority(self) -> None:
+    def test_f7_retains_f6_offline_authorities_and_disables_live_capability(self) -> None:
         a = self.architecture
-        self.assertEqual(a["milestone"], "F6")
-        self.assertEqual(a["accepted_parent_head"], "f068d1f1ffad9d4c2439dd6f0fa36e333d73817f")
-        self.assertEqual(a["accepted_parent_tree"], "89df1b1bf5d665c1ea1b2abb80320d824b6e7bb4")
-        self.assertEqual(a["accepted_parent_architecture_id"], "AMEV-F5-ARCH-v1-4359fcd9d1a2")
+        self.assertEqual(a["milestone"], "F7")
         for key in (
             "network_access", "relay_access", "credential_authority", "key_authority",
             "local_signing_authority", "submission_authority", "execution_authority",
-            "inclusion_authority",
         ):
             self.assertEqual(a[key], "none")
         self.assertEqual(a["signing_authority"], "external-unmodeled")
@@ -43,13 +39,13 @@ class F6GovernanceTests(unittest.TestCase):
         for key, value in expected.items():
             self.assertEqual(self.architecture[key], value)
 
-    def test_f6_schema_and_architecture_locks_are_exact(self) -> None:
+    def test_f6_schema_lock_is_retained_and_f7_architecture_lock_is_exact(self) -> None:
         schema_lock = json.loads((ROOT / "governance" / "f6-schemas.lock.json").read_text(encoding="utf-8"))
         architecture_lock = json.loads((ROOT / "governance" / "architecture.lock.json").read_text(encoding="utf-8"))
         self.assertEqual(self.architecture["f6_schema_lock_sha256"], canonical_sha256(schema_lock))
         digest = canonical_sha256(self.architecture)
         self.assertEqual(architecture_lock["manifest_sha256"], digest)
-        self.assertEqual(architecture_lock["architecture_id"], f"AMEV-F6-ARCH-v1-{digest[:12]}")
+        self.assertEqual(architecture_lock["architecture_id"], f"AMEV-F7-ARCH-v1-{digest[:12]}")
 
     def test_required_f6_invariants_and_schemas_are_machine_bound(self) -> None:
         required = {
