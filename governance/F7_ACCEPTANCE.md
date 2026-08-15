@@ -15,15 +15,15 @@ F7 is accepted only when one exact source head and its current GitHub synthetic 
 - immediately preceding receipt authority for every nonzero transaction index;
 - exact cumulative-gas delta, intrinsic/gas-limit bounds, and EIP-1559 effective gas price;
 - non-empty runtime-code-hash and block-validity-bound settlement event registry;
-- exact plan, beneficiary, asset, funding, residual, direct-payment, unused-`msg.value` refund-semantics, and decoded-log settlement reconciliation;
-- recorded Ethereum/Base rollup fees and inherited F4 cost-ceiling enforcement;
-- simulation drift reporting without rewriting historical evidence;
+- exact plan, beneficiary, asset, principal, fee, unused-`msg.value` refund-semantics, and decoded-log settlement reconciliation;
+- successful output, residual, direct-payment, gas, log, and recorded Ethereum/Base rollup-fee drift preserved as explicit historical mismatch, shortfall, overrun, upper-bound, and floor-preservation evidence;
+- hard minimum-output and transaction-value caps remain fail-closed while simulation or conservative-bound drift is recorded instead of dropped;
 - exact twelve-file F7 schema lock with standard URI-resolvable `$ref`/`$id` authority;
 - no network, credential, key, signing, submission, deployment, execution, or realized-profit authority.
 
 ## Required adversarial validation
 
-Wrong header hash or root, wrong source/chain/finality, missing executor account, changed or empty settlement-model code hash, non-empty executor storage, malformed RLP, wrong-width log address, bloom drift, schema-identifier drift, wrong transaction or receipt index, missing or non-adjacent previous receipt, malformed or oversized proof, wrong transaction bytes, failed receipt promotion, gas underflow/overflow, fee-cap violation, ambiguous or empty-code event model, wrong executor/log/topic0/data, settlement economic drift, duplicate event, excess recorded fee, future observation, and authority escalation must fail closed.
+Wrong header hash or root, wrong source/chain/finality, missing executor account, changed or empty settlement-model code hash, non-empty executor storage, malformed RLP, wrong-width log address, bloom drift, schema-identifier drift, wrong transaction or receipt index, missing or non-adjacent previous receipt, malformed or oversized proof, wrong transaction bytes, failed receipt promotion, gas underflow/overflow, transaction fee-cap violation, ambiguous or empty-code event model, wrong executor/log/topic0/data, wrong plan/beneficiary/token/principal/fee, inconsistent settlement arithmetic, output below the governed minimum, direct payment above transaction value, duplicate event, future observation, and authority escalation must fail closed. Successful economic or conservative-bound drift within those hard constraints must remain recordable and must not be silently discarded.
 
 ## Required CI
 

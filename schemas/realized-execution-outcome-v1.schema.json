@@ -12,19 +12,24 @@
       "pattern": "^0x(?!0{40}$)[0-9a-f]{40}$",
       "type": "string"
     },
+    "base_token_residual_shortfall_before_external_costs": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
     "block_number": {
       "maxLength": 20,
       "pattern": "^(0|[1-9][0-9]*)$",
       "type": "string"
     },
     "conservative_shadow_floor_preserved": {
-      "const": true
+      "type": "boolean"
     },
     "cost_completeness": {
       "const": "authenticated-eip1559-gas-plus-recorded-rollup-and-direct-payment-only"
     },
     "cost_upper_bounds_respected": {
-      "const": true
+      "type": "boolean"
     },
     "created_at_unix_ms": {
       "maxLength": 20,
@@ -78,6 +83,16 @@
       "pattern": "^(0|[1-9][0-9]*)$",
       "type": "string"
     },
+    "native_cost_overrun": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "native_cost_upper_bound": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
     "operator_fee_paid": {
       "maxLength": 78,
       "pattern": "^(0|[1-9][0-9]*)$",
@@ -92,6 +107,11 @@
     },
     "package_sha256": {
       "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "planned_base_token_residual_before_external_costs": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
       "type": "string"
     },
     "realized_base_token_residual_before_external_costs": {
@@ -136,6 +156,12 @@
       "pattern": "^[0-9a-f]{64}$",
       "type": "string"
     },
+    "simulation_direct_payment_match": {
+      "type": "boolean"
+    },
+    "simulation_economic_match": {
+      "type": "boolean"
+    },
     "simulation_exact_match": {
       "type": "boolean"
     },
@@ -143,6 +169,12 @@
       "type": "boolean"
     },
     "simulation_logs_match": {
+      "type": "boolean"
+    },
+    "simulation_output_match": {
+      "type": "boolean"
+    },
+    "simulation_residual_match": {
       "type": "boolean"
     },
     "submission_authority": {
@@ -182,10 +214,18 @@
     "operator_fee_paid",
     "direct_inclusion_payment",
     "actual_native_cost",
+    "native_cost_upper_bound",
+    "native_cost_overrun",
     "base_token",
+    "planned_base_token_residual_before_external_costs",
     "realized_base_token_residual_before_external_costs",
+    "base_token_residual_shortfall_before_external_costs",
     "simulation_gas_match",
     "simulation_logs_match",
+    "simulation_output_match",
+    "simulation_residual_match",
+    "simulation_direct_payment_match",
+    "simulation_economic_match",
     "simulation_exact_match",
     "cost_upper_bounds_respected",
     "conservative_shadow_floor_preserved",

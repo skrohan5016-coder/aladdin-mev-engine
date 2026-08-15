@@ -13,9 +13,9 @@ Aladdin MEV Engine is a governed, safety-first foundation for authenticated EVM 
 - bounded indexed transactions-trie and receipts-trie inclusion proofs;
 - exact F6 signed-transaction inclusion and per-transaction gas attribution;
 - runtime-code-hash/time-bound executor settlement-event models;
-- exact plan, funding, beneficiary, residual, and direct-payment reconciliation;
-- recorded Ethereum/Base rollup-fee evidence and inherited F4 cost-ceiling checks;
-- simulation-drift reporting without claiming realized profit.
+- exact plan, funding, beneficiary, asset, minimum-output, and transaction-value hard constraints;
+- successful output, residual, direct-payment, gas, log, and Ethereum/Base fee drift retained through explicit match, shortfall, overrun, upper-bound, and conservative-floor fields;
+- adverse historical outcomes remain recordable without claiming realized profit.
 
 Every F7 output remains within this boundary:
 

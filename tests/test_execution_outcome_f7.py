@@ -176,6 +176,14 @@ class ExecutionOutcomeF7Tests(unittest.TestCase):
         self.assertEqual(outcome.settlement_event.plan_sha256, outcome.package.unsigned_package.net_profit_evidence.plan.digest)
         self.assertEqual(outcome.actual_native_cost, 400_003)
         self.assertTrue(outcome.simulation_exact_match)
+        self.assertTrue(outcome.simulation_economic_match)
+        self.assertTrue(outcome.cost_upper_bounds_respected)
+        self.assertTrue(outcome.conservative_shadow_floor_preserved)
+        self.assertEqual(outcome.native_cost_overrun, 0)
+        self.assertEqual(
+            outcome.base_token_residual_shortfall_before_external_costs,
+            0,
+        )
         value = outcome.to_json_value()
         self.assertTrue(value["inclusion_observed"])
         self.assertTrue(value["execution_success"])
@@ -199,7 +207,7 @@ class ExecutionOutcomeF7Tests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "exactly one"):
             outcome_from_inclusion(missing)
 
-    def test_settlement_event_cannot_drift_plan_beneficiary_or_economics(self) -> None:
+    def test_settlement_event_cannot_drift_plan_beneficiary_or_hard_payment_cap(self) -> None:
         package = f7_inclusion().package
         log = settlement_log(package)
         wrong_plan = replace(log, topics=(log.topics[0], bytes.fromhex("ee" * 32), *log.topics[2:]))
@@ -216,6 +224,70 @@ class ExecutionOutcomeF7Tests(unittest.TestCase):
         wrong_payment = replace(log, data=b"".join(item.to_bytes(32, "big") for item in words))
         with self.assertRaisesRegex(ValueError, "direct payment"):
             outcome_from_inclusion(inclusion_from_fixture(inclusion_fixture(settlement_logs=(wrong_payment,))))
+
+    def test_successful_economic_drift_is_recorded_instead_of_dropped(self) -> None:
+        package = f7_inclusion().package
+        plan = package.unsigned_package.net_profit_evidence.plan
+        actual_output = plan.opportunity.route_quote.amount_out - 100
+        self.assertGreaterEqual(
+            actual_output,
+            package.unsigned_package.call.minimum_final_output,
+        )
+        drifted_log = settlement_log(
+            package,
+            gross_output=actual_output,
+            direct_inclusion_payment=package.signed_transaction.unsigned_transaction.value - 1,
+        )
+        outcome = outcome_from_inclusion(
+            inclusion_from_fixture(
+                inclusion_fixture(settlement_logs=(drifted_log,))
+            )
+        )
+        self.assertFalse(outcome.simulation_output_match)
+        self.assertFalse(outcome.simulation_residual_match)
+        self.assertFalse(outcome.simulation_direct_payment_match)
+        self.assertFalse(outcome.simulation_economic_match)
+        self.assertFalse(outcome.simulation_exact_match)
+        self.assertTrue(outcome.cost_upper_bounds_respected)
+        self.assertFalse(outcome.conservative_shadow_floor_preserved)
+        self.assertEqual(
+            outcome.base_token_residual_shortfall_before_external_costs,
+            100,
+        )
+        value = outcome.to_json_value()
+        self.assertFalse(value["conservative_shadow_floor_preserved"])
+        self.assertEqual(
+            value["planned_base_token_residual_before_external_costs"],
+            str(plan.residual_before_external_costs),
+        )
+        self.assertEqual(
+            value["realized_base_token_residual_before_external_costs"],
+            str(plan.residual_before_external_costs - 100),
+        )
+        self.assertFalse(value["realized_profit_claimed"])
+
+    def test_favorable_economic_drift_can_preserve_the_conservative_floor(self) -> None:
+        package = f7_inclusion().package
+        plan = package.unsigned_package.net_profit_evidence.plan
+        favorable_log = settlement_log(
+            package,
+            gross_output=plan.opportunity.route_quote.amount_out + 100,
+            direct_inclusion_payment=package.signed_transaction.unsigned_transaction.value - 1,
+        )
+        outcome = outcome_from_inclusion(
+            inclusion_from_fixture(
+                inclusion_fixture(settlement_logs=(favorable_log,))
+            )
+        )
+        self.assertFalse(outcome.simulation_economic_match)
+        self.assertFalse(outcome.simulation_exact_match)
+        self.assertTrue(outcome.cost_upper_bounds_respected)
+        self.assertTrue(outcome.conservative_shadow_floor_preserved)
+        self.assertEqual(
+            outcome.base_token_residual_shortfall_before_external_costs,
+            0,
+        )
+        self.assertEqual(outcome.native_cost_overrun, 0)
 
     def test_settlement_spec_and_decoded_event_bind_value_semantics_and_exact_log(self) -> None:
         outcome = f7_outcome()

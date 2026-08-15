@@ -853,8 +853,18 @@ class RealizedExecutionOutcomeEvidence:
     schema: str = REALIZED_OUTCOME_SCHEMA
     _settlement_event: ExecutorSettlementEvent = field(init=False, repr=False)
     _actual_native_cost: int = field(init=False, repr=False)
+    _native_cost_upper_bound: int = field(init=False, repr=False)
+    _native_cost_overrun: int = field(init=False, repr=False)
+    _base_token_residual_shortfall_before_external_costs: int = field(
+        init=False, repr=False
+    )
     _simulation_gas_match: bool = field(init=False, repr=False)
     _simulation_logs_match: bool = field(init=False, repr=False)
+    _simulation_output_match: bool = field(init=False, repr=False)
+    _simulation_residual_match: bool = field(init=False, repr=False)
+    _simulation_direct_payment_match: bool = field(init=False, repr=False)
+    _cost_upper_bounds_respected: bool = field(init=False, repr=False)
+    _conservative_shadow_floor_preserved: bool = field(init=False, repr=False)
     _outcome_id: str = field(init=False, repr=False)
 
     def __post_init__(self) -> None:
@@ -916,28 +926,16 @@ class RealizedExecutionOutcomeEvidence:
             raise ValueError("settlement beneficiary is not the authenticated transaction sender")
         if plan.base_asset.address is None or event.base_token != plan.base_asset.address:
             raise ValueError("settlement base token is not the exact F4 base asset")
-        if event.gross_output != plan.opportunity.route_quote.amount_out:
-            raise ValueError("settlement output disagrees with the exact route output")
         if event.principal_repaid != plan.funding.principal:
             raise ValueError("settlement principal repayment disagrees with F4 funding")
         if event.flash_loan_fee_paid != plan.funding.fee:
             raise ValueError("settlement flash fee disagrees with F4 funding")
-        if event.base_token_residual_before_external_costs != plan.residual_before_external_costs:
-            raise ValueError("settlement residual disagrees with the exact F4 execution plan")
         if event.gross_output < self.package.unsigned_package.call.minimum_final_output:
             raise ValueError("settlement output violates the governed minimum final output")
         if event.direct_inclusion_payment > transaction.value:
             raise ValueError("settlement direct payment exceeds the unsigned transaction value")
 
         fee_envelope = self.package.unsigned_package.net_profit_evidence.cost_envelope.fee_envelope
-        if self.inclusion.execution_gas_cost > fee_envelope.execution_gas_cost_upper_bound:
-            raise ValueError("authenticated execution gas cost exceeds the F4 upper bound")
-        if self.rollup_fee.l1_data_fee_paid > fee_envelope.l1_data_fee_upper_bound:
-            raise ValueError("recorded L1 data fee exceeds the F4 upper bound")
-        if self.rollup_fee.operator_fee_paid > fee_envelope.operator_fee_upper_bound:
-            raise ValueError("recorded operator fee exceeds the F4 upper bound")
-        if event.direct_inclusion_payment > fee_envelope.direct_inclusion_payment_upper_bound:
-            raise ValueError("settlement direct payment exceeds the F4 upper bound")
         actual_native_cost = self.inclusion.execution_gas_cost
         actual_native_cost = _checked_add(
             actual_native_cost,
@@ -954,27 +952,45 @@ class RealizedExecutionOutcomeEvidence:
             event.direct_inclusion_payment,
             "actual native cost",
         )
-        if actual_native_cost > fee_envelope.total_native_upper_bound:
-            raise ValueError("actual native cost exceeds the complete F4 upper bound")
+        native_cost_upper_bound = fee_envelope.total_native_upper_bound
+        native_cost_overrun = max(actual_native_cost - native_cost_upper_bound, 0)
+        residual_shortfall = max(
+            plan.residual_before_external_costs
+            - event.base_token_residual_before_external_costs,
+            0,
+        )
+        cost_upper_bounds_respected = (
+            self.inclusion.execution_gas_cost
+            <= fee_envelope.execution_gas_cost_upper_bound
+            and self.rollup_fee.l1_data_fee_paid
+            <= fee_envelope.l1_data_fee_upper_bound
+            and self.rollup_fee.operator_fee_paid
+            <= fee_envelope.operator_fee_upper_bound
+            and event.direct_inclusion_payment
+            <= fee_envelope.direct_inclusion_payment_upper_bound
+            and actual_native_cost <= native_cost_upper_bound
+        )
+        conservative_shadow_floor_preserved = (
+            cost_upper_bounds_respected and residual_shortfall == 0
+        )
 
         simulation = self.package.unsigned_package.simulations[0]
-        if event.direct_inclusion_payment != simulation.coinbase_payment:
-            raise ValueError("settlement direct payment disagrees with exact simulation agreement")
-        if event.gross_output != simulation.output_amount:
-            raise ValueError("settlement output disagrees with exact simulation agreement")
         if event.principal_repaid != simulation.flash_loan_principal_repaid:
             raise ValueError("settlement principal disagrees with exact simulation agreement")
         if event.flash_loan_fee_paid != simulation.flash_loan_fee_paid:
             raise ValueError("settlement fee disagrees with exact simulation agreement")
-        if (
-            event.base_token_residual_before_external_costs
-            != simulation.base_token_residual_before_external_costs
-        ):
-            raise ValueError("settlement residual disagrees with exact simulation agreement")
         if event.beneficiary != simulation.base_token_beneficiary:
             raise ValueError("settlement beneficiary disagrees with exact simulation agreement")
         simulation_gas_match = self.inclusion.gas_used == simulation.gas_used
         simulation_logs_match = self.inclusion.receipt.logs_sha256 == simulation.logs_sha256
+        simulation_output_match = event.gross_output == simulation.output_amount
+        simulation_residual_match = (
+            event.base_token_residual_before_external_costs
+            == simulation.base_token_residual_before_external_costs
+        )
+        simulation_direct_payment_match = (
+            event.direct_inclusion_payment == simulation.coinbase_payment
+        )
 
         identity = {
             "schema": self.schema,
@@ -985,12 +1001,41 @@ class RealizedExecutionOutcomeEvidence:
             "settlement_event_sha256": event.digest,
             "rollup_fee_sha256": self.rollup_fee.digest,
             "actual_native_cost": str(actual_native_cost),
+            "native_cost_upper_bound": str(native_cost_upper_bound),
+            "native_cost_overrun": str(native_cost_overrun),
+            "base_token_residual_shortfall_before_external_costs": str(
+                residual_shortfall
+            ),
             "created_at_unix_ms": str(self.created_at_unix_ms),
         }
         object.__setattr__(self, "_settlement_event", event)
         object.__setattr__(self, "_actual_native_cost", actual_native_cost)
+        object.__setattr__(self, "_native_cost_upper_bound", native_cost_upper_bound)
+        object.__setattr__(self, "_native_cost_overrun", native_cost_overrun)
+        object.__setattr__(
+            self,
+            "_base_token_residual_shortfall_before_external_costs",
+            residual_shortfall,
+        )
         object.__setattr__(self, "_simulation_gas_match", simulation_gas_match)
         object.__setattr__(self, "_simulation_logs_match", simulation_logs_match)
+        object.__setattr__(self, "_simulation_output_match", simulation_output_match)
+        object.__setattr__(self, "_simulation_residual_match", simulation_residual_match)
+        object.__setattr__(
+            self,
+            "_simulation_direct_payment_match",
+            simulation_direct_payment_match,
+        )
+        object.__setattr__(
+            self,
+            "_cost_upper_bounds_respected",
+            cost_upper_bounds_respected,
+        )
+        object.__setattr__(
+            self,
+            "_conservative_shadow_floor_preserved",
+            conservative_shadow_floor_preserved,
+        )
         object.__setattr__(self, "_outcome_id", "realized-outcome-" + canonical_sha256(identity))
         canonical_json_bytes(self.to_json_value())
 
@@ -1007,6 +1052,18 @@ class RealizedExecutionOutcomeEvidence:
         return self._actual_native_cost
 
     @property
+    def native_cost_upper_bound(self) -> int:
+        return self._native_cost_upper_bound
+
+    @property
+    def native_cost_overrun(self) -> int:
+        return self._native_cost_overrun
+
+    @property
+    def base_token_residual_shortfall_before_external_costs(self) -> int:
+        return self._base_token_residual_shortfall_before_external_costs
+
+    @property
     def simulation_gas_match(self) -> bool:
         return self._simulation_gas_match
 
@@ -1015,8 +1072,40 @@ class RealizedExecutionOutcomeEvidence:
         return self._simulation_logs_match
 
     @property
+    def simulation_output_match(self) -> bool:
+        return self._simulation_output_match
+
+    @property
+    def simulation_residual_match(self) -> bool:
+        return self._simulation_residual_match
+
+    @property
+    def simulation_direct_payment_match(self) -> bool:
+        return self._simulation_direct_payment_match
+
+    @property
+    def simulation_economic_match(self) -> bool:
+        return (
+            self.simulation_output_match
+            and self.simulation_residual_match
+            and self.simulation_direct_payment_match
+        )
+
+    @property
     def simulation_exact_match(self) -> bool:
-        return self.simulation_gas_match and self.simulation_logs_match
+        return (
+            self.simulation_gas_match
+            and self.simulation_logs_match
+            and self.simulation_economic_match
+        )
+
+    @property
+    def cost_upper_bounds_respected(self) -> bool:
+        return self._cost_upper_bounds_respected
+
+    @property
+    def conservative_shadow_floor_preserved(self) -> bool:
+        return self._conservative_shadow_floor_preserved
 
     def to_json_value(self) -> dict[str, object]:
         return {
@@ -1045,15 +1134,29 @@ class RealizedExecutionOutcomeEvidence:
                 self.settlement_event.direct_inclusion_payment
             ),
             "actual_native_cost": str(self.actual_native_cost),
+            "native_cost_upper_bound": str(self.native_cost_upper_bound),
+            "native_cost_overrun": str(self.native_cost_overrun),
             "base_token": to_hex_data(self.settlement_event.base_token),
+            "planned_base_token_residual_before_external_costs": str(
+                self.package.unsigned_package.net_profit_evidence.plan.residual_before_external_costs
+            ),
             "realized_base_token_residual_before_external_costs": str(
                 self.settlement_event.base_token_residual_before_external_costs
             ),
+            "base_token_residual_shortfall_before_external_costs": str(
+                self.base_token_residual_shortfall_before_external_costs
+            ),
             "simulation_gas_match": self.simulation_gas_match,
             "simulation_logs_match": self.simulation_logs_match,
+            "simulation_output_match": self.simulation_output_match,
+            "simulation_residual_match": self.simulation_residual_match,
+            "simulation_direct_payment_match": self.simulation_direct_payment_match,
+            "simulation_economic_match": self.simulation_economic_match,
             "simulation_exact_match": self.simulation_exact_match,
-            "cost_upper_bounds_respected": True,
-            "conservative_shadow_floor_preserved": True,
+            "cost_upper_bounds_respected": self.cost_upper_bounds_respected,
+            "conservative_shadow_floor_preserved": (
+                self.conservative_shadow_floor_preserved
+            ),
             "created_at_unix_ms": str(self.created_at_unix_ms),
             "outcome_authority": "authenticated-inclusion-receipt-code-hash-bound-settlement-and-recorded-rollup-fees-only",
             "cost_completeness": "authenticated-eip1559-gas-plus-recorded-rollup-and-direct-payment-only",

@@ -105,16 +105,35 @@ def encode_receipt(
     return raw
 
 
-def settlement_log(package: ExternallySignedExecutionPackageEvidence) -> EvmLogEntry:
+def settlement_log(
+    package: ExternallySignedExecutionPackageEvidence,
+    *,
+    gross_output: int | None = None,
+    base_token_residual_before_external_costs: int | None = None,
+    direct_inclusion_payment: int | None = None,
+) -> EvmLogEntry:
     plan = package.unsigned_package.net_profit_evidence.plan
     tx = package.signed_transaction.unsigned_transaction
     spec = settlement_spec(package)
+    actual_output = (
+        plan.opportunity.route_quote.amount_out
+        if gross_output is None
+        else gross_output
+    )
+    actual_residual = (
+        actual_output - plan.funding.principal - plan.funding.fee
+        if base_token_residual_before_external_costs is None
+        else base_token_residual_before_external_costs
+    )
+    actual_direct_payment = (
+        tx.value if direct_inclusion_payment is None else direct_inclusion_payment
+    )
     words = (
-        plan.opportunity.route_quote.amount_out,
+        actual_output,
         plan.funding.principal,
         plan.funding.fee,
-        plan.residual_before_external_costs,
-        tx.value,
+        actual_residual,
+        actual_direct_payment,
     )
     return EvmLogEntry(
         address=tx.call.deployment.address,

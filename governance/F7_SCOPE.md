@@ -8,7 +8,7 @@
 
 ## Mission
 
-F7 takes one exact F6 externally signed package and recorded post-block evidence and determines, offline, whether the exact signed type-2 transaction is authenticated in the block transaction trie, whether its exact receipt is authenticated in the receipt trie, what gas it consumed, and whether one code-hash-bound executor settlement event reconciles the inherited plan and cost ceilings.
+F7 takes one exact F6 externally signed package and recorded post-block evidence and determines, offline, whether the exact signed type-2 transaction is authenticated in the block transaction trie, whether its exact receipt is authenticated in the receipt trie, what gas it consumed, and whether one code-hash-bound executor settlement event preserves the inherited hard plan constraints while recording favorable or adverse economic and cost drift.
 
 F7 does not connect to a chain, poll a relay, submit a transaction, hold a key, sign, deploy, move funds, or assert realized profit. All block headers, trie proofs, receipts, settlement logs, and rollup fee values are recorded inputs.
 
@@ -24,9 +24,9 @@ F7 does not connect to a chain, poll a relay, submit a transaction, hold a key, 
 - immediately preceding receipt proof for nonzero indices and exact cumulative-gas delta;
 - authenticated EIP-1559 effective-gas-price and execution-gas-cost reconciliation;
 - one runtime-code-hash/time-bound executor settlement-event registry that rejects the canonical empty-code hash;
-- exact settlement reconciliation for plan, beneficiary, base token, output, principal, flash-loan fee, residual, direct payment, and explicit unused-`msg.value` refund semantics;
-- recorded L1-data/operator fee evidence and F4 upper-bound checks;
-- final execution-outcome evidence that reports simulation drift but never claims realized profit;
+- exact hard settlement binding for plan, beneficiary, base token, principal, flash-loan fee, minimum output, transaction-value cap, internal residual arithmetic, and explicit unused-`msg.value` refund semantics;
+- successful output, residual, direct-payment, gas, log, and L1-data/operator-fee drift retained through explicit simulation-match, residual-shortfall, native-cost-overrun, upper-bound, and conservative-floor fields;
+- final execution-outcome evidence that preserves adverse historical records but never claims realized profit;
 - a standard-resolvable twelve-schema F7 graph whose `$ref` targets match declared canonical `$id` values.
 
 ## Non-goals

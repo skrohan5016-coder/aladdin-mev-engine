@@ -23,15 +23,16 @@ Canonical-JSON ambiguity, ledger tampering, source drift, reorg errors, malforme
 - event emitted by the wrong address or with wrong topic0/indexed topics/ABI data;
 - receipt address-domain narrowing that rejects a consensus-valid zero `Bytes20` log emitter;
 - a schema file that exists locally but whose relative `$ref` does not resolve to the target declared `$id`;
-- plan, beneficiary, token, output, funding, residual, direct-payment, decoded-log, or unused-`msg.value` refund-semantics drift;
-- recorded gas, L1-data, operator, or direct-payment cost above F4 bounds;
+- wrong plan, beneficiary, token, principal, fee, decoded-log, or unused-`msg.value` refund semantics;
+- successful output, residual, direct-payment, gas, log, or conservative-cost drift silently rejected and thereby removed from historical evidence;
+- adverse drift mislabeled as simulation agreement, upper-bound compliance, conservative-floor preservation, or realized profit;
 - relay acceptance or a successful receipt presented as a realized-profit proof;
 - key, network, signing, submission, deployment, or execution capability entering production source;
 - CI command, action, runner, shell, environment, permission, condition, timeout, or error-handling bypass.
 
 ## Controls
 
-Exact runtime types; bounded canonical RLP; legacy-Keccak header verification; exact F2 anchor cross-check; authenticated inclusion-block executor account/code/empty-storage proof; bounded MPT proofs; previous-receipt gas attribution; pre-materialization receipt log/topic work gates; incremental globally byte-bounded canonical log-array hashing; canonical receipt/bloom/log reconstruction; checked integer fee math; exact F6 transaction identity; code-hash/time-bound event registry; constructor-time plan/simulation/cost reconciliation; explicit false profit and live-authority fields; closed schemas with standard URI-resolvable identities and immutable locks; hardened read-only exact-head and merge CI.
+Exact runtime types; bounded canonical RLP; legacy-Keccak header verification; exact F2 anchor cross-check; authenticated inclusion-block executor account/code/empty-storage proof; bounded MPT proofs; previous-receipt gas attribution; pre-materialization receipt log/topic work gates; incremental globally byte-bounded canonical log-array hashing; canonical receipt/bloom/log reconstruction; checked integer fee math; exact F6 transaction identity; code-hash/time-bound event registry; constructor-time hard plan/identity/arithmetic checks; explicit simulation/economic/cost drift fields; explicit false profit and live-authority fields; closed schemas with standard URI-resolvable identities and immutable locks; hardened read-only exact-head and merge CI.
 
 ## Residual risks
 

@@ -12,6 +12,7 @@
     "solana"
   ],
   "components": [
+    "adverse-historical-economic-drift-recording",
     "aggregate-opportunity-search-work-gate",
     "authenticated-anchor-fresh-bundle-intent",
     "authenticated-anchor-relative-simulation-timestamp-gate",
@@ -154,7 +155,7 @@
   "f4_schema_lock_sha256": "8e45d14814953328f2a2ae965563c192017d4abf9a4c6fa2522978dfddbf65c7",
   "f5_schema_lock_sha256": "7eea723e2ea460e3ca988f4d1faa69a338de158d2895b70d10a392fc50ab021d",
   "f6_schema_lock_sha256": "53876b11d227702ab6cf6f3b94e4c8fc4d921ef968a32e2df8cfcbd203ee9df2",
-  "f7_schema_lock_sha256": "ed8e8d5b80eb3c84f3c7b6d074e8f3c9cfc56e17c0a04463f95870bbc88f98bb",
+  "f7_schema_lock_sha256": "fc848a8a14a7dcbfd26d80250be5b7feaf2f0640b37a12f7cf886a1f050607ae",
   "historical_outcome_scope": [
     "ethereum",
     "base"
@@ -163,7 +164,7 @@
   "inclusion_guarantee": "none",
   "invariants": [
     "abi-calldata-and-eip1559-signing-preimage-are-independently-decoded-in-conformance-tests",
-    "actual-gas-rollup-and-direct-payment-costs-cannot-exceed-the-f4-conservative-upper-bounds",
+    "actual-gas-rollup-and-direct-payment-cost-overruns-are-recorded-and-cannot-manufacture-conservative-floor-preservation",
     "aggregate-opportunity-report-work-is-bounded-before-route-optimization",
     "all-cost-assets-are-converted-to-the-f3-base-asset-with-conservative-ceiling",
     "asset-identities-are-chain-and-kind-bound",
@@ -291,7 +292,7 @@
     "sender-is-an-authenticated-eoa-with-empty-code-and-storage",
     "settlement-event-model-cannot-bind-the-canonical-empty-code-hash",
     "settlement-event-model-explicitly-binds-unused-msg-value-refund-to-the-authenticated-sender",
-    "settlement-event-plan-beneficiary-token-output-principal-fee-residual-and-direct-payment-reconcile-exactly",
+    "settlement-event-plan-beneficiary-token-principal-and-fee-remain-exact-while-successful-output-residual-and-direct-payment-drift-remains-recordable",
     "signed-private-bundle-matches-the-exact-f5-unsigned-bundle-order-and-identity",
     "signed-transaction-hash-is-legacy-keccak256-of-the-exact-raw-type-two-transaction",
     "signed-type-two-transaction-reuses-the-exact-f5-unsigned-fields-and-empty-access-list",
@@ -304,6 +305,7 @@
     "state-freshness-uses-the-block-state-observation-time-not-later-proof-fetch-time",
     "state-proof-evidence-is-always-recomputed-from-its-exact-anchor-and-proof-observation",
     "state-snapshots-require-unique-sorted-account-evidence-bound-to-one-exact-anchor",
+    "successful-historical-economic-drift-is-recorded-instead-of-rejected-from-the-outcome-ledger",
     "successful-outcome-requires-exactly-one-code-hash-bound-executor-settlement-event",
     "successful-route-simulations-agree-on-gas-output-token-deltas-and-post-state",
     "successful-transaction-simulations-reconcile-route-output-principal-repayment-flash-fee-and-base-token-residual",

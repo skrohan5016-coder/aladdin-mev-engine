@@ -33,13 +33,13 @@ Receipt status is exactly zero or one. Receipt log-count and per-log topic-count
 base_fee + min(max_priority_fee, max_fee - base_fee)
 ```
 
-All arithmetic is exact checked integer arithmetic. Recorded L1-data and OP Stack operator fees are separate inputs. Ethereum requires both to be zero. Actual recorded native costs may not exceed the inherited F4 conservative upper bounds.
+All arithmetic is exact checked integer arithmetic. Recorded L1-data and OP Stack operator fees are separate inputs. Ethereum requires both to be zero. Actual native cost is retained even when a recorded Base fee exceeds an inherited F4 conservative upper bound; the evidence then reports the exact overrun and sets `cost_upper_bounds_respected = false` rather than deleting the adverse historical outcome.
 
 ## Settlement rules
 
-The receipt must contain exactly one governed settlement event from the authenticated executor address. Event interpretation is selected by exact non-empty executor runtime code hash and inclusion-block validity; the canonical empty-code hash cannot authorize a settlement model. The event must reconcile the exact F4 plan, authenticated F5/F6 sender, base token, route output, flash principal, flash fee, residual before external costs, minimum final output, direct payment, and transaction simulation agreement.
+The receipt must contain exactly one governed settlement event from the authenticated executor address. Event interpretation is selected by exact non-empty executor runtime code hash and inclusion-block validity; the canonical empty-code hash cannot authorize a settlement model. The event must bind the exact F4 plan, authenticated F5/F6 sender, base token, flash principal, and flash fee; its own output/principal/fee/residual arithmetic must reconcile; output must satisfy the governed minimum; and direct payment must not exceed transaction value. Successful output, residual, or conditional direct-payment drift from the quote/simulation is recorded through explicit match flags and residual-shortfall evidence instead of being rejected.
 
-The code-hash-bound event model explicitly states that any unused `msg.value` is returned to the authenticated sender; decoded topic0, indexed topics, and ABI data must reconstruct the exact authenticated log. The settlement event is evidence about the governed executor interface. It is not a general token-balance proof and does not by itself establish treasury accounting, fiat value, taxes, or realized profit.
+The code-hash-bound event model explicitly states that any unused `msg.value` is returned to the authenticated sender; decoded topic0, indexed topics, and ABI data must reconstruct the exact authenticated log. `simulation_economic_match`, `native_cost_overrun`, `base_token_residual_shortfall_before_external_costs`, `cost_upper_bounds_respected`, and `conservative_shadow_floor_preserved` make favorable and adverse drift visible. The settlement event is evidence about the governed executor interface. It is not a general token-balance proof and does not by itself establish treasury accounting, fiat value, taxes, or realized profit.
 
 ## Authority boundary
 
