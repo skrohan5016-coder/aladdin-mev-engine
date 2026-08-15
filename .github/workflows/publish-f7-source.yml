@@ -51,7 +51,7 @@ jobs:
           echo "F7_ACTUAL_TREE=${actual_tree}"
           git -C work diff --cached --stat
           test "${changed_count}" = "49"
-          test "${actual_tree}" = "fd4dbd1b4aeb5d08ed7f66bc86ac0d20e3c32cb9"
+          test "${actual_tree}" = "fd4dd9ccbf724f7e795bdfe6674b04502c19bb0b"
       - name: Validate exact F7 source
         working-directory: work
         run: |
@@ -68,7 +68,7 @@ jobs:
           python scripts/verify_f6_schemas.py
           python scripts/verify_f7_schemas.py
           git diff --exit-code
-          test "$(git write-tree)" = "fd4dbd1b4aeb5d08ed7f66bc86ac0d20e3c32cb9"
+          test "$(git write-tree)" = "fd4dd9ccbf724f7e795bdfe6674b04502c19bb0b"
       - name: Publish normal non-force F7 feature commit
         working-directory: work
         run: |
@@ -80,7 +80,7 @@ jobs:
           git config user.name "ROHAN"
           git config user.email "skrohan5016@gmail.com"
           git commit -m "F7 — Authenticated Inclusion, Settlement, and Historical Outcome Evidence"
-          test "$(git rev-parse 'HEAD^{tree}')" = "fd4dbd1b4aeb5d08ed7f66bc86ac0d20e3c32cb9"
+          test "$(git rev-parse 'HEAD^{tree}')" = "fd4dd9ccbf724f7e795bdfe6674b04502c19bb0b"
           git push origin HEAD:refs/heads/agent/f7-authenticated-outcome-evidence-v1
       - name: Package exact published F7 source
         run: tar --exclude=.git -C work -czf /tmp/aladdin-mev-engine-f7-source.tar.gz .
