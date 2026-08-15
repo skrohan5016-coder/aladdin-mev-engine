@@ -45,8 +45,13 @@ jobs:
           echo "49c454979b5e6caa5135aaa54189d0117a4d9eab3d24a9c32d54ccfcc12f9f6e  /tmp/f7.patch" | sha256sum -c -
           git -C work diff --exit-code
           git -C work apply --index --whitespace=error /tmp/f7.patch
-          test "$(git -C work diff --cached --name-only | wc -l | tr -d ' ')" = "49"
-          test "$(git -C work write-tree)" = "fd4dbd1b4aeb5d08ed7f66bc86ac0d20e3c32cb9"
+          changed_count="$(git -C work diff --cached --name-only | wc -l | tr -d ' ')"
+          actual_tree="$(git -C work write-tree)"
+          echo "F7_CHANGED_COUNT=${changed_count}"
+          echo "F7_ACTUAL_TREE=${actual_tree}"
+          git -C work diff --cached --stat
+          test "${changed_count}" = "49"
+          test "${actual_tree}" = "fd4dbd1b4aeb5d08ed7f66bc86ac0d20e3c32cb9"
       - name: Validate exact F7 source
         working-directory: work
         run: |
