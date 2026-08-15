@@ -9,19 +9,19 @@ from aladdin_mev_engine.canonical import canonical_sha256
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class F7GovernanceRetentionTests(unittest.TestCase):
+class F7GovernanceTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.architecture = json.loads(
             (ROOT / "governance" / "architecture.json").read_text(encoding="utf-8")
         )
 
-    def test_f8_binds_accepted_f7_and_disables_live_authority(self) -> None:
+    def test_architecture_binds_accepted_f6_and_disables_live_authority(self) -> None:
         a = self.architecture
-        self.assertEqual(a["milestone"], "F8")
-        self.assertEqual(a["accepted_parent_head"], "ec4d9a211c204e3363e8a77d8de4ab2199a89be0")
-        self.assertEqual(a["accepted_parent_tree"], "42592ed5ce7dc8d87755ff95af4824dc20c9e6fa")
-        self.assertEqual(a["accepted_parent_architecture_id"], "AMEV-F7-ARCH-v1-c611202acf40")
+        self.assertEqual(a["milestone"], "F7")
+        self.assertEqual(a["accepted_parent_head"], "6481e17b2345c54261865125b61523610b7f87af")
+        self.assertEqual(a["accepted_parent_tree"], "1115dccd7952225dfa1d58238aa550bf9e0aa995")
+        self.assertEqual(a["accepted_parent_architecture_id"], "AMEV-F6-ARCH-v1-c91039d7d800")
         for key in (
             "network_access",
             "relay_access",
@@ -36,7 +36,7 @@ class F7GovernanceRetentionTests(unittest.TestCase):
         self.assertEqual(a["inclusion_guarantee"], "none")
         self.assertEqual(a["historical_outcome_scope"], ["ethereum", "base"])
 
-    def test_f7_authorities_remain_offline_historical_and_bounded(self) -> None:
+    def test_f7_authorities_are_offline_historical_and_bounded(self) -> None:
         expected = {
             "inclusion_authority": "offline-authenticated-transaction-receipt-and-executor-post-state-inclusion-only",
             "settlement_authority": "offline-code-hash-bound-executor-event-reconciliation-only",
@@ -46,7 +46,7 @@ class F7GovernanceRetentionTests(unittest.TestCase):
         for key, value in expected.items():
             self.assertEqual(self.architecture[key], value)
 
-    def test_f7_schema_lock_is_retained_and_f8_architecture_lock_is_exact(self) -> None:
+    def test_f7_schema_and_architecture_locks_are_exact(self) -> None:
         schema_lock = json.loads(
             (ROOT / "governance" / "f7-schemas.lock.json").read_text(encoding="utf-8")
         )
@@ -56,9 +56,9 @@ class F7GovernanceRetentionTests(unittest.TestCase):
         self.assertEqual(self.architecture["f7_schema_lock_sha256"], canonical_sha256(schema_lock))
         digest = canonical_sha256(self.architecture)
         self.assertEqual(architecture_lock["manifest_sha256"], digest)
-        self.assertEqual(architecture_lock["architecture_id"], f"AMEV-F8-ARCH-v1-{digest[:12]}")
+        self.assertEqual(architecture_lock["architecture_id"], f"AMEV-F7-ARCH-v1-{digest[:12]}")
 
-    def test_complete_required_f7_invariant_and_schema_set_remains_bound(self) -> None:
+    def test_required_f7_invariants_and_schemas_are_machine_bound(self) -> None:
         required = {
             "recorded-execution-header-hash-and-roots-bind-the-exact-authenticated-block",
             "inclusion-evidence-authenticates-the-executor-runtime-code-hash-and-canonical-empty-storage-at-the-inclusion-block",

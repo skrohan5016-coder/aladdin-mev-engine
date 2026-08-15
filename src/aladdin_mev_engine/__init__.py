@@ -1,4 +1,4 @@
-"""Governed offline historical scoreboard and research-promotion evidence core for F8."""
+"""Governed offline inclusion, settlement, and realized-outcome evidence core for F7."""
 
 from .assets import (
     AssetAmount,
@@ -77,23 +77,6 @@ from .execution_outcome import (
 )
 from .evidence import EvidenceRecord, SimulationResult, dual_simulations_agree
 from .head_tracker import EvmHead, HeadTracker, HeadTransition, HeadTransitionKind
-from .historical_scoreboard import (
-    CalibrationBucket,
-    CalibrationPolicy,
-    HistoricalAttemptReference,
-    HistoricalCalibrationReport,
-    HistoricalCohortKey,
-    HistoricalCorpusSourceManifest,
-    HistoricalDisposition,
-    HistoricalEconomicScoreboard,
-    HistoricalExecutionRecord,
-    HistoricalExpectedValueEvidence,
-    HistoricalOutcomeCorpus,
-    HistoricalValuationPolicy,
-    ResearchPromotionDecision,
-    ResearchPromotionPolicy,
-    ResearchPromotionReason,
-)
 from .keccak import keccak256, keccak256_hex
 from .ledger import (
     LedgerRecord,
@@ -174,21 +157,6 @@ from .state_proof import (
 )
 
 __all__ = [
-    "CalibrationBucket",
-    "CalibrationPolicy",
-    "HistoricalAttemptReference",
-    "HistoricalCalibrationReport",
-    "HistoricalCohortKey",
-    "HistoricalCorpusSourceManifest",
-    "HistoricalDisposition",
-    "HistoricalEconomicScoreboard",
-    "HistoricalExecutionRecord",
-    "HistoricalExpectedValueEvidence",
-    "HistoricalOutcomeCorpus",
-    "HistoricalValuationPolicy",
-    "ResearchPromotionDecision",
-    "ResearchPromotionPolicy",
-    "ResearchPromotionReason",
     "EvmLogEntry",
     "EvmTransactionReceipt",
     "canonical_logs_sha256",
@@ -333,4 +301,4 @@ __all__ = [
     "write_segment_once",
 ]
 
-__version__ = "0.9.0"
+__version__ = "0.8.0"

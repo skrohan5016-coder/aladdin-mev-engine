@@ -15,7 +15,7 @@ class RepositoryWorkflowPolicyF7Tests(unittest.TestCase):
             encoding="utf-8"
         )
 
-    def test_governed_f8_workflow_is_accepted(self) -> None:
+    def test_governed_f7_workflow_is_accepted(self) -> None:
         self.assertEqual(workflow_policy_errors(self.workflow), [])
         self.assertEqual(
             self.workflow.count("python scripts/verify_f7_schemas.py"),
@@ -34,17 +34,17 @@ class RepositoryWorkflowPolicyF7Tests(unittest.TestCase):
 
     def test_exact_source_and_merge_identities_are_mandatory(self) -> None:
         source = self.workflow.replace(
-            "name: F8 exact-head conformance",
+            "name: F7 exact-head conformance",
             "name: generic source validation",
             1,
         )
         merge = self.workflow.replace(
-            "name: F8 merge integration",
+            "name: F7 merge integration",
             "name: generic merge validation",
             1,
         )
-        self.assertTrue(any("F8 exact-head" in item for item in workflow_policy_errors(source)))
-        self.assertTrue(any("F8 merge-integration" in item for item in workflow_policy_errors(merge)))
+        self.assertTrue(any("F7 exact-head" in item for item in workflow_policy_errors(source)))
+        self.assertTrue(any("F7 merge-integration" in item for item in workflow_policy_errors(merge)))
 
     def test_live_receipt_polling_network_and_execution_surfaces_are_rejected(self) -> None:
         cases = {

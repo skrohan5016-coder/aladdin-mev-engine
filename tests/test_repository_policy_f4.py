@@ -13,7 +13,7 @@ class RepositoryWorkflowPolicyF4RetentionTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
 
-    def test_governed_f8_workflow_retains_f4_gates(self) -> None:
+    def test_governed_f7_workflow_retains_f4_gates(self) -> None:
         self.assertEqual(workflow_policy_errors(self.workflow), [])
 
     def test_f4_schema_verification_is_mandatory(self) -> None:
@@ -23,10 +23,10 @@ class RepositoryWorkflowPolicyF4RetentionTests(unittest.TestCase):
         self.assertTrue(any("verify_f4_schemas.py" in error for error in errors))
 
     def test_source_and_merge_identities_are_mandatory(self) -> None:
-        source = self.workflow.replace("name: F8 exact-head conformance", "name: generic", 1)
-        merge = self.workflow.replace("name: F8 merge integration", "name: generic", 1)
-        self.assertTrue(any("F8 exact-head" in error for error in workflow_policy_errors(source)))
-        self.assertTrue(any("F8 merge-integration" in error for error in workflow_policy_errors(merge)))
+        source = self.workflow.replace("name: F7 exact-head conformance", "name: generic", 1)
+        merge = self.workflow.replace("name: F7 merge integration", "name: generic", 1)
+        self.assertTrue(any("F7 exact-head" in error for error in workflow_policy_errors(source)))
+        self.assertTrue(any("F7 merge-integration" in error for error in workflow_policy_errors(merge)))
 
     def test_execution_wrapper_bypasses_are_rejected(self) -> None:
         mutations = (

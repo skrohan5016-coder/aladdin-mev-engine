@@ -15,7 +15,7 @@ class RepositoryWorkflowPolicyF2RetentionTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-    def test_governed_f8_workflow_retains_f2_gates(self) -> None:
+    def test_governed_f7_workflow_retains_f2_gates(self) -> None:
         self.assertEqual(workflow_policy_errors(self.workflow), [])
         self.assertEqual(
             self.workflow.count("python scripts/verify_f2_schemas.py"),
@@ -50,7 +50,7 @@ class RepositoryWorkflowPolicyF2RetentionTests(unittest.TestCase):
         )
 
     def test_f7_job_identity_replaces_stale_f2_identity(self) -> None:
-        self.assertIn("name: F8 exact-head conformance", self.workflow)
+        self.assertIn("name: F7 exact-head conformance", self.workflow)
         self.assertNotIn("name: F2 exact-head conformance", self.workflow)
 
 
