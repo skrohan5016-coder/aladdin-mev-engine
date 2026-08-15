@@ -1,0 +1,82 @@
+name: Publish exact F8 scoreable-diversity remediation
+
+on:
+  push:
+    branches:
+      - agent/f8-remediation-export
+
+permissions:
+  contents: write
+
+env:
+  PYTHONPATH: src
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact remediation material
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: material
+          persist-credentials: false
+      - name: Checkout exact pre-remediation F8 head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: a9e6141c2460dc25beac8f8b4c96a49d2de61309
+          path: work
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Set up governed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Reconstruct and verify exact remediation
+        run: |
+          set -euo pipefail
+          test "$(git -C work rev-parse HEAD)" = "a9e6141c2460dc25beac8f8b4c96a49d2de61309"
+          test "$(git -C work rev-parse 'HEAD^{tree}')" = "04c819f76d9ac2205afe53a06e9c6d7a3060a5cb"
+          cat material/.staging/f8-scoreable-diversity/chunk-* > /tmp/f8-remediation.patch.gz.b64
+          echo "06f6657fb2bd0a4f9aab1f899063e3517bc6ded9c0e0af8b7f58b6a1b2f39f13  /tmp/f8-remediation.patch.gz.b64" | sha256sum -c -
+          base64 -d /tmp/f8-remediation.patch.gz.b64 > /tmp/f8-remediation.patch.gz
+          echo "ac92ae5ef7c7923751b0a439ba3c26b91fd8437ed24c21bb90a33f73a15264ca  /tmp/f8-remediation.patch.gz" | sha256sum -c -
+          gzip -dc /tmp/f8-remediation.patch.gz > /tmp/f8-remediation.patch
+          echo "de6bb7a62207dc07977959a6edbd74336c1438de728535e1300dc9d79212f318  /tmp/f8-remediation.patch" | sha256sum -c -
+          git -C work diff --exit-code
+          git -C work apply --index --whitespace=error /tmp/f8-remediation.patch
+          test "$(git -C work diff --cached --name-only | wc -l | tr -d ' ')" = "22"
+          git -C work diff --cached --check
+          test "$(git -C work write-tree)" = "66aeada2769e9b2fccb943ec3c8150b974bb0400"
+      - name: Validate exact remediated F8 source
+        working-directory: work
+        run: |
+          set -euo pipefail
+          python -m compileall -q src tests scripts
+          python -m unittest discover -s tests -v
+          python scripts/check_repo_policy.py
+          python scripts/verify_architecture_lock.py
+          python scripts/verify_source_contracts.py
+          python scripts/verify_f2_schemas.py
+          python scripts/verify_f3_schemas.py
+          python scripts/verify_f4_schemas.py
+          python scripts/verify_f5_schemas.py
+          python scripts/verify_f6_schemas.py
+          python scripts/verify_f7_schemas.py
+          python scripts/verify_f8_schemas.py
+          git diff --exit-code
+          git diff --cached --check
+          test "$(git write-tree)" = "66aeada2769e9b2fccb943ec3c8150b974bb0400"
+      - name: Publish normal fast-forward remediation commit
+        working-directory: work
+        run: |
+          set -euo pipefail
+          remote_head="$(git ls-remote origin refs/heads/agent/f8-historical-scoreboard-v1 | cut -f1)"
+          test "${remote_head}" = "a9e6141c2460dc25beac8f8b4c96a49d2de61309"
+          git config user.name "ROHAN"
+          git config user.email "skrohan5016@gmail.com"
+          git commit -m "Harden F8 scoreable inclusion-block diversity"
+          test "$(git rev-parse 'HEAD^{tree}')" = "66aeada2769e9b2fccb943ec3c8150b974bb0400"
+          git push origin HEAD:refs/heads/agent/f8-historical-scoreboard-v1
