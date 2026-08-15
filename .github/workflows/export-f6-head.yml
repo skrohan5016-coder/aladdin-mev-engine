@@ -1,0 +1,33 @@
+name: Export exact F6 head source
+
+on:
+  push:
+    branches:
+      - agent/f6-source-export
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout exact F6 head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: 24cb3dbd743457f99fbf13e430952ef87613202e
+          persist-credentials: false
+      - name: Verify exact source identity
+        run: |
+          test "$(git rev-parse HEAD)" = "24cb3dbd743457f99fbf13e430952ef87613202e"
+          test "$(git rev-parse 'HEAD^{tree}')" = "639fa568e8a5e03fdf66ab1cc2e86686fcfb1645"
+      - name: Package exact F6 source
+        run: tar --exclude=.git -czf /tmp/aladdin-mev-engine-f6-source.tar.gz .
+      - name: Upload exact F6 source archive
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: aladdin-mev-engine-f6-source
+          path: /tmp/aladdin-mev-engine-f6-source.tar.gz
+          if-no-files-found: error
+          retention-days: 1
