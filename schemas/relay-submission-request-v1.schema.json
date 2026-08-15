@@ -1,0 +1,143 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/relay-submission-request-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "credential_present": {
+      "const": false
+    },
+    "endpoint": {
+      "$ref": "relay-endpoint-spec-v1.schema.json"
+    },
+    "endpoint_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "inclusion_guarantee": {
+      "const": false
+    },
+    "inputs_valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "local_network_dispatched": {
+      "const": false
+    },
+    "registry_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "relay_request_id": {
+      "pattern": "^relay-request-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "request_payload": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        },
+        "jsonrpc": {
+          "const": "2.0"
+        },
+        "method": {
+          "const": "aladdin_submitPrivateBundle"
+        },
+        "params": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "maximum_block_number": {
+                "maxLength": 18,
+                "pattern": "^0x(?:0|[1-9a-f][0-9a-f]*)$",
+                "type": "string"
+              },
+              "protocol": {
+                "const": "normalized-private-bundle-v1"
+              },
+              "replacement_id": {
+                "type": "null"
+              },
+              "target_block_number": {
+                "maxLength": 18,
+                "pattern": "^0x(?:0|[1-9a-f][0-9a-f]*)$",
+                "type": "string"
+              },
+              "transactions": {
+                "items": {
+                  "maxLength": 262146,
+                  "pattern": "^0x(?:[0-9a-f]{2})*$",
+                  "type": "string"
+                },
+                "maxItems": 8,
+                "minItems": 1,
+                "type": "array"
+              }
+            },
+            "required": [
+              "protocol",
+              "transactions",
+              "target_block_number",
+              "maximum_block_number",
+              "replacement_id"
+            ],
+            "type": "object"
+          },
+          "maxItems": 1,
+          "minItems": 1,
+          "type": "array"
+        }
+      },
+      "required": [
+        "jsonrpc",
+        "id",
+        "method",
+        "params"
+      ],
+      "type": "object"
+    },
+    "request_payload_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-relay-submission-request/v1"
+    },
+    "signed_bundle_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "submission_authority": {
+      "const": "none"
+    },
+    "submission_eligible": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema",
+    "relay_request_id",
+    "registry_sha256",
+    "endpoint",
+    "endpoint_sha256",
+    "signed_bundle_sha256",
+    "request_payload",
+    "request_payload_sha256",
+    "created_at_unix_ms",
+    "inputs_valid_until_unix_ms",
+    "credential_present",
+    "local_network_dispatched",
+    "submission_authority",
+    "submission_eligible",
+    "inclusion_guarantee"
+  ],
+  "type": "object"
+}

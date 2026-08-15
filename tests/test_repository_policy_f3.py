@@ -15,7 +15,7 @@ class RepositoryWorkflowPolicyF3RetentionTests(unittest.TestCase):
             encoding="utf-8"
         )
 
-    def test_governed_f5_workflow_retains_f3_gates(self) -> None:
+    def test_governed_f6_workflow_retains_f3_gates(self) -> None:
         self.assertEqual(workflow_policy_errors(self.workflow), [])
 
     def test_f3_schema_verification_is_mandatory(self) -> None:
@@ -34,24 +34,24 @@ class RepositoryWorkflowPolicyF3RetentionTests(unittest.TestCase):
 
     def test_source_head_and_merge_job_identities_are_mandatory(self) -> None:
         source_mutation = self.workflow.replace(
-            "name: F5 exact-head conformance",
+            "name: F6 exact-head conformance",
             "name: generic validation",
             1,
         )
         merge_mutation = self.workflow.replace(
-            "name: F5 merge integration",
+            "name: F6 merge integration",
             "name: generic merge validation",
             1,
         )
         self.assertTrue(
             any(
-                "F5 exact-head" in error
+                "F6 exact-head" in error
                 for error in workflow_policy_errors(source_mutation)
             )
         )
         self.assertTrue(
             any(
-                "F5 merge-integration" in error
+                "F6 merge-integration" in error
                 for error in workflow_policy_errors(merge_mutation)
             )
         )

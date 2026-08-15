@@ -1,0 +1,105 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/relay-response-evidence-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "endpoint_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "error_code": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 128,
+          "minLength": 1,
+          "type": "string"
+        }
+      ]
+    },
+    "error_message": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 512,
+          "minLength": 1,
+          "type": "string"
+        }
+      ]
+    },
+    "inclusion_guarantee": {
+      "const": false
+    },
+    "inclusion_observed": {
+      "const": false
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "relay_acceptance_observed": {
+      "type": "boolean"
+    },
+    "relay_reference": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 256,
+          "minLength": 1,
+          "type": "string"
+        }
+      ]
+    },
+    "request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "response_authority": {
+      "const": "recorded-input-only"
+    },
+    "response_source_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "response_source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-relay-response-evidence/v1"
+    },
+    "status": {
+      "enum": [
+        "accepted",
+        "rejected",
+        "error"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "request_sha256",
+    "endpoint_id",
+    "status",
+    "observed_at_unix_ms",
+    "response_source_id",
+    "response_source_sha256",
+    "relay_reference",
+    "error_code",
+    "error_message",
+    "relay_acceptance_observed",
+    "inclusion_observed",
+    "inclusion_guarantee",
+    "response_authority"
+  ],
+  "type": "object"
+}

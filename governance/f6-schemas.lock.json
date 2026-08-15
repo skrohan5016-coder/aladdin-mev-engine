@@ -1,0 +1,13 @@
+{
+  "files": {
+    "schemas/eip1559-signature-v1.schema.json": "f548695ac6534bfafc5286246a2db552fc733232b204ea0c086ead2ddaa58395",
+    "schemas/externally-signed-execution-package-v1.schema.json": "6a9578a2e1bc3ec70e7b0938c4d0a5fc3a545aaf8f42d12dbb94e84b66271ed3",
+    "schemas/relay-endpoint-registry-v1.schema.json": "92ea585cdf0217015424ee56dacb460a1a08ea57e925cd3153d4f475844d3ee8",
+    "schemas/relay-endpoint-spec-v1.schema.json": "818bb99d943202991a4892b670f3e1fe190188288c9bc5ea7b0369fd3f237c4a",
+    "schemas/relay-response-evidence-v1.schema.json": "e3606e819f0ce748f99d9e40e7f228073ef212c17b816041b9d6e204029f3ea6",
+    "schemas/relay-submission-request-v1.schema.json": "4bd50764b35f94a5ba3fbbbf87abbc09c9c166743f3199c2ec8016558e0d0ba8",
+    "schemas/signed-eip1559-transaction-v1.schema.json": "d8a9c5ed3c15bdc9bc0c31aa0363bcd36d906cb833344bdf6ba0dc8c84d25651",
+    "schemas/signed-private-bundle-v1.schema.json": "fc2aced1adb45ee6cb8ce9c8adddc71484d6dc7f466b70dde35d31281dd4c472"
+  },
+  "schema": "aladdin-mev-f6-schema-lock/v1"
+}

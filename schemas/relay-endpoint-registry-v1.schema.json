@@ -1,0 +1,44 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/relay-endpoint-registry-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "endpoint_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "endpoints": {
+      "items": {
+        "$ref": "relay-endpoint-spec-v1.schema.json"
+      },
+      "maxItems": 64,
+      "minItems": 1,
+      "type": "array"
+    },
+    "registry_authority": {
+      "const": "explicit-offline-evidence-only-not-production-approval"
+    },
+    "registry_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-relay-endpoint-registry/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "registry_id",
+    "endpoints",
+    "endpoint_sha256",
+    "registry_authority"
+  ],
+  "type": "object"
+}

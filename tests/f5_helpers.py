@@ -74,7 +74,7 @@ from f3_helpers import (
     uint_bytes,
 )
 
-SENDER_ADDRESS = bytes((8,)) * 20
+SENDER_ADDRESS = bytes.fromhex("2b5ad5c4795c026514f8317c7a215e218dccd6cf")
 EXECUTOR_ADDRESS = bytes((11,)) * 20
 EXECUTOR_CODE_HASH = keccak256(b"f5-synthetic-executor-runtime-v1")
 SENDER_NONCE = 7

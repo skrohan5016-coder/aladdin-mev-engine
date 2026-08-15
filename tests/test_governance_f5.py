@@ -9,23 +9,12 @@ from aladdin_mev_engine.canonical import canonical_sha256
 ROOT = Path(__file__).resolve().parents[1]
 
 
-class F5GovernanceTests(unittest.TestCase):
+class F5GovernanceRetentionTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
         cls.architecture = json.loads((ROOT / "governance" / "architecture.json").read_text(encoding="utf-8"))
 
-    def test_architecture_binds_accepted_f4_and_disables_live_authority(self) -> None:
-        a = self.architecture
-        self.assertEqual(a["milestone"], "F5")
-        self.assertEqual(a["accepted_parent_head"], "5e9497695c08ec4bd1ef724b39fb941f100c3e73")
-        self.assertEqual(a["accepted_parent_tree"], "d909eb7d378a5c188e71a5c475cb36b8c61099a3")
-        self.assertEqual(a["accepted_parent_architecture_id"], "AMEV-F4-ARCH-v1-36ee2dc379f7")
-        for key in ("network_access", "signing_authority", "submission_authority", "execution_authority"):
-            self.assertEqual(a[key], "none")
-        self.assertEqual(a["inclusion_guarantee"], "none")
-        self.assertEqual(a["runtime_dependencies"], [])
-
-    def test_f5_authorities_are_shadow_and_unsigned_only(self) -> None:
+    def test_f6_retains_f5_unsigned_package_authorities(self) -> None:
         a = self.architecture
         expected = {
             "deployment_registry_authority": "authenticated-recorded-direct-runtime-shadow-only",
@@ -39,15 +28,11 @@ class F5GovernanceTests(unittest.TestCase):
         for key, value in expected.items():
             self.assertEqual(a[key], value)
 
-    def test_f5_schema_and_architecture_locks_are_exact(self) -> None:
+    def test_f5_schema_lock_is_retained_under_f6(self) -> None:
         schema_lock = json.loads((ROOT / "governance" / "f5-schemas.lock.json").read_text(encoding="utf-8"))
-        architecture_lock = json.loads((ROOT / "governance" / "architecture.lock.json").read_text(encoding="utf-8"))
         self.assertEqual(self.architecture["f5_schema_lock_sha256"], canonical_sha256(schema_lock))
-        digest = canonical_sha256(self.architecture)
-        self.assertEqual(architecture_lock["manifest_sha256"], digest)
-        self.assertEqual(architecture_lock["architecture_id"], f"AMEV-F5-ARCH-v1-{digest[:12]}")
 
-    def test_required_f5_invariants_and_schemas_are_machine_bound(self) -> None:
+    def test_required_f5_invariants_and_schemas_remain_bound(self) -> None:
         invariants = set(self.architecture["invariants"])
         required = {
             "executor-deployment-address-chain-code-hash-and-validity-bind-exact-f2-evidence",

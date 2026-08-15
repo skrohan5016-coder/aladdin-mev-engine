@@ -20,7 +20,7 @@ env:
 
 jobs:
   validate-head:
-    name: F5 exact-head conformance
+    name: F6 exact-head conformance
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -53,11 +53,13 @@ jobs:
         run: python scripts/verify_f4_schemas.py
       - name: F5 schemas identity
         run: python scripts/verify_f5_schemas.py
+      - name: F6 schemas identity
+        run: python scripts/verify_f6_schemas.py
       - name: Ensure validation is non-mutating
         run: git diff --exit-code
 
   validate-merge:
-    name: F5 merge integration
+    name: F6 merge integration
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -90,5 +92,7 @@ jobs:
         run: python scripts/verify_f4_schemas.py
       - name: F5 schemas identity
         run: python scripts/verify_f5_schemas.py
+      - name: F6 schemas identity
+        run: python scripts/verify_f6_schemas.py
       - name: Ensure validation is non-mutating
         run: git diff --exit-code

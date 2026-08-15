@@ -1,0 +1,124 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/externally-signed-execution-package-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "endpoint_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "execution_eligible": {
+      "const": false
+    },
+    "inclusion_guarantee": {
+      "const": false
+    },
+    "inclusion_observed": {
+      "const": false
+    },
+    "local_network_dispatched": {
+      "const": false
+    },
+    "package_authority": {
+      "const": "offline-external-signature-and-recorded-relay-evidence-only"
+    },
+    "package_id": {
+      "pattern": "^externally-signed-package-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "private_key_present": {
+      "const": false
+    },
+    "relay_acceptance_observed": {
+      "type": "boolean"
+    },
+    "relay_request_present": {
+      "const": true
+    },
+    "relay_request_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "relay_response_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 8,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "schema": {
+      "const": "aladdin-mev-externally-signed-execution-package/v1"
+    },
+    "signature_present": {
+      "const": true
+    },
+    "signed_bundle_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "signed_transaction_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "signing_authority": {
+      "const": "external-unmodeled"
+    },
+    "signing_eligible": {
+      "const": false
+    },
+    "submission_authority": {
+      "const": "none"
+    },
+    "submission_eligible": {
+      "const": false
+    },
+    "transaction_hash": {
+      "pattern": "^0x[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "unsigned_package_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "valid_until_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "package_id",
+    "unsigned_package_sha256",
+    "signed_transaction_sha256",
+    "signed_bundle_sha256",
+    "relay_request_sha256",
+    "relay_response_sha256",
+    "transaction_hash",
+    "endpoint_id",
+    "created_at_unix_ms",
+    "valid_until_unix_ms",
+    "package_authority",
+    "signature_present",
+    "private_key_present",
+    "relay_request_present",
+    "relay_acceptance_observed",
+    "local_network_dispatched",
+    "signing_authority",
+    "submission_authority",
+    "inclusion_observed",
+    "signing_eligible",
+    "submission_eligible",
+    "execution_eligible",
+    "inclusion_guarantee"
+  ],
+  "type": "object"
+}

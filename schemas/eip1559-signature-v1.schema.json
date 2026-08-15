@@ -1,0 +1,63 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/eip1559-signature-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "canonicality": {
+      "const": "eip2-low-s"
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "private_key_present": {
+      "const": false
+    },
+    "r": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "s": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-eip1559-signature/v1"
+    },
+    "signature_bytes": {
+      "pattern": "^0x[0-9a-f]{130}$",
+      "type": "string"
+    },
+    "source_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "y_parity": {
+      "enum": [
+        "0",
+        "1"
+      ]
+    }
+  },
+  "required": [
+    "schema",
+    "y_parity",
+    "r",
+    "s",
+    "signature_bytes",
+    "observed_at_unix_ms",
+    "source_id",
+    "source_sha256",
+    "canonicality",
+    "private_key_present"
+  ],
+  "type": "object"
+}

@@ -1,0 +1,63 @@
+{
+  "$id": "https://schemas.aladdin.invalid/mev/relay-endpoint-spec-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base"
+      ]
+    },
+    "credential_present": {
+      "const": false
+    },
+    "delivery_class": {
+      "enum": [
+        "private-builder",
+        "private-sequencer"
+      ]
+    },
+    "endpoint_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "endpoint_url_present": {
+      "const": false
+    },
+    "maximum_transactions": {
+      "pattern": "^[1-8]$",
+      "type": "string"
+    },
+    "production_approval": {
+      "const": false
+    },
+    "protocol": {
+      "const": "normalized-private-bundle-v1"
+    },
+    "requires_authentication": {
+      "type": "boolean"
+    },
+    "schema": {
+      "const": "aladdin-mev-relay-endpoint-spec/v1"
+    },
+    "supports_replacement": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schema",
+    "endpoint_id",
+    "chain",
+    "delivery_class",
+    "protocol",
+    "maximum_transactions",
+    "supports_replacement",
+    "requires_authentication",
+    "endpoint_url_present",
+    "credential_present",
+    "production_approval"
+  ],
+  "type": "object"
+}

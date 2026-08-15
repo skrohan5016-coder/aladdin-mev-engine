@@ -1,7 +1,7 @@
-# Security Policy
+# Security
 
-F5 is offline, recorded-input, proof-authenticated, explicit-model-bound, cost-complete for its governed recorded categories, and unsigned. It has no network client, RPC or relay credential path, private-key or seed handling, signer, broadcaster, bundle submitter, deployment script, money-movement authority, production model approval, inclusion guarantee, or live-profit claim.
+Never commit private keys, mnemonic or seed phrases, HSM/KMS credentials, wallet files, RPC URLs/tokens, relay or builder URLs/tokens, authentication headers, deployment authority, funded-account secrets, or production configuration.
 
-Never commit wallet material, seed phrases, private keys, HSM/KMS credentials, RPC or relay credentials, builder or sequencer credentials, deployment authorities, treasury access, production database credentials, raw `.env` files, or private strategy configuration.
+F6 verifies externally produced secp256k1 signatures and records offline relay request/response evidence. Production source and scripts must not generate signatures, access keys, open network connections, dispatch requests, submit transactions or bundles, deploy contracts, or move funds. Test-only deterministic signing fixtures must remain under `tests/` and contain no real key material.
 
-Any future live observation, production deployment approval, key access, signing, submission, deployment, funding, execution, or money movement requires a later governed milestone, updated threat model, adversarial tests, exact-head review, and Rohan's explicit approval.
+Report suspected secret exposure or authority escalation privately before opening a public issue.
