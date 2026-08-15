@@ -25,7 +25,7 @@ F8 never interprets a successful F7 settlement as realized profit. It retains re
 - exact integer scoreboards, rates, sums, guarded means, and aggregate returns;
 - calibration buckets that retain every attempt while restricting economic error aggregates to scoreable records;
 - conditional historical expected-value evidence with explicit zero-sample unavailability, selection-bias disclosure, and no confidence guarantee;
-- research-promotion policy and decision evidence requiring scoreable coverage and unique inclusion-block diversity;
+- research-promotion policy and decision evidence requiring scoreable coverage and unique inclusion-block diversity within the scoreable economic sample;
 - thirteen closed F8 schemas and an exact canonical schema lock;
 - explicit denial of any global source-completeness guarantee beyond the declared manifest window;
 - downstream scoreboard, calibration, expected-value, and promotion evidence propagate the same source-manifest digest and completeness limitation.

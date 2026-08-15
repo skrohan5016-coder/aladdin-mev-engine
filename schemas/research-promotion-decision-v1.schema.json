@@ -32,6 +32,19 @@
     "global_completeness_guarantee": {
       "const": false
     },
+    "inclusion_block_diversity_semantics": {
+      "const": "promotion-gate-uses-scoreable-economic-sample-only"
+    },
+    "observed_unique_inclusion_block_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "observed_unique_scoreable_inclusion_block_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
     "policy": {
       "$ref": "research-promotion-policy-v1.schema.json"
     },
@@ -59,7 +72,7 @@
           "insufficient-floor-preservation-rate",
           "insufficient-cost-bound-rate",
           "insufficient-positive-surplus-rate",
-          "insufficient-unique-blocks",
+          "insufficient-unique-scoreable-blocks",
           "excessive-native-cost-overrun-rate",
           "excessive-mean-absolute-error",
           "guarded-expected-value-below-floor",
@@ -93,26 +106,29 @@
     }
   },
   "required": [
-    "schema",
-    "decision_id",
-    "scoreboard_sha256",
+    "allowed",
     "calibration_sha256",
+    "confidence_guarantee",
+    "created_at_unix_ms",
+    "decision_id",
+    "execution_authority",
     "expected_value_sha256",
+    "global_completeness_guarantee",
+    "inclusion_block_diversity_semantics",
+    "observed_unique_inclusion_block_count",
+    "observed_unique_scoreable_inclusion_block_count",
     "policy",
     "policy_sha256",
-    "allowed",
-    "reasons",
-    "created_at_unix_ms",
-    "promotion_scope",
-    "confidence_guarantee",
     "production_promotion_authority",
-    "signing_authority",
-    "submission_authority",
-    "execution_authority",
+    "promotion_scope",
     "realized_profit_authority",
-    "source_manifest_sha256",
+    "reasons",
+    "schema",
+    "scoreboard_sha256",
+    "signing_authority",
     "source_completeness_scope",
-    "global_completeness_guarantee"
+    "source_manifest_sha256",
+    "submission_authority"
   ],
   "title": "Aladdin MEV Research Promotion Decision v1",
   "type": "object"

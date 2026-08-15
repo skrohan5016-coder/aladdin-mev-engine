@@ -3,6 +3,9 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "additionalProperties": false,
   "properties": {
+    "inclusion_block_diversity_semantics": {
+      "const": "minimum-applies-to-scoreable-economic-sample-only"
+    },
     "maximum_mean_absolute_error_bps_of_capital": {
       "maxLength": 5,
       "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
@@ -58,7 +61,7 @@
       "pattern": "^(?:[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
       "type": "string"
     },
-    "minimum_unique_inclusion_blocks": {
+    "minimum_unique_scoreable_inclusion_blocks": {
       "maxLength": 3,
       "pattern": "^(?:[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
       "type": "string"
@@ -73,6 +76,7 @@
     }
   },
   "required": [
+    "inclusion_block_diversity_semantics",
     "maximum_mean_absolute_error_bps_of_capital",
     "maximum_native_cost_overrun_rate_bps",
     "minimum_attempts",
@@ -84,7 +88,7 @@
     "minimum_scoreable_rate_bps",
     "minimum_scoreable_records",
     "minimum_scoreable_records_per_nonempty_bucket",
-    "minimum_unique_inclusion_blocks",
+    "minimum_unique_scoreable_inclusion_blocks",
     "policy_id",
     "schema"
   ],

@@ -217,6 +217,7 @@ class HistoricalScoreboardF8Tests(unittest.TestCase):
         self.assertEqual(scoreboard.scoreable_rate_bps, 10_000)
         self.assertEqual(scoreboard.execution_success_rate_bps, 10_000)
         self.assertEqual(scoreboard.unique_inclusion_block_count, 1)
+        self.assertEqual(scoreboard.unique_scoreable_inclusion_block_count, 1)
         self.assertEqual(
             scoreboard.historical_conservative_surplus_sum,
             record.historical_conservative_surplus,

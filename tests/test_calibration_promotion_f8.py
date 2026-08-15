@@ -17,7 +17,13 @@ from aladdin_mev_engine.historical_scoreboard import (
     _unsigned_ratio_bps_ceiling_saturated,
 )
 
-from f8_helpers import historical_corpus, settled_record, settlement_missing_record
+from f8_helpers import (
+    historical_corpus,
+    settled_record,
+    settled_record_at_block_offset,
+    settlement_missing_record,
+    settlement_missing_record_at_block_offset,
+)
 
 
 def scoreboard_for(record):
@@ -90,6 +96,11 @@ class CalibrationAndPromotionF8Tests(unittest.TestCase):
         )
         value = evidence.to_json_value()
         self.assertEqual(value["sample_count"], "1")
+        self.assertEqual(value["unique_scoreable_inclusion_block_count"], "1")
+        self.assertEqual(
+            value["sample_diversity_semantics"],
+            "unique-inclusion-blocks-among-scoreable-economic-sample-only",
+        )
         self.assertIn("authenticated-successful-settlement", value["conditioning"])
         self.assertFalse(value["confidence_guarantee"])
         self.assertFalse(value["realized_profit_claimed"])
@@ -123,7 +134,7 @@ class CalibrationAndPromotionF8Tests(unittest.TestCase):
             minimum_floor_preservation_rate_bps=0,
             minimum_cost_upper_bound_respect_rate_bps=0,
             minimum_positive_surplus_rate_bps=0,
-            minimum_unique_inclusion_blocks=1,
+            minimum_unique_scoreable_inclusion_blocks=1,
             maximum_native_cost_overrun_rate_bps=10_000,
             maximum_mean_absolute_error_bps_of_capital=10_000,
             minimum_guarded_mean_surplus=-10**18,
@@ -165,7 +176,7 @@ class CalibrationAndPromotionF8Tests(unittest.TestCase):
             minimum_floor_preservation_rate_bps=10_000,
             minimum_cost_upper_bound_respect_rate_bps=10_000,
             minimum_positive_surplus_rate_bps=10_000,
-            minimum_unique_inclusion_blocks=2,
+            minimum_unique_scoreable_inclusion_blocks=2,
             maximum_native_cost_overrun_rate_bps=0,
             maximum_mean_absolute_error_bps_of_capital=0,
             minimum_guarded_mean_surplus=10**18,
@@ -181,7 +192,7 @@ class CalibrationAndPromotionF8Tests(unittest.TestCase):
         self.assertFalse(decision.allowed)
         self.assertIn(ResearchPromotionReason.INSUFFICIENT_ATTEMPTS, decision.reasons)
         self.assertIn(ResearchPromotionReason.INSUFFICIENT_SCOREABLE_RECORDS, decision.reasons)
-        self.assertIn(ResearchPromotionReason.INSUFFICIENT_UNIQUE_BLOCKS, decision.reasons)
+        self.assertIn(ResearchPromotionReason.INSUFFICIENT_UNIQUE_SCOREABLE_BLOCKS, decision.reasons)
         self.assertIn(ResearchPromotionReason.CALIBRATION_BUCKET_UNDERSAMPLED, decision.reasons)
 
     def test_scoreable_coverage_gate_prevents_missing_settlement_selection_bias(self) -> None:
@@ -206,7 +217,7 @@ class CalibrationAndPromotionF8Tests(unittest.TestCase):
             minimum_floor_preservation_rate_bps=0,
             minimum_cost_upper_bound_respect_rate_bps=0,
             minimum_positive_surplus_rate_bps=0,
-            minimum_unique_inclusion_blocks=1,
+            minimum_unique_scoreable_inclusion_blocks=1,
             maximum_native_cost_overrun_rate_bps=10_000,
             maximum_mean_absolute_error_bps_of_capital=10_000,
             minimum_guarded_mean_surplus=-10**18,
@@ -233,6 +244,64 @@ class CalibrationAndPromotionF8Tests(unittest.TestCase):
             decision.reasons,
         )
 
+    def test_unscoreable_unique_block_padding_cannot_satisfy_scoreable_diversity(self) -> None:
+        scoreable = settled_record_at_block_offset(0)
+        unscoreable = settlement_missing_record_at_block_offset(1)
+        corpus = historical_corpus((scoreable, unscoreable))
+        scoreboard = HistoricalEconomicScoreboard(
+            corpus,
+            scoreable.cohort,
+            corpus.created_at_unix_ms + 1,
+        )
+        self.assertEqual(scoreboard.unique_inclusion_block_count, 2)
+        self.assertEqual(scoreboard.unique_scoreable_inclusion_block_count, 1)
+        calibration = HistoricalCalibrationReport(
+            scoreboard,
+            CalibrationPolicy("f8-scoreable-diversity", (10, 100, 1000)),
+            scoreboard.created_at_unix_ms + 1,
+        )
+        expected_value = HistoricalExpectedValueEvidence(
+            scoreboard,
+            calibration.created_at_unix_ms + 1,
+        )
+        policy = ResearchPromotionPolicy(
+            policy_id="f8-scoreable-block-diversity-gate",
+            minimum_attempts=2,
+            minimum_scoreable_records=1,
+            minimum_scoreable_rate_bps=0,
+            minimum_execution_success_rate_bps=0,
+            minimum_floor_preservation_rate_bps=0,
+            minimum_cost_upper_bound_respect_rate_bps=0,
+            minimum_positive_surplus_rate_bps=0,
+            minimum_unique_scoreable_inclusion_blocks=2,
+            maximum_native_cost_overrun_rate_bps=10_000,
+            maximum_mean_absolute_error_bps_of_capital=10_000,
+            minimum_guarded_mean_surplus=-10**18,
+            minimum_scoreable_records_per_nonempty_bucket=1,
+        )
+        decision = ResearchPromotionDecision(
+            scoreboard,
+            calibration,
+            expected_value,
+            policy,
+            expected_value.created_at_unix_ms + 1,
+        )
+        self.assertFalse(decision.allowed)
+        self.assertEqual(
+            decision.reasons,
+            (ResearchPromotionReason.INSUFFICIENT_UNIQUE_SCOREABLE_BLOCKS,),
+        )
+        value = decision.to_json_value()
+        self.assertEqual(value["observed_unique_inclusion_block_count"], "2")
+        self.assertEqual(
+            value["observed_unique_scoreable_inclusion_block_count"],
+            "1",
+        )
+        self.assertEqual(
+            value["inclusion_block_diversity_semantics"],
+            "promotion-gate-uses-scoreable-economic-sample-only",
+        )
+
     def test_promotion_policy_requires_positive_evidence_minima(self) -> None:
         with self.assertRaisesRegex(ValueError, "positive"):
             ResearchPromotionPolicy(
@@ -244,7 +313,7 @@ class CalibrationAndPromotionF8Tests(unittest.TestCase):
                 minimum_floor_preservation_rate_bps=0,
                 minimum_cost_upper_bound_respect_rate_bps=0,
                 minimum_positive_surplus_rate_bps=0,
-                minimum_unique_inclusion_blocks=1,
+                minimum_unique_scoreable_inclusion_blocks=1,
                 maximum_native_cost_overrun_rate_bps=10_000,
                 maximum_mean_absolute_error_bps_of_capital=10_000,
                 minimum_guarded_mean_surplus=0,

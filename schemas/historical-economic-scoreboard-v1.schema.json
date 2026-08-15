@@ -203,6 +203,11 @@
           "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
           "type": "string"
         },
+        "unique_scoreable_inclusion_block_count": {
+          "maxLength": 3,
+          "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+          "type": "string"
+        },
         "unscoreable_count": {
           "maxLength": 3,
           "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
@@ -227,25 +232,26 @@
         "mean_historical_conservative_surplus_floor",
         "native_cost_overrun_count",
         "native_cost_overrun_rate_bps",
+        "outcome_evidence_complete_count",
+        "outcome_evidence_complete_rate_bps",
         "positive_historical_surplus_count",
         "positive_historical_surplus_rate_bps",
         "predicted_conservative_net_profit_sum",
         "prediction_error_sum",
+        "reverted_count",
         "scoreable_capital_at_risk_sum",
         "scoreable_count",
         "scoreable_rate_bps",
+        "settled_count",
+        "settlement_evidence_incomplete_count",
+        "settlement_missing_count",
         "settlement_observed_count",
         "settlement_observed_rate_bps",
         "simulation_exact_match_count",
         "simulation_exact_match_rate_bps",
         "unique_inclusion_block_count",
-        "unscoreable_count",
-        "settled_count",
-        "reverted_count",
-        "settlement_missing_count",
-        "settlement_evidence_incomplete_count",
-        "outcome_evidence_complete_count",
-        "outcome_evidence_complete_rate_bps"
+        "unique_scoreable_inclusion_block_count",
+        "unscoreable_count"
       ],
       "type": "object"
     },

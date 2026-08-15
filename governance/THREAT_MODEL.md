@@ -24,6 +24,7 @@ Canonical-JSON ambiguity, ledger tampering, source drift, reorg errors, malforme
 - conditional settled-only expected value presented as unconditional, causal, independent, or confidence-guaranteed;
 - repeated attempts in one block presented as independent sample diversity;
 - a permissive policy promoting tiny, sparse, zero-scoreable, or low-coverage samples;
+- unscoreable records on distinct blocks padding a diversity gate while scoreable economics remain concentrated in one block;
 - promotion failure reporting short-circuited so confirmed risks disappear;
 - historical conservative surplus or guarded sample mean presented as realized profit;
 - offline research promotion presented as production strategy approval;
@@ -32,7 +33,7 @@ Canonical-JSON ambiguity, ledger tampering, source drift, reorg errors, malforme
 
 ## Controls
 
-Exact runtime types; canonical digest identities; exact F6/F7 evidence binding; exact registry-resolved settlement-event detection; derived four-state dispositions; explicit scoreability and outcome completeness; shared historical-valuation policy with exact-pair/source inclusion-time validation only when scoreable; exact source-window reference-set consumption; downstream source-manifest/completeness propagation; explicit no-global-completeness guarantee; duplicate transaction/position rejection; closed cohort identity; bounded 128-record corpus; exact integer sums, floor rates, ceiling errors, and uint256-saturated error-rate evidence; all-attempt calibration partitioning; positive calibration boundaries; explicit zero-sample expected-value unavailability; positive sample/diversity policy minima; explicit conditional/selection-bias disclosure; minimum scoreable coverage; unique inclusion-block diversity; all-failure promotion reasons; false confidence/profit/production fields; thirteen closed schemas with immutable lock; hardened read-only exact-head and merge CI.
+Exact runtime types; canonical digest identities; exact F6/F7 evidence binding; exact registry-resolved settlement-event detection; derived four-state dispositions; explicit scoreability and outcome completeness; shared historical-valuation policy with exact-pair/source inclusion-time validation only when scoreable; exact source-window reference-set consumption; downstream source-manifest/completeness propagation; explicit no-global-completeness guarantee; duplicate transaction/position rejection; closed cohort identity; bounded 128-record corpus; exact integer sums, floor rates, ceiling errors, and uint256-saturated error-rate evidence; all-attempt calibration partitioning; positive calibration boundaries; explicit zero-sample expected-value unavailability; positive sample/diversity policy minima; explicit conditional/selection-bias disclosure; minimum scoreable coverage; separate all-attempt and scoreable-sample block-diversity metrics; unique scoreable inclusion-block diversity; all-failure promotion reasons; false confidence/profit/production fields; thirteen closed schemas with immutable lock; hardened read-only exact-head and merge CI.
 
 ## Residual risks
 

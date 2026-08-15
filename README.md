@@ -14,7 +14,7 @@ Aladdin MEV Engine is a governed, safety-first foundation for authenticated EVM 
 - one shared historical-valuation policy plus inclusion-time policy-matching conservative rates for scoreable records;
 - exact historical-surplus/prediction-error evidence and integer scoreboards with explicit disposition/completeness counts;
 - positive-bound calibration buckets, guarded empirical means, and conditional historical expected value with explicit zero-sample unavailability;
-- scoreable-coverage, unique-block-diversity, error, cost-overrun, calibration-density, and guarded-surplus research gates;
+- scoreable-coverage, unique-scoreable-block-diversity, error, cost-overrun, calibration-density, and guarded-surplus research gates;
 - explicit denial of confidence, realized-profit, production-promotion, signing, submission, and execution authority.
 
 ```text

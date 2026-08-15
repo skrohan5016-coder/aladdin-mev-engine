@@ -56,7 +56,7 @@ class ResearchPromotionReason(StrEnum):
     INSUFFICIENT_FLOOR_PRESERVATION_RATE = "insufficient-floor-preservation-rate"
     INSUFFICIENT_COST_BOUND_RATE = "insufficient-cost-bound-rate"
     INSUFFICIENT_POSITIVE_SURPLUS_RATE = "insufficient-positive-surplus-rate"
-    INSUFFICIENT_UNIQUE_BLOCKS = "insufficient-unique-blocks"
+    INSUFFICIENT_UNIQUE_SCOREABLE_BLOCKS = "insufficient-unique-scoreable-blocks"
     EXCESSIVE_NATIVE_COST_OVERRUN_RATE = "excessive-native-cost-overrun-rate"
     EXCESSIVE_MEAN_ABSOLUTE_ERROR = "excessive-mean-absolute-error"
     GUARDED_EXPECTED_VALUE_BELOW_FLOOR = "guarded-expected-value-below-floor"
@@ -1080,6 +1080,9 @@ class HistoricalEconomicScoreboard:
         mean_abs_error = _ceil_div(absolute_error_sum, len(scoreable)) if scoreable else 0
         guarded_mean = _checked_add(mean_surplus, -mean_abs_error, "guarded mean surplus")
         unique_blocks = len({item.inclusion.block.block_number for item in records})
+        unique_scoreable_blocks = len(
+            {item.inclusion.block.block_number for item in scoreable}
+        )
         aggregate_return = (
             _signed_ratio_bps_floor(historical_sum, scoreable_capital)
             if scoreable_capital
@@ -1105,6 +1108,7 @@ class HistoricalEconomicScoreboard:
             "scoreable_count": len(scoreable),
             "unscoreable_count": attempts - len(scoreable),
             "unique_inclusion_block_count": unique_blocks,
+            "unique_scoreable_inclusion_block_count": unique_scoreable_blocks,
             "floor_preserved_count": floor_count,
             "simulation_exact_match_count": simulation_exact,
             "cost_upper_bounds_respected_count": cost_bound,
@@ -1493,6 +1497,10 @@ class HistoricalExpectedValueEvidence:
         return self.scoreboard.unscoreable_count
 
     @property
+    def unique_scoreable_inclusion_block_count(self) -> int:
+        return self.scoreboard.unique_scoreable_inclusion_block_count
+
+    @property
     def historical_surplus_sum(self) -> int:
         return self.scoreboard.historical_conservative_surplus_sum
 
@@ -1522,6 +1530,9 @@ class HistoricalExpectedValueEvidence:
             "available": self.available,
             "sample_count": str(self.sample_count),
             "unscoreable_record_count": str(self.unscoreable_record_count),
+            "unique_scoreable_inclusion_block_count": str(
+                self.unique_scoreable_inclusion_block_count
+            ),
             "historical_surplus_sum": str(self.historical_surplus_sum),
             "sample_mean_floor": str(self.sample_mean_floor),
             "mean_absolute_prediction_error_ceiling": str(
@@ -1532,7 +1543,8 @@ class HistoricalExpectedValueEvidence:
             "created_at_unix_ms": str(self.created_at_unix_ms),
             "conditioning": "authenticated-successful-settlement-with-scoreable-economics-only",
             "availability_semantics": "available-only-when-scoreable-sample-count-is-positive",
-            "selection_bias_disclosure": "unscoreable-declared-source-records-retained-but-excluded-from-economic-mean-no-global-completeness-guarantee",
+            "selection_bias_disclosure": "unscoreable-declared-source-records-retained-but-excluded-from-economic-mean-and-scoreable-block-diversity-no-global-completeness-guarantee",
+            "sample_diversity_semantics": "unique-inclusion-blocks-among-scoreable-economic-sample-only",
             "statistical_semantics": "empirical-mean-minus-mean-absolute-prediction-error-screen",
             "confidence_guarantee": False,
             "realized_profit_claimed": False,
@@ -1554,7 +1566,7 @@ class ResearchPromotionPolicy:
     minimum_floor_preservation_rate_bps: int
     minimum_cost_upper_bound_respect_rate_bps: int
     minimum_positive_surplus_rate_bps: int
-    minimum_unique_inclusion_blocks: int
+    minimum_unique_scoreable_inclusion_blocks: int
     maximum_native_cost_overrun_rate_bps: int
     maximum_mean_absolute_error_bps_of_capital: int
     minimum_guarded_mean_surplus: int
@@ -1568,7 +1580,7 @@ class ResearchPromotionPolicy:
         for name in (
             "minimum_attempts",
             "minimum_scoreable_records",
-            "minimum_unique_inclusion_blocks",
+            "minimum_unique_scoreable_inclusion_blocks",
             "minimum_scoreable_records_per_nonempty_bucket",
         ):
             value = getattr(self, name)
@@ -1576,8 +1588,10 @@ class ResearchPromotionPolicy:
                 raise ValueError(f"{name} must be a positive governed record count")
         if self.minimum_scoreable_records > self.minimum_attempts:
             raise ValueError("minimum_scoreable_records cannot exceed minimum_attempts")
-        if self.minimum_unique_inclusion_blocks > self.minimum_attempts:
-            raise ValueError("minimum_unique_inclusion_blocks cannot exceed minimum_attempts")
+        if self.minimum_unique_scoreable_inclusion_blocks > self.minimum_attempts:
+            raise ValueError(
+                "minimum_unique_scoreable_inclusion_blocks cannot exceed minimum_attempts"
+            )
         for name in (
             "minimum_scoreable_rate_bps",
             "minimum_execution_success_rate_bps",
@@ -1612,8 +1626,11 @@ class ResearchPromotionPolicy:
             "minimum_positive_surplus_rate_bps": str(
                 self.minimum_positive_surplus_rate_bps
             ),
-            "minimum_unique_inclusion_blocks": str(
-                self.minimum_unique_inclusion_blocks
+            "minimum_unique_scoreable_inclusion_blocks": str(
+                self.minimum_unique_scoreable_inclusion_blocks
+            ),
+            "inclusion_block_diversity_semantics": (
+                "minimum-applies-to-scoreable-economic-sample-only"
             ),
             "maximum_native_cost_overrun_rate_bps": str(
                 self.maximum_native_cost_overrun_rate_bps
@@ -1697,10 +1714,12 @@ class ResearchPromotionDecision:
         ):
             reasons.append(ResearchPromotionReason.INSUFFICIENT_POSITIVE_SURPLUS_RATE)
         if (
-            self.scoreboard.unique_inclusion_block_count
-            < self.policy.minimum_unique_inclusion_blocks
+            self.scoreboard.unique_scoreable_inclusion_block_count
+            < self.policy.minimum_unique_scoreable_inclusion_blocks
         ):
-            reasons.append(ResearchPromotionReason.INSUFFICIENT_UNIQUE_BLOCKS)
+            reasons.append(
+                ResearchPromotionReason.INSUFFICIENT_UNIQUE_SCOREABLE_BLOCKS
+            )
         if (
             self.scoreboard.native_cost_overrun_rate_bps
             > self.policy.maximum_native_cost_overrun_rate_bps
@@ -1738,6 +1757,15 @@ class ResearchPromotionDecision:
             "calibration_sha256": self.calibration.digest,
             "expected_value_sha256": self.expected_value.digest,
             "policy_sha256": self.policy.digest,
+            "observed_unique_inclusion_block_count": str(
+                self.scoreboard.unique_inclusion_block_count
+            ),
+            "observed_unique_scoreable_inclusion_block_count": str(
+                self.scoreboard.unique_scoreable_inclusion_block_count
+            ),
+            "inclusion_block_diversity_semantics": (
+                "promotion-gate-uses-scoreable-economic-sample-only"
+            ),
             "allowed": not reason_tuple,
             "reasons": [item.value for item in reason_tuple],
             "created_at_unix_ms": str(self.created_at_unix_ms),
@@ -1771,6 +1799,15 @@ class ResearchPromotionDecision:
             "expected_value_sha256": self.expected_value.digest,
             "policy": self.policy.to_json_value(),
             "policy_sha256": self.policy.digest,
+            "observed_unique_inclusion_block_count": str(
+                self.scoreboard.unique_inclusion_block_count
+            ),
+            "observed_unique_scoreable_inclusion_block_count": str(
+                self.scoreboard.unique_scoreable_inclusion_block_count
+            ),
+            "inclusion_block_diversity_semantics": (
+                "promotion-gate-uses-scoreable-economic-sample-only"
+            ),
             "allowed": self.allowed,
             "reasons": [item.value for item in self.reasons],
             "created_at_unix_ms": str(self.created_at_unix_ms),

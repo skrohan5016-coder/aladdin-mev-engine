@@ -54,6 +54,9 @@
       "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
       "type": "string"
     },
+    "sample_diversity_semantics": {
+      "const": "unique-inclusion-blocks-among-scoreable-economic-sample-only"
+    },
     "sample_mean_floor": {
       "maxLength": 156,
       "pattern": "^(0|-?[1-9][0-9]*)$",
@@ -79,6 +82,11 @@
     "statistical_semantics": {
       "const": "empirical-mean-minus-mean-absolute-prediction-error-screen"
     },
+    "unique_scoreable_inclusion_block_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
     "unscoreable_record_count": {
       "maxLength": 3,
       "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
@@ -87,26 +95,28 @@
   },
   "required": [
     "aggregate_return_bps_floor",
+    "availability_semantics",
+    "available",
     "conditioning",
     "confidence_guarantee",
     "created_at_unix_ms",
+    "global_completeness_guarantee",
     "guarded_sample_mean_floor",
     "historical_surplus_sum",
     "mean_absolute_prediction_error_ceiling",
     "production_promotion_authority",
     "realized_profit_claimed",
     "sample_count",
+    "sample_diversity_semantics",
     "sample_mean_floor",
     "schema",
     "scoreboard_sha256",
     "selection_bias_disclosure",
-    "statistical_semantics",
-    "unscoreable_record_count",
-    "available",
-    "availability_semantics",
-    "source_manifest_sha256",
     "source_completeness_scope",
-    "global_completeness_guarantee"
+    "source_manifest_sha256",
+    "statistical_semantics",
+    "unique_scoreable_inclusion_block_count",
+    "unscoreable_record_count"
   ],
   "title": "Aladdin MEV Historical Expected Value Evidence v1",
   "type": "object"

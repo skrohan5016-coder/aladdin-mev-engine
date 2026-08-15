@@ -91,7 +91,7 @@ def runtime_objects():
         minimum_floor_preservation_rate_bps=0,
         minimum_cost_upper_bound_respect_rate_bps=0,
         minimum_positive_surplus_rate_bps=0,
-        minimum_unique_inclusion_blocks=1,
+        minimum_unique_scoreable_inclusion_blocks=1,
         maximum_native_cost_overrun_rate_bps=10_000,
         maximum_mean_absolute_error_bps_of_capital=10_000,
         minimum_guarded_mean_surplus=-(1 << 255),

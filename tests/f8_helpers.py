@@ -18,6 +18,7 @@ from aladdin_mev_engine.historical_scoreboard import (
     HistoricalValuationPolicy,
 )
 
+from f6_helpers import f6_package_variant
 from f7_helpers import (
     ROLLUP_FEE_SOURCE,
     f7_inclusion,
@@ -72,10 +73,18 @@ def historical_valuation_book(
     )
 
 
-def inclusion_from_fixture(*, receipt_status: int, settlement_logs=()):
+def inclusion_from_fixture(
+    *,
+    receipt_status: int,
+    settlement_logs=(),
+    block_number_offset: int = 0,
+    package=None,
+):
     fixture = inclusion_fixture(
         receipt_status=receipt_status,
         settlement_logs=settlement_logs,
+        block_number_offset=block_number_offset,
+        package=package,
     )
     return AuthenticatedTransactionReceiptInclusionEvidence(
         package=fixture.package,
@@ -113,6 +122,63 @@ def rollup_fee_for(
         observed_at_unix_ms=inclusion.created_at_unix_ms + 1,
         source_id="f7-recorded-rollup-fees",
         source_sha256=ROLLUP_FEE_SOURCE,
+    )
+
+
+def settled_record_at_block_offset(block_number_offset: int) -> HistoricalExecutionRecord:
+    inclusion = inclusion_from_fixture(
+        receipt_status=1,
+        settlement_logs=None,
+        block_number_offset=block_number_offset,
+    )
+    registry, spec = settlement_authority_for(inclusion)
+    rollup = rollup_fee_for(inclusion)
+    outcome = RealizedExecutionOutcomeEvidence(
+        package=inclusion.package,
+        inclusion=inclusion,
+        settlement_registry=registry,
+        settlement_spec=spec,
+        rollup_fee=rollup,
+        created_at_unix_ms=rollup.observed_at_unix_ms + 1,
+    )
+    return HistoricalExecutionRecord(
+        package=outcome.package,
+        inclusion=outcome.inclusion,
+        settlement_registry=outcome.settlement_registry,
+        settlement_spec=outcome.settlement_spec,
+        rollup_fee=outcome.rollup_fee,
+        outcome=outcome,
+        historical_valuation_policy=historical_valuation_policy(outcome.inclusion),
+        historical_valuation_book=historical_valuation_book(outcome.inclusion),
+        recorded_at_unix_ms=outcome.created_at_unix_ms + 1,
+    )
+
+
+def settlement_missing_record_at_block_offset(
+    block_number_offset: int,
+) -> HistoricalExecutionRecord:
+    package = f6_package_variant(
+        signature_nonce=0xA11ADD2 + block_number_offset,
+        request_id=f"f8-missing-settlement-{block_number_offset}",
+    )
+    inclusion = inclusion_from_fixture(
+        receipt_status=1,
+        settlement_logs=(),
+        block_number_offset=block_number_offset,
+        package=package,
+    )
+    registry, spec = settlement_authority_for(inclusion)
+    rollup = rollup_fee_for(inclusion)
+    return HistoricalExecutionRecord(
+        package=inclusion.package,
+        inclusion=inclusion,
+        settlement_registry=registry,
+        settlement_spec=spec,
+        rollup_fee=rollup,
+        outcome=None,
+        historical_valuation_policy=historical_valuation_policy(inclusion),
+        historical_valuation_book=ValuationBook(()),
+        recorded_at_unix_ms=rollup.observed_at_unix_ms + 1,
     )
 
 

@@ -15,17 +15,17 @@ F8 is accepted only when one exact source head and its current GitHub synthetic 
 - deterministic canonical corpus that consumes the manifest reference set exactly, with duplicate record, transaction, and inclusion-position rejection;
 - explicit `global_completeness_guarantee = false`;
 - scoreboard, calibration, expected-value, and promotion outputs propagate the exact source-manifest digest and completeness limitation;
-- exact-integer scoreboard rates, sums, errors, guarded means, capital-weighted metrics, and unique-block diversity;
+- exact-integer scoreboard rates, sums, errors, guarded means, capital-weighted metrics, all-attempt block diversity, and scoreable-sample block diversity;
 - calibration buckets partition all attempts and retain unscoreable attempt counts;
 - conditional expected-value evidence with explicit zero-sample unavailability, selection-bias disclosure, and no confidence guarantee;
-- promotion policies require strictly positive attempt, scoreable-record, unique-inclusion-block, and nonempty-bucket minima;
+- promotion policies require strictly positive attempt, scoreable-record, unique-scoreable-inclusion-block, and nonempty-bucket minima;
 - promotion decisions report all failures and remain offline research evidence only;
 - exact thirteen-file F8 schema lock;
 - no network, credential, key, signing, submission, deployment, execution, realized-profit, or production-promotion authority.
 
 ## Required adversarial validation
 
-Wrong package/inclusion/outcome/settlement-registry/settlement-spec/rollup-fee identity, cohort drift, sender/signature/relay-response/source drift, stale or extra valuation authority, valuation-policy/source mismatch, invalid inclusion-time rate, source-manifest omission/injection/source drift, duplicate transaction or position, hidden reverted/settlement-missing/evidence-incomplete attempt, omitted observed settlement outcome, scoreable-count drift, zero-sample expected-value promotion, integer overflow, inconsistent metric sum/rate, calibration overlap/zero boundary/omission, unscoreable economic aggregation, insufficient coverage, insufficient unique blocks, promotion short-circuiting, confidence/profit escalation, live dependency, and CI wrapper bypass must fail closed.
+Wrong package/inclusion/outcome/settlement-registry/settlement-spec/rollup-fee identity, cohort drift, sender/signature/relay-response/source drift, stale or extra valuation authority, valuation-policy/source mismatch, invalid inclusion-time rate, source-manifest omission/injection/source drift, duplicate transaction or position, hidden reverted/settlement-missing/evidence-incomplete attempt, omitted observed settlement outcome, scoreable-count drift, zero-sample expected-value promotion, integer overflow, inconsistent metric sum/rate, calibration overlap/zero boundary/omission, unscoreable economic aggregation, insufficient coverage, unscoreable-block diversity padding, insufficient unique scoreable blocks, promotion short-circuiting, confidence/profit escalation, live dependency, and CI wrapper bypass must fail closed.
 
 Randomized and hash-seed campaigns must preserve deterministic identities and exact integer reference results.
 
