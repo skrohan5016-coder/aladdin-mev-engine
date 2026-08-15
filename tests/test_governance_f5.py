@@ -14,7 +14,7 @@ class F5GovernanceRetentionTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.architecture = json.loads((ROOT / "governance" / "architecture.json").read_text(encoding="utf-8"))
 
-    def test_f6_retains_f5_unsigned_package_authorities(self) -> None:
+    def test_f7_retains_f5_unsigned_package_authorities(self) -> None:
         a = self.architecture
         expected = {
             "deployment_registry_authority": "authenticated-recorded-direct-runtime-shadow-only",
@@ -28,7 +28,7 @@ class F5GovernanceRetentionTests(unittest.TestCase):
         for key, value in expected.items():
             self.assertEqual(a[key], value)
 
-    def test_f5_schema_lock_is_retained_under_f6(self) -> None:
+    def test_f5_schema_lock_is_retained_under_f7(self) -> None:
         schema_lock = json.loads((ROOT / "governance" / "f5-schemas.lock.json").read_text(encoding="utf-8"))
         self.assertEqual(self.architecture["f5_schema_lock_sha256"], canonical_sha256(schema_lock))
 

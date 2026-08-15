@@ -1,0 +1,118 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/recorded-execution-block-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "base_fee_per_gas": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "block_hash": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "block_timestamp_unix_s": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base"
+      ],
+      "type": "string"
+    },
+    "finality": {
+      "enum": [
+        "confirmed",
+        "finalized"
+      ],
+      "type": "string"
+    },
+    "gas_used": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "header_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "logs_bloom": {
+      "maxLength": 514,
+      "pattern": "^0x[0-9a-f]{512}$",
+      "type": "string"
+    },
+    "network_authority": {
+      "const": "recorded-input-only"
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "parent_hash": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "raw_header": {
+      "maxLength": 2097154,
+      "minLength": 4,
+      "pattern": "^0x(?:[0-9a-f]{2})*$",
+      "type": "string"
+    },
+    "receipts_root": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-recorded-execution-block/v1"
+    },
+    "source_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "state_root": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "transactions_root": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "base_fee_per_gas",
+    "block_hash",
+    "block_number",
+    "block_timestamp_unix_s",
+    "chain",
+    "finality",
+    "gas_used",
+    "header_sha256",
+    "logs_bloom",
+    "network_authority",
+    "observed_at_unix_ms",
+    "parent_hash",
+    "raw_header",
+    "receipts_root",
+    "schema",
+    "source_id",
+    "source_sha256",
+    "state_root",
+    "transactions_root"
+  ],
+  "type": "object"
+}

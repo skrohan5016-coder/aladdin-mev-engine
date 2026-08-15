@@ -1,0 +1,72 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/indexed-trie-proof-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "index": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "transaction",
+        "receipt",
+        "previous-receipt"
+      ],
+      "type": "string"
+    },
+    "observed_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "proof": {
+      "items": {
+        "maxLength": 131074,
+        "minLength": 4,
+        "pattern": "^0x(?:[0-9a-f]{2})*$",
+        "type": "string"
+      },
+      "maxItems": 256,
+      "minItems": 1,
+      "type": "array"
+    },
+    "raw_value": {
+      "maxLength": 2097154,
+      "minLength": 4,
+      "pattern": "^0x(?:[0-9a-f]{2})*$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-indexed-trie-proof/v1"
+    },
+    "source_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "trie_key": {
+      "maxLength": 20,
+      "minLength": 4,
+      "pattern": "^0x(?:[0-9a-f]{2})*$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "kind",
+    "index",
+    "trie_key",
+    "raw_value",
+    "proof",
+    "observed_at_unix_ms",
+    "source_id",
+    "source_sha256"
+  ],
+  "type": "object"
+}

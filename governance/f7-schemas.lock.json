@@ -1,0 +1,17 @@
+{
+  "files": {
+    "schemas/authenticated-execution-block-v1.schema.json": "f97edae759f11858cd4245a20c5889f003685d7fb505ba0894c0776d07fc7653",
+    "schemas/authenticated-transaction-receipt-inclusion-v1.schema.json": "c6d416a9f1c9c82b00158923f5a58c1add4c2c3480750d3748b3b9d567e41440",
+    "schemas/evm-block-state-anchor-v1.schema.json": "3e3f6d65b004707e58de2df9caa6a593a38a2eac44af36f8968fa9b4807d205e",
+    "schemas/evm-log-entry-v1.schema.json": "4fa4f6309e6e2449120cfa9c15874919f34f913ec56926f2a1b1c9d0db6efccc",
+    "schemas/executor-settlement-event-registry-v1.schema.json": "54db304fed9d29d662a8d624784c21bb59b36364b3d37e009ae62014aac44b62",
+    "schemas/executor-settlement-event-spec-v1.schema.json": "32bf9e3fdca1360a04cf224412855255fb562a7fdddc3a5acce3e59848a016a2",
+    "schemas/executor-settlement-event-v1.schema.json": "f63d664c9dbd905eb8471207ef43143c3b317f09f7dd82ed3c2d2321a12cb528",
+    "schemas/indexed-trie-proof-v1.schema.json": "84f6ababb6d915653a39f5a9a35751831cde09afa8805f3d5ff646009d626da3",
+    "schemas/realized-execution-outcome-v1.schema.json": "27fb4f05eb258fd7407f986f315d3fc2a6c9b5d5c489bf7d8d42a2d01ac4a76b",
+    "schemas/recorded-execution-block-v1.schema.json": "c0862a09c9ca0476a65aedaab469c69fed22ac662e430b8572473674f7622a87",
+    "schemas/recorded-rollup-fee-v1.schema.json": "e80c16f226abc212a397ec8261eb4cce0efb63a316168391b9b410728973015e",
+    "schemas/transaction-receipt-v1.schema.json": "e5b4677e8d5cd4d82c358a48bfc51f577aa757a9f558a26eef37e009194db152"
+  },
+  "schema": "aladdin-mev-f7-schema-lock/v1"
+}

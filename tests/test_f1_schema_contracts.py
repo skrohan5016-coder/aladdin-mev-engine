@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import unittest
+from urllib.parse import urljoin
 
 from aladdin_mev_engine.head_tracker import HeadTracker
 from aladdin_mev_engine.ledger import ObservationLedgerBuilder
@@ -31,7 +32,7 @@ class F1SchemaContractTests(unittest.TestCase):
             self.assertFalse(document["additionalProperties"])
             self.assertTrue(document["$id"])
 
-    def test_relative_schema_references_resolve_inside_the_governed_schema_directory(self) -> None:
+    def test_local_and_absolute_schema_references_resolve(self) -> None:
         def refs(value: object):
             if type(value) is dict:
                 reference = value.get("$ref")
@@ -44,14 +45,22 @@ class F1SchemaContractTests(unittest.TestCase):
                     yield from refs(child)
 
         schema_root = ROOT / "schemas"
-        for path in sorted(schema_root.glob("*.json")):
-            document = json.loads(path.read_text(encoding="utf-8"))
+        documents = {
+            path: json.loads(path.read_text(encoding="utf-8"))
+            for path in sorted(schema_root.glob("*.json"))
+        }
+        identifiers = {document["$id"] for document in documents.values()}
+        self.assertEqual(len(identifiers), len(documents))
+        for path, document in documents.items():
             for reference in refs(document):
                 if reference.startswith("#"):
                     continue
-                target_name = reference.split("#", 1)[0]
-                self.assertNotIn("/", target_name)
-                self.assertTrue((schema_root / target_name).is_file(), reference)
+                target = reference.split("#", 1)[0]
+                if target.startswith(("https://", "http://")):
+                    self.assertIn(target, identifiers, msg=f"{path.name}: {reference}")
+                    continue
+                self.assertNotIn("/", target)
+                self.assertTrue((schema_root / target).is_file(), reference)
 
     def test_source_contract_output_keys_match_schema(self) -> None:
         schema = json.loads((ROOT / "schemas" / "source-contract-v1.schema.json").read_text())

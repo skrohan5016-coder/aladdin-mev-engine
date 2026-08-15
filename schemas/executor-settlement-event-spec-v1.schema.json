@@ -1,0 +1,79 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/executor-settlement-event-spec-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "authority": {
+      "const": "recorded-runtime-event-model-only"
+    },
+    "data_fields": {
+      "const": [
+        "gross_output",
+        "principal_repaid",
+        "flash_loan_fee_paid",
+        "base_token_residual_before_external_costs",
+        "direct_inclusion_payment"
+      ]
+    },
+    "event_signature": {
+      "const": "ExecutionSettled(bytes32,address,address,uint256,uint256,uint256,uint256,uint256)"
+    },
+    "implementation_source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "indexed_fields": {
+      "const": [
+        "execution_plan_sha256",
+        "beneficiary",
+        "base_token"
+      ]
+    },
+    "runtime_code_hash": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string",
+      "not": {
+        "const": "0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470"
+      }
+    },
+    "schema": {
+      "const": "aladdin-mev-executor-settlement-event-spec/v1"
+    },
+    "spec_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "topic0": {
+      "const": "0x1b6b6668bee41d2b8a4b5f7487b22305e77995a51f843da784ad8436abec07a3"
+    },
+    "valid_from_block": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "valid_until_block": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "value_semantics": {
+      "const": "msg-value-unused-balance-is-refunded-to-authenticated-sender"
+    }
+  },
+  "required": [
+    "authority",
+    "data_fields",
+    "event_signature",
+    "implementation_source_sha256",
+    "indexed_fields",
+    "runtime_code_hash",
+    "schema",
+    "spec_id",
+    "topic0",
+    "valid_from_block",
+    "valid_until_block",
+    "value_semantics"
+  ],
+  "type": "object"
+}

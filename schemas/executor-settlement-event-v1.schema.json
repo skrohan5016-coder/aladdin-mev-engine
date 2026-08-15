@@ -1,0 +1,104 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/executor-settlement-event-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "base_token": {
+      "pattern": "^0x(?!0{40}$)[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "base_token_residual_before_external_costs": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "beneficiary": {
+      "pattern": "^0x(?!0{40}$)[0-9a-f]{40}$",
+      "type": "string"
+    },
+    "direct_inclusion_payment": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "flash_loan_fee_paid": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "gross_output": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "log": {
+      "$ref": "evm-log-entry-v1.schema.json",
+      "properties": {
+        "data": {
+          "maxLength": 322,
+          "minLength": 322,
+          "pattern": "^0x[0-9a-f]{320}$",
+          "type": "string"
+        },
+        "topics": {
+          "items": false,
+          "maxItems": 4,
+          "minItems": 4,
+          "prefixItems": [
+            {
+              "const": "0x1b6b6668bee41d2b8a4b5f7487b22305e77995a51f843da784ad8436abec07a3"
+            },
+            {
+              "pattern": "^0x[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "pattern": "^0x0{24}(?!0{40}$)[0-9a-f]{40}$",
+              "type": "string"
+            },
+            {
+              "pattern": "^0x0{24}(?!0{40}$)[0-9a-f]{40}$",
+              "type": "string"
+            }
+          ],
+          "type": "array"
+        }
+      }
+    },
+    "log_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "plan_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "principal_repaid": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-executor-settlement-event/v1"
+    },
+    "spec_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "spec_sha256",
+    "log",
+    "log_sha256",
+    "plan_sha256",
+    "beneficiary",
+    "base_token",
+    "gross_output",
+    "principal_repaid",
+    "flash_loan_fee_paid",
+    "base_token_residual_before_external_costs",
+    "direct_inclusion_payment"
+  ],
+  "type": "object"
+}
