@@ -1,0 +1,80 @@
+name: Publish exact F7 review remediation
+
+on:
+  push:
+    branches:
+      - agent/f7-source-export
+
+permissions:
+  contents: write
+
+env:
+  PYTHONPATH: src
+  PYTHONDONTWRITEBYTECODE: "1"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout exact remediation material
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          path: material
+          persist-credentials: false
+      - name: Checkout exact pre-remediation F7 head
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: fd03a6d378571df565ac34f9760a81c2f6bdd5e2
+          path: work
+          fetch-depth: 0
+          persist-credentials: true
+      - name: Set up governed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Reconstruct and verify exact remediation
+        run: |
+          set -euo pipefail
+          test "$(git -C work rev-parse HEAD)" = "fd03a6d378571df565ac34f9760a81c2f6bdd5e2"
+          test "$(git -C work rev-parse 'HEAD^{tree}')" = "fd4dd9ccbf724f7e795bdfe6674b04502c19bb0b"
+          echo "b875e12a5cbc610dcd39c0d7280077cc22d3de9218cd93bf2ee8264c2f9326ba  material/.staging/f7-review-remediation.patch.gz.b64" | sha256sum -c -
+          base64 -d material/.staging/f7-review-remediation.patch.gz.b64 > /tmp/f7-review-remediation.patch.gz
+          echo "a811ad1c72292755787df2109afa45ac988d506ba10886e167f59edb1947c3f5  /tmp/f7-review-remediation.patch.gz" | sha256sum -c -
+          gzip -dc /tmp/f7-review-remediation.patch.gz > /tmp/f7-review-remediation.patch
+          echo "a5a1fb6fe22c6fb9cfd2409f1e41ae2e539a3d626b84c502ef8158cc113ec0ed  /tmp/f7-review-remediation.patch" | sha256sum -c -
+          git -C work diff --exit-code
+          git -C work apply --index --whitespace=error /tmp/f7-review-remediation.patch
+          test "$(git -C work diff --cached --name-only | wc -l | tr -d ' ')" = "15"
+          git -C work diff --cached --check
+          test "$(git -C work write-tree)" = "42592ed5ce7dc8d87755ff95af4824dc20c9e6fa"
+      - name: Validate exact remediated F7 source
+        working-directory: work
+        run: |
+          set -euo pipefail
+          python -m compileall -q src tests scripts
+          python -m unittest discover -s tests -v
+          python scripts/check_repo_policy.py
+          python scripts/verify_architecture_lock.py
+          python scripts/verify_source_contracts.py
+          python scripts/verify_f2_schemas.py
+          python scripts/verify_f3_schemas.py
+          python scripts/verify_f4_schemas.py
+          python scripts/verify_f5_schemas.py
+          python scripts/verify_f6_schemas.py
+          python scripts/verify_f7_schemas.py
+          git diff --exit-code
+          git diff --cached --check
+          test "$(git write-tree)" = "42592ed5ce7dc8d87755ff95af4824dc20c9e6fa"
+      - name: Publish normal fast-forward remediation commit
+        working-directory: work
+        run: |
+          set -euo pipefail
+          remote_head="$(git ls-remote origin refs/heads/agent/f7-authenticated-outcome-evidence-v1 | cut -f1)"
+          test "${remote_head}" = "fd03a6d378571df565ac34f9760a81c2f6bdd5e2"
+          git config user.name "ROHAN"
+          git config user.email "skrohan5016@gmail.com"
+          git commit -m "Harden F7 historical drift evidence"
+          test "$(git rev-parse 'HEAD^{tree}')" = "42592ed5ce7dc8d87755ff95af4824dc20c9e6fa"
+          git push origin HEAD:refs/heads/agent/f7-authenticated-outcome-evidence-v1
