@@ -72,8 +72,10 @@ def point_add(left: PointOrInfinity, right: PointOrInfinity) -> PointOrInfinity:
 
 
 def scalar_multiply(scalar: int, point: PointOrInfinity = GENERATOR) -> PointOrInfinity:
-    if type(scalar) is not int or scalar < 0:
-        raise ValueError("scalar must be a non-negative exact integer")
+    if type(scalar) is not int or not 0 <= scalar <= GROUP_ORDER:
+        raise ValueError(
+            "scalar must be an exact integer from zero through the secp256k1 group order"
+        )
     if point is not None and type(point) is not Secp256k1Point:
         raise TypeError("point must be an exact Secp256k1Point or infinity")
     if point is None or scalar == 0:

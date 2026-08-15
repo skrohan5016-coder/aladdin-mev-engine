@@ -6,6 +6,7 @@ F6 is accepted only when one exact source head and its current synthetic merge i
 
 - exact accepted F5 parent identity;
 - dependency-free secp256k1 point, verification, and recovery authority;
+- public scalar multiplication rejects values above the secp256k1 group order before curve work;
 - exact EIP-2 low-s signature evidence;
 - unique recovery of the authenticated F5 sender;
 - canonical signed type-2 transaction bytes and exact transaction hash;

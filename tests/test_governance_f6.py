@@ -54,6 +54,7 @@ class F6GovernanceTests(unittest.TestCase):
     def test_required_f6_invariants_and_schemas_are_machine_bound(self) -> None:
         required = {
             "eip1559-signature-y-parity-is-exactly-zero-or-one",
+            "public-secp256k1-scalar-multiplication-rejects-values-above-the-group-order",
             "eip1559-signature-r-and-s-are-positive-below-the-secp256k1-group-order-and-s-is-low",
             "external-signature-evidence-uniquely-recovers-the-exact-f5-authenticated-sender",
             "signed-type-two-transaction-reuses-the-exact-f5-unsigned-fields-and-empty-access-list",

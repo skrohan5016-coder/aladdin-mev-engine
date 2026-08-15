@@ -18,6 +18,8 @@ F5 unsigned execution package
 
 `y_parity` is exactly zero or one. `r` and `s` are positive and below the secp256k1 group order, and `s` must be EIP-2 low-s. F6 recovers all valid public-key candidates and requires exactly one candidate to match the sender authenticated by F5. Signature source identity affects evidence identity but cannot change raw transaction bytes.
 
+Public scalar multiplication accepts only the closed range from zero through the secp256k1 group order; larger values fail before curve work. The exact group order remains available for subgroup checks and maps valid subgroup points to infinity.
+
 F6 exposes verification and recovery only. Production modules and scripts may not contain a private-key field or signing function.
 
 ## Signed transaction rules

@@ -11,6 +11,7 @@ F6 does not replace earlier controls. Canonical-JSON ambiguity, ledger truncatio
 ## F6 failure modes
 
 - invalid curve points or signature scalars;
+- unbounded public scalar multiplication consuming CPU before domain validation;
 - high-s malleable signatures;
 - wrong hash, parity, key, or recovered sender;
 - changing an F5 unsigned field while presenting the result as the same signed transaction;
@@ -27,7 +28,7 @@ F6 does not replace earlier controls. Canonical-JSON ambiguity, ledger truncatio
 
 ## Controls
 
-Exact runtime types; closed schemas; constructor-time recomputation; dependency-free curve arithmetic; known address vectors and randomized test-only signature round trips; bounded low-s scalars; unique authenticated-sender recovery; canonical type-2 RLP and legacy Keccak; exact F5 identity retention; deterministic endpoint registry; immutable canonical request bytes; detached request payload copies; independently unique response source IDs and digests; transitive time validity; explicit false eligibility/guarantee fields; static production-source denial of keys, signing, networking, and dispatch; immutable locks; hardened read-only CI.
+Exact runtime types; closed schemas; constructor-time recomputation; dependency-free curve arithmetic; bounded public scalar multiplication; known address vectors and randomized test-only signature round trips; bounded low-s scalars; unique authenticated-sender recovery; canonical type-2 RLP and legacy Keccak; exact F5 identity retention; deterministic endpoint registry; immutable canonical request bytes; detached request payload copies; independently unique response source IDs and digests; transitive time validity; explicit false eligibility/guarantee fields; static production-source denial of keys, signing, networking, and dispatch; immutable locks; hardened read-only CI.
 
 ## Residual risks
 

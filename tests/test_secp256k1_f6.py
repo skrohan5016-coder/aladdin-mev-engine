@@ -39,6 +39,12 @@ class Secp256k1F6Tests(unittest.TestCase):
         self.assertIsNone(scalar_multiply(GROUP_ORDER, GENERATOR))
         self.assertIsNone(scalar_multiply(0, GENERATOR))
 
+    def test_scalar_multiplication_rejects_values_above_group_order(self) -> None:
+        for invalid in (GROUP_ORDER + 1, 1 << 1_000_000):
+            with self.subTest(invalid=invalid):
+                with self.assertRaisesRegex(ValueError, "group order"):
+                    scalar_multiply(invalid, GENERATOR)
+
     def test_curve_validation_and_x_lift(self) -> None:
         self.assertEqual(lift_x(GENERATOR.x, GENERATOR.y & 1), GENERATOR)
         self.assertEqual(lift_x(GENERATOR.x, 1 - (GENERATOR.y & 1)).x, GENERATOR.x)
