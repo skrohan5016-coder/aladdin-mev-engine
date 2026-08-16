@@ -1,0 +1,92 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/historical-corpus-source-manifest-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base"
+      ],
+      "type": "string"
+    },
+    "completeness_scope": {
+      "const": "exact-declared-source-window-reference-set-only"
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "end_block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "global_completeness_guarantee": {
+      "const": false
+    },
+    "manifest_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "reference_count": {
+      "maxLength": 3,
+      "pattern": "^(?:[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "reference_sha256": {
+      "items": {
+        "pattern": "^[0-9a-f]{64}$",
+        "type": "string"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "references": {
+      "items": {
+        "$ref": "historical-attempt-reference-v1.schema.json"
+      },
+      "maxItems": 128,
+      "minItems": 1,
+      "type": "array"
+    },
+    "schema": {
+      "const": "aladdin-mev-historical-corpus-source-manifest/v1"
+    },
+    "source_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "source_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "start_block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "manifest_id",
+    "source_id",
+    "source_sha256",
+    "chain",
+    "start_block_number",
+    "end_block_number",
+    "references",
+    "reference_sha256",
+    "reference_count",
+    "created_at_unix_ms",
+    "completeness_scope",
+    "global_completeness_guarantee"
+  ],
+  "title": "Aladdin MEV Historical Corpus Source Manifest v1",
+  "type": "object"
+}

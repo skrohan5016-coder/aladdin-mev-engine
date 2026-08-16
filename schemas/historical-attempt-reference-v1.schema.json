@@ -1,0 +1,50 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/historical-attempt-reference-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "chain": {
+      "enum": [
+        "ethereum",
+        "base"
+      ],
+      "type": "string"
+    },
+    "inclusion_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "package_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-historical-attempt-reference/v1"
+    },
+    "transaction_hash": {
+      "pattern": "^0x[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "transaction_index": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema",
+    "chain",
+    "package_sha256",
+    "inclusion_sha256",
+    "transaction_hash",
+    "block_number",
+    "transaction_index"
+  ],
+  "title": "Aladdin MEV Historical Attempt Reference v1",
+  "type": "object"
+}

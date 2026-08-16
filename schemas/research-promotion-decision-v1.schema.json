@@ -1,0 +1,135 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/research-promotion-decision-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "allowed": {
+      "type": "boolean"
+    },
+    "calibration_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "confidence_guarantee": {
+      "const": false
+    },
+    "created_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "decision_id": {
+      "pattern": "^research-promotion-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "execution_authority": {
+      "const": "none"
+    },
+    "expected_value_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "global_completeness_guarantee": {
+      "const": false
+    },
+    "inclusion_block_diversity_semantics": {
+      "const": "promotion-gate-uses-scoreable-economic-sample-only"
+    },
+    "observed_unique_inclusion_block_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "observed_unique_scoreable_inclusion_block_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "policy": {
+      "$ref": "research-promotion-policy-v1.schema.json"
+    },
+    "policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "production_promotion_authority": {
+      "const": false
+    },
+    "promotion_scope": {
+      "const": "offline-research-candidate-only"
+    },
+    "realized_profit_authority": {
+      "const": "none"
+    },
+    "reasons": {
+      "items": {
+        "enum": [
+          "expected-value-unavailable",
+          "insufficient-attempts",
+          "insufficient-scoreable-records",
+          "insufficient-scoreable-rate",
+          "insufficient-execution-success-rate",
+          "insufficient-floor-preservation-rate",
+          "insufficient-cost-bound-rate",
+          "insufficient-positive-surplus-rate",
+          "insufficient-unique-scoreable-blocks",
+          "excessive-native-cost-overrun-rate",
+          "excessive-mean-absolute-error",
+          "guarded-expected-value-below-floor",
+          "calibration-bucket-undersampled"
+        ],
+        "type": "string"
+      },
+      "maxItems": 13,
+      "type": "array",
+      "uniqueItems": true
+    },
+    "schema": {
+      "const": "aladdin-mev-research-promotion-decision/v1"
+    },
+    "scoreboard_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "signing_authority": {
+      "const": "none"
+    },
+    "source_completeness_scope": {
+      "const": "exact-declared-source-window-reference-set-only"
+    },
+    "source_manifest_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "submission_authority": {
+      "const": "none"
+    }
+  },
+  "required": [
+    "allowed",
+    "calibration_sha256",
+    "confidence_guarantee",
+    "created_at_unix_ms",
+    "decision_id",
+    "execution_authority",
+    "expected_value_sha256",
+    "global_completeness_guarantee",
+    "inclusion_block_diversity_semantics",
+    "observed_unique_inclusion_block_count",
+    "observed_unique_scoreable_inclusion_block_count",
+    "policy",
+    "policy_sha256",
+    "production_promotion_authority",
+    "promotion_scope",
+    "realized_profit_authority",
+    "reasons",
+    "schema",
+    "scoreboard_sha256",
+    "signing_authority",
+    "source_completeness_scope",
+    "source_manifest_sha256",
+    "submission_authority"
+  ],
+  "title": "Aladdin MEV Research Promotion Decision v1",
+  "type": "object"
+}
