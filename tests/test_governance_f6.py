@@ -14,9 +14,9 @@ class F6GovernanceRetentionTests(unittest.TestCase):
     def setUpClass(cls) -> None:
         cls.architecture = json.loads((ROOT / "governance" / "architecture.json").read_text(encoding="utf-8"))
 
-    def test_f7_retains_f6_offline_authorities_and_disables_live_capability(self) -> None:
+    def test_f8_retains_f6_offline_authorities_and_disables_live_capability(self) -> None:
         a = self.architecture
-        self.assertEqual(a["milestone"], "F7")
+        self.assertEqual(a["milestone"], "F8")
         for key in (
             "network_access", "relay_access", "credential_authority", "key_authority",
             "local_signing_authority", "submission_authority", "execution_authority",
@@ -39,13 +39,13 @@ class F6GovernanceRetentionTests(unittest.TestCase):
         for key, value in expected.items():
             self.assertEqual(self.architecture[key], value)
 
-    def test_f6_schema_lock_is_retained_and_f7_architecture_lock_is_exact(self) -> None:
+    def test_f6_schema_lock_is_retained_and_f8_architecture_lock_is_exact(self) -> None:
         schema_lock = json.loads((ROOT / "governance" / "f6-schemas.lock.json").read_text(encoding="utf-8"))
         architecture_lock = json.loads((ROOT / "governance" / "architecture.lock.json").read_text(encoding="utf-8"))
         self.assertEqual(self.architecture["f6_schema_lock_sha256"], canonical_sha256(schema_lock))
         digest = canonical_sha256(self.architecture)
         self.assertEqual(architecture_lock["manifest_sha256"], digest)
-        self.assertEqual(architecture_lock["architecture_id"], f"AMEV-F7-ARCH-v1-{digest[:12]}")
+        self.assertEqual(architecture_lock["architecture_id"], f"AMEV-F8-ARCH-v1-{digest[:12]}")
 
     def test_required_f6_invariants_and_schemas_are_machine_bound(self) -> None:
         required = {

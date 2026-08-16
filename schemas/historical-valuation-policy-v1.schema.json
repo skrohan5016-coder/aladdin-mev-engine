@@ -1,0 +1,53 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/historical-valuation-policy-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "base_asset": {
+      "$ref": "https://schemas.aladdin.invalid/mev/asset-id-v1.schema.json"
+    },
+    "mode": {
+      "enum": [
+        "identity",
+        "directional-ceiling"
+      ],
+      "type": "string"
+    },
+    "native_asset": {
+      "$ref": "https://schemas.aladdin.invalid/mev/asset-id-v1.schema.json"
+    },
+    "policy_id": {
+      "maxLength": 128,
+      "minLength": 1,
+      "type": "string"
+    },
+    "rate_source_sha256": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "rounding": {
+      "const": "identity-or-ceiling"
+    },
+    "schema": {
+      "const": "aladdin-mev-historical-valuation-policy/v1"
+    }
+  },
+  "required": [
+    "schema",
+    "policy_id",
+    "native_asset",
+    "base_asset",
+    "rate_source_sha256",
+    "mode",
+    "rounding"
+  ],
+  "title": "Aladdin MEV Historical Valuation Policy v1",
+  "type": "object"
+}

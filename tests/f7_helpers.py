@@ -227,8 +227,12 @@ def inclusion_fixture(
     header_logs_bloom: bytes | None = None,
     executor_code_hash: bytes | None = None,
     executor_storage_root: bytes = EMPTY_TRIE_ROOT,
+    block_number_offset: int = 0,
+    package: ExternallySignedExecutionPackageEvidence | None = None,
 ) -> InclusionFixture:
-    package = f7_package()
+    package = f7_package() if package is None else package
+    if type(package) is not ExternallySignedExecutionPackageEvidence:
+        raise TypeError("package must be exact ExternallySignedExecutionPackageEvidence")
     logs = (settlement_log(package),) if settlement_logs is None else settlement_logs
     previous_raw_receipt = encode_receipt(cumulative_gas_used=50_000, logs=())
     raw_receipt = encode_receipt(
@@ -242,7 +246,12 @@ def inclusion_fixture(
     block_logs_bloom = receipt.logs_bloom if header_logs_bloom is None else header_logs_bloom
 
     bundle = package.signed_bundle.unsigned_bundle
-    block_number = bundle.target_block_number
+    if type(block_number_offset) is not int:
+        raise TypeError("block_number_offset must be an exact integer")
+    maximum_offset = bundle.maximum_block_number - bundle.target_block_number
+    if not 0 <= block_number_offset <= maximum_offset:
+        raise ValueError("block_number_offset is outside the exact signed-bundle range")
+    block_number = bundle.target_block_number + block_number_offset
     parent_hash = bytes.fromhex("d2" * 32)
     deployment = package.unsigned_package.call.deployment
     post_state_code_hash = (

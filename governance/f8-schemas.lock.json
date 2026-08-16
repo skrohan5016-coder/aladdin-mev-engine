@@ -1,0 +1,18 @@
+{
+  "files": {
+    "schemas/calibration-bucket-v1.schema.json": "4bc468939b0fc8faf14d0205d7d989ea82160396eff87bafe98af2bc766a3a38",
+    "schemas/calibration-policy-v1.schema.json": "efc321cac8fdefc9787ae1eaf139efca087ad703f777816ecedb9864276eb426",
+    "schemas/historical-attempt-reference-v1.schema.json": "a4ca7ffcd10584e10d37f46a481f29dc84ed38e37aa9aca20830e76b21d6e3ce",
+    "schemas/historical-calibration-report-v1.schema.json": "e5b589bfc99fcca265df8dcaac84f4fc8c1cde6c0a8d0525a961eba255c5e76c",
+    "schemas/historical-cohort-key-v1.schema.json": "0cc49f4b8b4849bc0753279c9c48d49c1380919f3ac6d1fd95d6ee9532a78b76",
+    "schemas/historical-corpus-source-manifest-v1.schema.json": "0675c200bc1ba6ba1da71cfe7b825e02072d40fa1ca8af16e5abfb46610c8cd9",
+    "schemas/historical-economic-scoreboard-v1.schema.json": "1f84adb0401f8344baaff53c35b5622f02c620e624503dee55b0044ec4b55f55",
+    "schemas/historical-execution-record-v1.schema.json": "a59e48b31ecb4a5cd223342ccd240e05bbdccdf19d70a09a2de5e8660e08b959",
+    "schemas/historical-expected-value-v1.schema.json": "88a6202cc0df2f1a590d90840b2758a41d0164e00946f7a14f82cf1f1b2d2811",
+    "schemas/historical-outcome-corpus-v1.schema.json": "c75f54cc578754d93daa3bc98bccf7f836a55723c61ca9d0db3115b875a5e7a5",
+    "schemas/historical-valuation-policy-v1.schema.json": "7ceeef25afe4008732b348a1ba061461058119d8b7aa14ec3369f1f82ee3cc3c",
+    "schemas/research-promotion-decision-v1.schema.json": "73769dfd2cf162737d8b08361e0e263cf653ce29c14d45ddc664448ec24dbbf9",
+    "schemas/research-promotion-policy-v1.schema.json": "9bb19129babb8e3881b6a6c2bbb5ce484f1a9934a8dc15253069ae13d9cf44a1"
+  },
+  "schema": "aladdin-mev-f8-schema-lock/v1"
+}

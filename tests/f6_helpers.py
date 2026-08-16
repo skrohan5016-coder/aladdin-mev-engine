@@ -167,6 +167,52 @@ def f6_relay_response(
     )
 
 
+def f6_package_variant(
+    *,
+    signature_nonce: int,
+    request_id: str,
+) -> ExternallySignedExecutionPackageEvidence:
+    unsigned_transaction = f5_transaction()
+    signature = deterministic_signature(
+        unsigned_transaction.signing_hash,
+        nonce=signature_nonce,
+        observed_at_unix_ms=unsigned_transaction.created_at_unix_ms + 1,
+    )
+    signed_transaction = SignedEip1559TransactionEvidence(
+        unsigned_transaction=unsigned_transaction,
+        signature=signature,
+        created_at_unix_ms=signature.observed_at_unix_ms + 1,
+    )
+    signed_bundle = SignedPrivateBundleEvidence(
+        unsigned_bundle=f5_bundle(),
+        signed_transactions=(signed_transaction,),
+        created_at_unix_ms=signed_transaction.created_at_unix_ms + 1,
+    )
+    relay_request = RelaySubmissionRequestEvidence(
+        registry=f6_relay_registry(),
+        endpoint_id="ethereum-builder-evidence-v1",
+        signed_bundle=signed_bundle,
+        request_id=request_id,
+        created_at_unix_ms=signed_bundle.created_at_unix_ms + 1,
+    )
+    relay_response = RelayResponseEvidence(
+        request=relay_request,
+        status=RelayResponseStatus.ACCEPTED,
+        observed_at_unix_ms=relay_request.created_at_unix_ms + 1,
+        response_source_id="recorded-relay-response-a",
+        response_source_sha256=RELAY_RESPONSE_SOURCE,
+        relay_reference=f"recorded-relay-reference-{request_id}",
+    )
+    return ExternallySignedExecutionPackageEvidence(
+        unsigned_package=f5_package(),
+        signed_transaction=signed_transaction,
+        signed_bundle=signed_bundle,
+        relay_request=relay_request,
+        relay_responses=(relay_response,),
+        created_at_unix_ms=relay_response.observed_at_unix_ms + 1,
+    )
+
+
 @lru_cache(maxsize=1)
 def f6_package() -> ExternallySignedExecutionPackageEvidence:
     response = f6_relay_response()

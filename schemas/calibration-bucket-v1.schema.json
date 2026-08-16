@@ -1,0 +1,100 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/calibration-bucket-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "absolute_prediction_error_sum": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "attempt_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "floor_preservation_rate_bps": {
+      "maxLength": 5,
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
+      "type": "string"
+    },
+    "floor_preserved_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "historical_sum": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "lower_bound_bps": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "mean_absolute_prediction_error_ceiling": {
+      "maxLength": 156,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "mean_prediction_error_floor": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "predicted_sum": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "prediction_error_sum": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-calibration-bucket/v1"
+    },
+    "scoreable_count": {
+      "maxLength": 3,
+      "pattern": "^(?:0|[1-9]|[1-9][0-9]|1[01][0-9]|12[0-8])$",
+      "type": "string"
+    },
+    "scoreable_rate_bps": {
+      "maxLength": 5,
+      "pattern": "^(?:0|[1-9][0-9]{0,3}|10000)$",
+      "type": "string"
+    },
+    "upper_bound_bps": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        }
+      ]
+    }
+  },
+  "required": [
+    "absolute_prediction_error_sum",
+    "attempt_count",
+    "floor_preservation_rate_bps",
+    "floor_preserved_count",
+    "historical_sum",
+    "lower_bound_bps",
+    "mean_absolute_prediction_error_ceiling",
+    "mean_prediction_error_floor",
+    "predicted_sum",
+    "prediction_error_sum",
+    "schema",
+    "scoreable_count",
+    "scoreable_rate_bps",
+    "upper_bound_bps"
+  ],
+  "title": "Aladdin MEV Calibration Bucket v1",
+  "type": "object"
+}

@@ -1,7 +1,7 @@
 [project]
 name = "aladdin-mev-engine"
-version = "0.8.0"
-description = "Governed offline authenticated transaction/receipt inclusion and executor-settlement outcome evidence"
+version = "0.9.0"
+description = "Governed offline authenticated historical scoreboards, calibration, and research-promotion evidence"
 requires-python = ">=3.13"
 dependencies = []
 
@@ -15,6 +15,7 @@ f4_schema_lock = "governance/f4-schemas.lock.json"
 f5_schema_lock = "governance/f5-schemas.lock.json"
 f6_schema_lock = "governance/f6-schemas.lock.json"
 f7_schema_lock = "governance/f7-schemas.lock.json"
+f8_schema_lock = "governance/f8-schemas.lock.json"
 observation_authority = "recorded-input-only"
 state_proof_authority = "offline-recorded-input-only"
 opportunity_authority = "offline-authenticated-model-bound-gross-shadow-only"
@@ -51,3 +52,10 @@ inclusion_authority = "offline-authenticated-transaction-receipt-and-executor-po
 settlement_authority = "offline-code-hash-bound-executor-event-reconciliation-only"
 realized_outcome_authority = "authenticated-inclusion-receipt-code-hash-bound-settlement-and-recorded-rollup-fees-only"
 realized_profit_authority = "none"
+historical_corpus_authority = "offline-exact-declared-source-window-inclusion-conditioned-history-only"
+historical_source_manifest_authority = "offline-declared-source-window-reference-set-only"
+historical_scoreboard_authority = "offline-exact-cohort-scoreboard-only"
+calibration_authority = "offline-empirical-no-confidence-guarantee"
+conditional_expected_value_authority = "offline-historical-conditional-estimate-only"
+research_promotion_authority = "offline-research-evidence-only"
+production_promotion_authority = "none"

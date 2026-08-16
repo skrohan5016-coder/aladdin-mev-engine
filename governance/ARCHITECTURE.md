@@ -2,48 +2,57 @@
 
 ## Accepted lineage
 
-F7 is built from accepted F6 landing `6481e17b2345c54261865125b61523610b7f87af`, tree `1115dccd7952225dfa1d58238aa550bf9e0aa995`, and architecture `AMEV-F6-ARCH-v1-c91039d7d800`. F0 supplies canonical evidence, policy, and risk controls; F1 supplies recorded observation and replay; F2 supplies authenticated EVM state; F3 supplies exact gross opportunities; F4 supplies deterministic plans and conservative cost-complete shadow economics; F5 supplies authenticated unsigned transaction packages; F6 verifies externally produced signatures and records relay evidence; F7 authenticates historical transaction/receipt inclusion and reconciles one governed executor settlement event.
+F8 is built from accepted F7 landing `ec4d9a211c204e3363e8a77d8de4ab2199a89be0`, tree `42592ed5ce7dc8d87755ff95af4824dc20c9e6fa`, and architecture `AMEV-F7-ARCH-v1-c611202acf40`.
+
+F0 supplies canonical evidence, policy, and risk controls; F1 supplies recorded observation and replay; F2 supplies authenticated EVM state; F3 supplies exact gross opportunities; F4 supplies deterministic plans and conservative cost-complete shadow economics; F5 supplies authenticated unsigned transaction packages; F6 verifies externally produced signatures and records relay evidence; F7 authenticates historical inclusion and settlement; F8 supplies bias-resistant historical corpora, exact scoreboards, calibration, conditional expected-value evidence, and offline research-promotion gates.
 
 ## Inherited authority retention
 
-F7 does not weaken F0–F6. All earlier canonical, proof, model, optimization, cost, transaction, signature, relay, and authority-denial contracts remain independently locked and tested.
+F8 does not weaken F0–F7. Earlier canonical, proof, model, optimization, cost, transaction, signature, relay, inclusion, settlement, drift, and authority-denial contracts remain independently locked and tested.
 
 ## Trust flow
 
 ```text
-Recorded observations + authenticated EVM state
+Recorded observations + authenticated state
   -> F3 opportunity + F4 conservative shadow decision
-  -> F5 unsigned execution package
-  -> F6 external signature and relay evidence
-  -> recorded canonical block header + exact F2 state anchor
-  -> exact inclusion-block executor account/code/storage proof
-  -> transaction/receipt trie inclusion + exact gas
-  -> code-hash-bound executor settlement event + recorded rollup fees
-  -> F7 authenticated execution-outcome evidence
+  -> F5 unsigned package + F6 external signature/relay evidence
+  -> F7 authenticated inclusion/receipt/settlement outcome
+  -> exact settlement registry/spec + historical valuation policy
+  -> F8 receipt-derived disposition, outcome completeness, and scoreability
+  -> exact declared source-window manifest and reference-set consumption
+  -> exact cohort-bound canonical corpus
+  -> exact integer scoreboard + calibration
+  -> conditional empirical expected-value evidence
+  -> fail-closed offline research-promotion decision
 ```
 
-## F7 authority boundaries
+## F8 authority boundaries
 
 ```text
-network_access                   = none
-relay_access                     = none
-credential_authority             = none
-key_authority                    = none
-local_signing_authority          = none
-signing_authority                = external-unmodeled
-submission_authority             = none
-execution_authority              = none
-inclusion_authority              = offline-authenticated-transaction-receipt-and-executor-post-state-inclusion-only
-settlement_authority             = offline-code-hash-bound-executor-event-reconciliation-only
-realized_outcome_authority       = authenticated-inclusion-receipt-code-hash-bound-settlement-and-recorded-rollup-fees-only
-realized_profit_authority        = none
-inclusion_guarantee              = none
+network_access                        = none
+relay_access                          = none
+credential_authority                  = none
+key_authority                         = none
+local_signing_authority               = none
+signing_authority                     = external-unmodeled
+submission_authority                  = none
+execution_authority                   = none
+realized_profit_authority             = none
+historical_source_manifest_authority  = offline-declared-source-window-reference-set-only
+historical_corpus_authority           = offline-exact-declared-source-window-inclusion-conditioned-history-only
+historical_scoreboard_authority       = offline-exact-cohort-scoreboard-only
+calibration_authority                 = offline-empirical-no-confidence-guarantee
+conditional_expected_value_authority  = offline-historical-conditional-estimate-only
+research_promotion_authority          = offline-research-evidence-only
+production_promotion_authority        = none
 ```
 
-An F7 outcome is historical authenticated evidence. It is not a network request, inclusion forecast, signing/submission instruction, general token-balance proof, treasury statement, tax record, or profit guarantee.
+## F8 hardening invariants
 
-## F7 hardening invariants
+All authenticated included attempts are retained. Successful outcomes can be economically scoreable; reverted, settlement-missing, and settlement-evidence-incomplete attempts remain unscoreable but stay in coverage and calibration denominators. Settlement-event presence is derived from the authenticated receipt under the exact registry-resolved spec, so omitting the outcome object cannot relabel an observed event as missing. Cohorts bind exact sender/signature source, policy, relay endpoint/response sources, funding, deployment, settlement model, rollup-fee source, historical-valuation policy, pool model, finality, environment, and independent simulation identities. The valuation policy is shared by scoreable and unscoreable attempts; only scoreable records may carry the exact policy-matching inclusion-time rate. All statistics use exact integers. Calibration partitions every attempt with strictly positive boundaries. Zero-scoreable expected-value evidence is explicitly unavailable. Promotion requires positive sample/diversity minima, scoreable coverage, and unique inclusion-block diversity within the scoreable economic sample. All-attempt and scoreable-sample block counts are published separately so unscoreable records cannot pad the diversity gate. Promotion reports every confirmed failure and grants no production or transaction authority.
 
-The raw header hash and all governed root/fee fields are recomputed. Receipt log and topic ceilings are enforced before canonicalization or topic materialization, and canonical log-array hashing enforces the global JSON byte ceiling incrementally before whole-array allocation. Receipt log addresses preserve the consensus `Bytes20` domain rather than inheriting deployment-only nonzero policy. The F7 schema graph is checked by declared URI identity, not file presence alone. The executor account is re-authenticated at the inclusion block's exact post-state root: its address and runtime code hash must match F5/F6, its storage root must remain the canonical empty trie, and no unused storage proof is accepted. Transaction and receipt proofs share one exact index and authenticated header roots. Nonzero transaction indices require an exact previous receipt. Individual gas is an exact cumulative delta and remains inside F5 limits. Settlement interpretation is selected by the same authenticated non-empty executor runtime code hash and block validity. The post-state code check detects persistent drift but is explicitly model-bound rather than an intra-block execution trace. One exact event must preserve hard plan identity, beneficiary, token, principal, fee, minimum-output, transaction-value, and internal arithmetic constraints. Successful output, residual, direct-payment, gas, log, or conservative-cost drift is retained as explicit historical mismatch, shortfall, overrun, upper-bound, and floor-preservation evidence rather than filtered out. Simulation drift is reported rather than hidden. No F7 object claims realized profit or gains key, submission, or execution authority.
+The machine-readable architecture manifest, architecture lock, inherited locks, and F8 schema lock are authoritative.
 
-The machine-readable architecture manifest and lock are authoritative.
+F8 completeness is relative only to an exact declared source-window reference set. It grants no global source completeness guarantee.
+
+Downstream scoreboard, calibration, expected-value, and promotion evidence repeat the exact source-manifest digest and completeness boundary, including `global_completeness_guarantee = false`.

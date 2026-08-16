@@ -1,0 +1,256 @@
+{
+  "$id": "https://schemas.aladdin-mev.dev/historical-execution-record-v1.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": false,
+  "properties": {
+    "absolute_prediction_error": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 156,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        }
+      ]
+    },
+    "actual_external_cost_base_upper_bound": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        }
+      ]
+    },
+    "block_number": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "capital_at_risk": {
+      "maxLength": 78,
+      "pattern": "^[1-9][0-9]*$",
+      "type": "string"
+    },
+    "cohort": {
+      "$ref": "historical-cohort-key-v1.schema.json"
+    },
+    "cohort_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "conservative_floor_preserved": {
+      "type": "boolean"
+    },
+    "cost_upper_bounds_respected": {
+      "type": "boolean"
+    },
+    "disposition": {
+      "enum": [
+        "settled",
+        "reverted",
+        "settlement-missing",
+        "settlement-evidence-incomplete"
+      ],
+      "type": "string"
+    },
+    "economic_authority": {
+      "const": "authenticated-settlement-minus-historical-conservative-cost-upper-bound-only"
+    },
+    "economics_scoreable": {
+      "type": "boolean"
+    },
+    "execution_authority": {
+      "const": "none"
+    },
+    "execution_success": {
+      "type": "boolean"
+    },
+    "historical_conservative_surplus": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 156,
+          "pattern": "^(0|-?[1-9][0-9]*)$",
+          "type": "string"
+        }
+      ]
+    },
+    "historical_valuation_book": {
+      "$ref": "https://schemas.aladdin.invalid/mev/valuation-book-v1.schema.json"
+    },
+    "historical_valuation_book_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "historical_valuation_policy": {
+      "$ref": "historical-valuation-policy-v1.schema.json"
+    },
+    "historical_valuation_policy_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "inclusion_conditioned": {
+      "const": true
+    },
+    "inclusion_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "native_cost_overrun": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 78,
+          "pattern": "^(0|[1-9][0-9]*)$",
+          "type": "string"
+        }
+      ]
+    },
+    "outcome_evidence_complete": {
+      "type": "boolean"
+    },
+    "outcome_sha256": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "pattern": "^[0-9a-f]{64}$",
+          "type": "string"
+        }
+      ]
+    },
+    "package_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "positive_historical_surplus": {
+      "type": "boolean"
+    },
+    "predicted_conservative_net_profit": {
+      "maxLength": 156,
+      "pattern": "^(0|-?[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "predicted_external_cost_base_upper_bound": {
+      "maxLength": 78,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "prediction_error": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "maxLength": 156,
+          "pattern": "^(0|-?[1-9][0-9]*)$",
+          "type": "string"
+        }
+      ]
+    },
+    "production_promotion_authority": {
+      "const": false
+    },
+    "realized_profit_claimed": {
+      "const": false
+    },
+    "record_id": {
+      "pattern": "^historical-record-[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "recorded_at_unix_ms": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    },
+    "rollup_fee_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "schema": {
+      "const": "aladdin-mev-historical-execution-record/v1"
+    },
+    "settlement_event_registry_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "settlement_event_spec_sha256": {
+      "pattern": "^[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "settlement_observed": {
+      "type": "boolean"
+    },
+    "simulation_exact_match": {
+      "type": "boolean"
+    },
+    "submission_authority": {
+      "const": "none"
+    },
+    "transaction_hash": {
+      "pattern": "^0x(?!0{64}$)[0-9a-f]{64}$",
+      "type": "string"
+    },
+    "transaction_index": {
+      "maxLength": 20,
+      "pattern": "^(0|[1-9][0-9]*)$",
+      "type": "string"
+    }
+  },
+  "required": [
+    "absolute_prediction_error",
+    "actual_external_cost_base_upper_bound",
+    "block_number",
+    "capital_at_risk",
+    "cohort",
+    "cohort_sha256",
+    "conservative_floor_preserved",
+    "cost_upper_bounds_respected",
+    "disposition",
+    "economic_authority",
+    "economics_scoreable",
+    "execution_authority",
+    "execution_success",
+    "historical_conservative_surplus",
+    "historical_valuation_book",
+    "historical_valuation_book_sha256",
+    "inclusion_conditioned",
+    "inclusion_sha256",
+    "native_cost_overrun",
+    "outcome_evidence_complete",
+    "outcome_sha256",
+    "package_sha256",
+    "positive_historical_surplus",
+    "predicted_conservative_net_profit",
+    "predicted_external_cost_base_upper_bound",
+    "prediction_error",
+    "production_promotion_authority",
+    "realized_profit_claimed",
+    "record_id",
+    "recorded_at_unix_ms",
+    "rollup_fee_sha256",
+    "schema",
+    "settlement_event_registry_sha256",
+    "settlement_event_spec_sha256",
+    "settlement_observed",
+    "simulation_exact_match",
+    "submission_authority",
+    "transaction_hash",
+    "transaction_index",
+    "historical_valuation_policy",
+    "historical_valuation_policy_sha256"
+  ],
+  "title": "Aladdin MEV Historical Execution Record v1",
+  "type": "object"
+}
