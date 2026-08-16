@@ -1,0 +1,104 @@
+name: Guarded landing for approved PR 10 head
+
+on:
+  push:
+    branches:
+      - agent/pr10-landing-326e6a8
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  land:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+      APPROVED_HEAD: 326e6a8b39806d3340a79d2bb4740ce9fb2a50e1
+      EXPECTED_TREE: 66aeada2769e9b2fccb943ec3c8150b974bb0400
+      PR_URL: https://github.com/skrohan5016-coder/aladdin-mev-engine/pull/10
+    steps:
+      - name: Checkout guarded helper revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up governed Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97
+        with:
+          python-version: "3.13"
+      - name: Compile guarded landing helpers
+        run: python -m py_compile .landing/pr_land.py .landing/pr_watch.py
+      - name: Produce fresh exact-head landing plan
+        run: |
+          set -euo pipefail
+          python .landing/pr_land.py \
+            --repo . \
+            --pr "${PR_URL}" \
+            --no-config \
+            --head "${APPROVED_HEAD}" \
+            --mode auto \
+            --method squash \
+            --pretty > /tmp/plan.json
+          cat /tmp/plan.json
+          python - <<'PY'
+          import json
+          plan = json.load(open('/tmp/plan.json', encoding='utf-8'))
+          assert plan['state'] == 'confirmation_required', plan
+          assert plan['headSha'] == '326e6a8b39806d3340a79d2bb4740ce9fb2a50e1', plan
+          assert plan['method'] == 'squash', plan
+          assert plan['mode'] == 'auto', plan
+          assert plan['warning'] == 'This landing request may merge the pull request immediately.', plan
+          assert plan['readinessPolicy']['source'] == 'no-config', plan
+          assert plan['readinessPolicy']['checkPolicy'] == 'all', plan
+          open('/tmp/policy-digest', 'w', encoding='utf-8').write(plan['readinessPolicyDigest'])
+          PY
+      - name: Execute the user-approved guarded landing request
+        run: |
+          set -euo pipefail
+          policy_digest="$(cat /tmp/policy-digest)"
+          python .landing/pr_land.py \
+            --repo . \
+            --pr "${PR_URL}" \
+            --no-config \
+            --head "${APPROVED_HEAD}" \
+            --mode auto \
+            --method squash \
+            --policy-digest "${policy_digest}" \
+            --confirm \
+            --pretty > /tmp/landing.json
+          cat /tmp/landing.json
+          python - <<'PY'
+          import json
+          result = json.load(open('/tmp/landing.json', encoding='utf-8'))
+          assert result['state'] == 'landing_requested', result
+          assert result['headSha'] == '326e6a8b39806d3340a79d2bb4740ce9fb2a50e1', result
+          assert result['method'] == 'squash', result
+          assert result['command'][-2:] == ['--auto', '--squash'], result
+          PY
+      - name: Verify exact approved head landed
+        run: |
+          set -euo pipefail
+          for attempt in $(seq 1 30); do
+            gh pr view "${PR_URL}" --json state,mergedAt,headRefOid,mergeCommit > /tmp/pr.json
+            state="$(python -c 'import json; print(json.load(open("/tmp/pr.json"))["state"])')"
+            if [ "${state}" = "MERGED" ]; then
+              break
+            fi
+            sleep 2
+          done
+          python - <<'PY'
+          import json
+          pr = json.load(open('/tmp/pr.json', encoding='utf-8'))
+          assert pr['state'] == 'MERGED', pr
+          assert pr['headRefOid'] == '326e6a8b39806d3340a79d2bb4740ce9fb2a50e1', pr
+          merge_sha = pr['mergeCommit']['oid']
+          open('/tmp/merge-sha', 'w', encoding='utf-8').write(merge_sha)
+          print(json.dumps({'approved_head': pr['headRefOid'], 'merge_sha': merge_sha, 'merged_at': pr['mergedAt']}, sort_keys=True))
+          PY
+          merge_sha="$(cat /tmp/merge-sha)"
+          main_sha="$(gh api repos/skrohan5016-coder/aladdin-mev-engine/git/ref/heads/main --jq .object.sha)"
+          test "${main_sha}" = "${merge_sha}"
+          landed_tree="$(gh api repos/skrohan5016-coder/aladdin-mev-engine/git/commits/${merge_sha} --jq .tree.sha)"
+          test "${landed_tree}" = "${EXPECTED_TREE}"
